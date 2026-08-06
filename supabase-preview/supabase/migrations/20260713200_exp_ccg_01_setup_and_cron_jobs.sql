@@ -8,10 +8,10 @@ INSERT INTO experiments.experiments (
     session_expiration_interval
 ) VALUES (
     'exp_ccg_01',
-    'Gender as a coordination mechanism (v1)',
+    'Gender as a coordination mechanism (01)',
     TRUE,
-    20, -- initial participant quota before full quota release
-    5, -- quota buffer
+    200, -- quota
+    10, -- quota buffer
     '6 hours', -- interval for admission 🠖 registration
     '6 hours' -- interval for session expiration
     -- '1 minute' -- testing
@@ -60,9 +60,9 @@ SELECT cron.schedule(
 );
 
 SELECT cron.schedule(
-    'exp_ccg_01-attempt-finalize-participant-sessions',
+    'exp_ccg_01-attempt_finalize_participant_sessions',
     -- '* * * * *', -- at every minute
     '1 * * * *', -- at minute 1, every hour
     -- '2 2 * * *', -- at 02:02, every day
-    $$SELECT exp_ccg_01_final.finalize_participant_sessions_scheduled()$$
+    $$SELECT exp_ccg_01_final.attempt_finalize_participant_sessions()$$
 );

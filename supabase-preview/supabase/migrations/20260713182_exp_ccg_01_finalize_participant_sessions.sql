@@ -837,7 +837,7 @@ REVOKE EXECUTE ON ROUTINE exp_ccg_01.rescore_non_participant_sessions() FROM PUB
 
 -- Called by pg_cron when participant quota is filled. Runs finalize once preflight passes,
 -- then unschedules this job.
-CREATE OR REPLACE FUNCTION exp_ccg_01_final.finalize_participant_sessions_scheduled()
+CREATE OR REPLACE FUNCTION exp_ccg_01_final.attempt_finalize_participant_sessions()
 RETURNS VOID
 LANGUAGE plpgsql
 VOLATILE
@@ -853,9 +853,9 @@ BEGIN
         PERFORM exp_ccg_01.rescore_non_participant_sessions();
         PERFORM cron.unschedule(jobid)
         FROM cron.job
-        WHERE jobname = 'exp_ccg_01-attempt-finalize-participant-sessions';
+        WHERE jobname = 'exp_ccg_01-attempt_finalize_participant_sessions';
     END IF;
 END;
 $$;
-REVOKE EXECUTE ON ROUTINE exp_ccg_01_final.finalize_participant_sessions_scheduled() FROM PUBLIC;
-GRANT EXECUTE ON ROUTINE exp_ccg_01_final.finalize_participant_sessions_scheduled() TO service_role;
+REVOKE EXECUTE ON ROUTINE exp_ccg_01_final.attempt_finalize_participant_sessions() FROM PUBLIC;
+GRANT EXECUTE ON ROUTINE exp_ccg_01_final.attempt_finalize_participant_sessions() TO service_role;
