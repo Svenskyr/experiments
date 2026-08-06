@@ -5,6 +5,7 @@ import { submit as submitComprehensionQuestion } from "../../_database/Comprehen
 import { submit as submitRangeSetQuestion } from "../../_database/RangeSetQuestionDBM.ts";
 import { submit as submitSurveyMultipleChoiceQuestion } from "../../_database/SurveyMultipleChoiceQuestionDBM.ts";
 import { submit as submitGameRounds } from "../../_database/CCGGameDBM.ts";
+import { submit as submitUserAgent } from "../../_database/UserAgentDBM.ts";
 
 export interface PostgrestError {
     message: string;
@@ -20,6 +21,7 @@ export const Actions = {
     submitRangeSetQuestion,
     submitSurveyMultipleChoiceQuestion,
     submitGameRounds,
+    submitUserAgent,
 };
 
 export const notReadyError = (): PostgrestError => {

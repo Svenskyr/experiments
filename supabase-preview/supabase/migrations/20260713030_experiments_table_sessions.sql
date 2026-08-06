@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS experiments.sessions (
 );
 
 GRANT SELECT, INSERT, UPDATE ON experiments.sessions TO service_role;
-GRANT UPDATE (user_agent) ON experiments.sessions TO authenticated;
+GRANT SELECT, UPDATE (user_agent) ON experiments.sessions TO authenticated;
 
 ALTER TABLE experiments.sessions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow users to select self"

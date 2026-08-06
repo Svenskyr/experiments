@@ -10,6 +10,10 @@ AS $$
 DECLARE
   v_user_id UUID;
 BEGIN
+    IF p_platform IS NULL OR p_platform = '' THEN
+        RETURN NULL;
+    END IF;
+
     SELECT user_id INTO v_user_id
     FROM experiments.users
     WHERE pid = p_pid AND platform = p_platform;

@@ -77,16 +77,50 @@ import { enhance } from "$app/forms";
 import type { ActionResult, SubmitFunction } from "@sveltejs/kit";
 import { goto } from "$app/navigation";
 import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
+import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import {
+    save as saveUserAgent,
+    sync as syncUserAgent,
+} from "$exp/ccg-01/_database/UserAgentDBM.ts";
+const syncHandler = getSyncHandler();
 
 let registrationForm = $state<HTMLFormElement | null>(null);
 let inputPID = $state("");
 let awaitingRegistration = $state(false);
+/** Latch: we already fired (or completed) an automatic registration submit. */
 let autoSubmitted = $state(false);
 let registrationError = $state<string | null>(null);
 
+const hasPid = $derived(Boolean(inputPID.trim()));
+const hasRole = $derived(Boolean(selectedRole));
+/** Role from entry (URL/state); MCQ selection does not set session.role. */
+const enteredWithRole = $derived(Boolean(expState.session.role));
+/** Auto-submit only for platform-style entry with a preset role; walk-ins use Submit. */
+const autoSubmitEligible = $derived(enteredWithRole && hasPid);
+
 const canSubmitRegistration = $derived(
-    Boolean(inputPID && expState.session.role && authUserId),
+    Boolean(hasPid && hasRole && authUserId),
 );
+
+type AutoSubmitBlocker =
+    | "already_attempted"
+    | "in_flight"
+    | "no_form"
+    | "already_registered"
+    | "not_auto_submit_eligible"
+    | "awaiting_auth"
+    | "none";
+
+function autoSubmitBlocker(): AutoSubmitBlocker {
+    if (autoSubmitted || awaitingRegistration) {
+        return autoSubmitted ? "already_attempted" : "in_flight";
+    }
+    if (!registrationForm) return "no_form";
+    if (expState.session.sessionId) return "already_registered";
+    if (!autoSubmitEligible) return "not_auto_submit_eligible";
+    if (!authUserId) return "awaiting_auth";
+    return "none";
+}
 
 $effect(() => {
     if (expState.user.pid && !inputPID) {
@@ -107,9 +141,14 @@ async function handleRegistrationResult(result: ActionResult) {
     if (result.type === "success" && result.data?.expState) {
         debug("Registration successful:", result.data.expState);
         Object.assign(expState, result.data.expState);
+        const sessionId = expState.session.sessionId;
+        if (sessionId) {
+            void syncHandler.initDb(supabase, sessionId);
+            saveUserAgent();
+            syncUserAgent(syncHandler);
+        }
         await goto(`${maxPage(expState.pages)}`, { replaceState: true });
     } else {
-        autoSubmitted = false;
         registrationError = result.type === "failure"
             ? (result.data?.error as string | undefined) ?? "Registration failed"
             : "Registration failed";
@@ -128,17 +167,13 @@ const submitRegistration: SubmitFunction = ({ cancel }) => {
 };
 
 function tryAutoSubmitRegistration() {
-    if (
-        autoSubmitted
-        || awaitingRegistration
-        || !registrationForm
-        || !canSubmitRegistration
-    ) {
+    const blocker = autoSubmitBlocker();
+    if (blocker !== "none") {
         return;
     }
-    autoSubmitted = true;
     debug("Auto-submitting registration...");
-    registrationForm.requestSubmit();
+    autoSubmitted = true;
+    registrationForm!.requestSubmit();
 }
 
 $effect(() => {
@@ -179,7 +214,7 @@ $effect(() => {
         <button
             type="submit"
             class="exp-default-button"
-            class:disabled={!selectedRole || !inputPID || !authUserId || awaitingRegistration}
+            class:disabled={!canSubmitRegistration || awaitingRegistration}
         >{status}</button>
         {#if registrationError}
             <p class="error">{registrationError}</p>
