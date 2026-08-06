@@ -8,16 +8,11 @@ import {
     resolveDisplayOrder,
 } from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
 import type { PageServerLoad } from "./$types";
-import { setStateCookie, STATE_COOKIE_NAME, verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
-import type { PageState } from "$exp/ccg-01/_state/Pages.ts";
 import type { Cookies } from "@sveltejs/kit";
-import { fail, redirect } from "@sveltejs/kit";
-import { upsertSurveyResponses, validateAndPrepareSurvey } from "$exp/ccg-01/_database0/survey.ts";
-import { supabaseServiceRole } from "$exp/ccg-01/_database0/ServiceRole.svelte.ts";
+import { supabase } from "$exp/ccg-01/_database/ServiceRole.ts";
 import { setNextPageCookie } from "$exp/ccg-01/_state/Server.ts";
 import type { PageName } from "$exp/ccg-01/_state/Pages.ts";
 import { getLogger } from "$lib/server/logger.server.ts";
-// const surveyQuestions = Object.values(rangeSetQuestions);
 
 export const load: PageServerLoad = async ({ parent }) => {
     const { expState } = await parent();
@@ -56,7 +51,7 @@ export const actions = {
         const revoke: PageName[] = [];
         const { expState } = await setNextPageCookie(cookies, complete, grant, revoke);
         const log = getLogger({ mod: "exp/ccg-01/survey/" });
-        void supabaseServiceRole
+        void supabase
             .schema("exp_ccg_01")
             .rpc("complete_experiment_session", {
                 p_session_id: expState.session.sessionId,

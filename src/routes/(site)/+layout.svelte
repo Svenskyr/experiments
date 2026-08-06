@@ -8,9 +8,7 @@ let { data, children } = $props();
 </script>
 
 <div class="top-nav-bar">
-    <a href="/">Home</a>
-    <a href="/login">Login</a>
-    <a href="experiments">Experiments</a>
+    <a href="/">Experiments</a>
     <a href="surveys">Surveys</a>
 </div>
 

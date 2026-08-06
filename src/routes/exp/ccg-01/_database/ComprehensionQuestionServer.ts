@@ -5,7 +5,7 @@ import {
 } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import { multipleChoiceQuestions as gd1 } from "../(pages)/game_description_1/questions.ts";
 import { multipleChoiceQuestions as gd2 } from "../(pages)/game_description_2/questions.ts";
-import { supabaseServiceRole } from "../_database0/ServiceRole.svelte.ts";
+import { supabase } from "../_database/ServiceRole.ts";
 import type { PostgrestError } from "../_syncHandler/v3/SyncHandlerActions.ts";
 
 export interface StoredItems {
@@ -90,7 +90,7 @@ export async function submitComprehensionQuestion(
         score,
     };
 
-    const query = supabaseServiceRole
+    const query = supabase
         .schema("exp_ccg_01")
         .from("comprehension");
 
