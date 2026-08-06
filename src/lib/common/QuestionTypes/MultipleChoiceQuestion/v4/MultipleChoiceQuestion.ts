@@ -154,7 +154,7 @@ export function resetQuestion(question: MultipleChoiceQuestion): void {
     return;
 }
 
-import { FisherYatesShuffle } from "$lib/Randomization.ts";
+import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
 
 export function resolveDisplayOrder(
     items: MultipleChoiceItem[],

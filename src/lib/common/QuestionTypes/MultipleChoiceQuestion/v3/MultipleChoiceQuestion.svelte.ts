@@ -4,7 +4,7 @@ import type {
     MultipleChoiceItem,
     MultipleChoiceQuestionInterface,
 } from "./interfaces.ts";
-import { FisherYatesShuffle } from "$lib/Randomization.ts";
+import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
 
 export class MultipleChoiceItemClass {
     itemId: string;

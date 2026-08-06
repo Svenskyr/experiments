@@ -26,7 +26,7 @@ export function constructRangeSet(props: RangeSetProps): RangeSetProps {
     return rangeSet;
 }
 
-import { FisherYatesShuffle } from "$lib/Randomization.ts";
+import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
 
 /** Shuffles items within each displayIndex group while preserving ascending group order. */
 function shuffleSameDisplayIndexGroups(

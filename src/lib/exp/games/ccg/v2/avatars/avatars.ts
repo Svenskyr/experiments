@@ -1,4 +1,4 @@
-import { FisherYatesShuffle } from "$lib/Randomization.ts";
+import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
 import fem1 from "./webp/fem/fem1.webp";
 import fem2 from "./webp/fem/fem2.webp";
 import masc1 from "./webp/masc/masc1.webp";
