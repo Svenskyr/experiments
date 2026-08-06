@@ -1,11 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		%sveltekit.head%
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <script>
+            (function () {
+                try {
+                    const colorScheme = localStorage.getItem("color-scheme") ||
+                        "system";
+                    const prefersDark = colorScheme === "dark" ||
+                        (colorScheme === "system" &&
+                            window.matchMedia("(prefers-color-scheme: dark)")
+                                .matches);
+                    document.documentElement.style.colorScheme = prefersDark
+                        ? "dark"
+                        : "light";
+                    document.documentElement.setAttribute(
+                        "data-color-scheme",
+                        prefersDark ? "dark" : "light",
+                    );
+                    localStorage.setItem(
+                        "color-scheme",
+                        prefersDark ? "dark" : "light",
+                    );
+                } catch (e) {
+                    console.error("Error applying color scheme:", e);
+                    document.documentElement.style.colorScheme = "light";
+                }
+            })();
+        </script>
+        %sveltekit.head%
+    </head>
+    <body data-sveltekit-preload-data="hover">
+        <div style="display: contents">%sveltekit.body%</div>
+    </body>
 </html>

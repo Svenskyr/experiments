@@ -1,0 +1,140 @@
+/* Container for entire experiment content
+Keeping all base experiment styling here will prevent changes in root styling from affecting the experiment.
+*/
+
+@layer experiment-defaults {
+    .experiment-container {
+        font-family: system-ui;
+        box-sizing: border-box;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        width: 100%;
+
+        /* Container for blocks of page content (a page may have multiple blocks) */
+        .page-block {
+            display: flex;
+            flex-direction: column;
+            background-color: light-dark(oklch(95% 0 0), oklch(24% 0 0));
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            gap: 1rem;
+            width: min(50rem, 100%);
+            position: relative;
+        }
+
+        a {
+            color: light-dark(oklch(0.2 0.3 220), oklch(0.7 0.5 220));
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        p + p,
+        ul + p,
+        li + p {
+            margin-top: 1rem;
+        }
+
+        details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+
+            &[open] {
+                margin-bottom: 1rem;
+                & > h1,
+                & > h2,
+                & > h3,
+                & > h4 {
+                    padding: 0.5rem;
+                }
+                & * + h3 {
+                    margin-top: 1rem;
+                }
+            }
+            &[open]::details-content {
+                width: 90%;
+                padding: 1rem 2rem;
+            }
+            summary {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                user-select: none;
+                padding: 0.5rem;
+                & h1,
+                & h2,
+                & h3,
+                & h4 {
+                    display: inline-block;
+                }
+                &::marker {
+                    content: none;
+                }
+                &::before {
+                    content: "➤";
+                    display: inline-block;
+                    transition: transform 0.1s ease;
+                    font-size: 1rem;
+                }
+            }
+
+            &[open] summary::before {
+                transform: rotate(90deg);
+            }
+        }
+
+        .center {
+            align-self: center;
+            justify-self: center;
+        }
+
+        .center-content {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-email {
+            display: none;
+        }
+
+        .nav-bar-bottom {
+            width: min(50rem, 100%);
+        }
+
+        .exp-default-button {
+            color: black;
+            background-color: light-dark(oklch(100% 0 0), oklch(100% 0 0));
+            border-radius: 0.25rem;
+            border: 1px solid light-dark(oklch(50% 0 0), oklch(0% 0 0));
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            width: fit-content;
+            &.disabled {
+                opacity: 0.5;
+                cursor: default;
+            }
+            &:hover:not(.disabled) {
+                border-color: light-dark(oklch(20% 0 0), oklch(0% 0 0));
+                background-color: light-dark(oklch(100% 0 0), oklch(95% 0 0));
+                box-shadow:
+                    0 0 10px 1px light-dark(oklch(0% 0 0 / 0.1), oklch(0% 0 0 / 0.4)),
+                    inset 0 0 5px 1px light-dark(oklch(0% 0 0 / 0.1), oklch(0% 0 0 / 0.2));
+            }
+        }
+    }
+}

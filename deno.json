@@ -1,0 +1,14 @@
+{
+    "imports": {
+        "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.112.1",
+        "debug": "npm:debug@^4.4.3"
+    },
+    "unstable": ["fmt-component"],
+    "fmt": {
+        "useTabs": false,
+        "lineWidth": 100,
+        "indentWidth": 4,
+        "semiColons": true,
+        "operatorPosition": "nextLine"
+    }
+}
