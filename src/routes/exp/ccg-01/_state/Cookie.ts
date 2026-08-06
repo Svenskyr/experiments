@@ -4,7 +4,7 @@ import { type ExperimentState, newExpState } from "./ExperimentState.ts";
 import { type Cookies, redirect } from "@sveltejs/kit";
 
 export const STATE_COOKIE_NAME = "exp-ccg-01-state";
-export const STATE_COOKIE_PATH = "/experiments/ccg-01";
+export const STATE_COOKIE_PATH = "/exp/ccg-01";
 export const STATE_COOKIE_MAX_AGE = 1000 * 60 * 60 * 24 * 7; // 7 days
 export const ACTIVITY_EXPIRATION_LIMIT = 1000 * 60 * 60 * 6; // 6 hours
 // export const ACTIVITY_EXPIRATION_LIMIT = 1000 * 5; // 5 seconds (for testing)
@@ -48,7 +48,7 @@ export async function validateStateCookieOrRedirect(
         log.warn("Invalid or expired state cookie; redirecting to gate page with new expState");
         const newState = newExpState();
         await setStateCookie(cookies, newState);
-        redirect(303, "/experiments/ccg-01");
+        redirect(303, "/exp/ccg-01");
     }
 
     if (expired && expState.session.role === "participant") {
@@ -60,7 +60,7 @@ export async function validateStateCookieOrRedirect(
         // try returning both expState and the redirect,
         // then Object.assign(expState, newExpState) in the client,
         // then apply the redirect.
-        redirect(303, "/experiments/ccg-01");
+        redirect(303, "/exp/ccg-01");
     }
     return { expState };
 }

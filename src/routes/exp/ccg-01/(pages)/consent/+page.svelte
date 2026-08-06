@@ -14,14 +14,14 @@ const submitConsent: SubmitFunction = ({ cancel }) => {
     if (expState.pages.consent?.completed) {
         debug("consent already completed");
         cancel();
-        goto(`/experiments/ccg-01/${maxPage(expState.pages)}`);
+        goto(`/exp/ccg-01/${maxPage(expState.pages)}`);
         return;
     }
 
     return async ({ result, update }) => {
         if (result.type === "success" && result.data?.expState) {
             Object.assign(expState, result.data.expState);
-            await goto(`/experiments/ccg-01/${maxPage(expState.pages)}`);
+            await goto(`/exp/ccg-01/${maxPage(expState.pages)}`);
             return;
         }
 

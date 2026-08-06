@@ -11,7 +11,7 @@
 <h2>Experiments in testing</h2>
 
 <ul>
-    <li><a href="$exp/ccg-01">ccg-01</a></li>
+    <li><a href="/exp/ccg-01">ccg-01</a></li>
 </ul>
 
 <h2>Past experiments</h2>

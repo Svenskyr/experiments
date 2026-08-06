@@ -56,8 +56,8 @@ export const requestNextPageCookie = async (
 //     });
 //     // console.log(response); // Response object
 //     // console.log(response.text()); // Promise { <pending> }
-//     // console.log(await response.text()); // String: {"type":"redirect","status":303,"location":"/experiments/ccg-01/game_description_2"}
-//     // console.log(await response.json()); // ActionResult object: {"type":"redirect","status":303,"location":"/experiments/ccg-01/game_description_2"}
-//     // console.log(deserialize(await response.text())); // ActionResult object: {"type":"redirect","status":303,"location":"/experiments/ccg-01/game_description_2"}
+//     // console.log(await response.text()); // String: {"type":"redirect","status":303,"location":"/exp/ccg-01/game_description_2"}
+//     // console.log(await response.json()); // ActionResult object: {"type":"redirect","status":303,"location":"/exp/ccg-01/game_description_2"}
+//     // console.log(deserialize(await response.text())); // ActionResult object: {"type":"redirect","status":303,"location":"/exp/ccg-01/game_description_2"}
 //     return response;
 // }

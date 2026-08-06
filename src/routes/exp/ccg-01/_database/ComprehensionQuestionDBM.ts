@@ -53,7 +53,7 @@ export async function submit(
 
     let response: Response;
     try {
-        response = await fetch("/experiments/ccg-01/api/comprehension", {
+        response = await fetch("/exp/ccg-01/api/comprehension", {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

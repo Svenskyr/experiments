@@ -12,6 +12,6 @@ export const load: LayoutServerLoad = async (
     const permitted = expState.pages[requestedPageName]?.permitted;
 
     if (!permitted) {
-        return redirect(303, `/experiments/ccg-01/${maxPage(expState.pages)}`);
+        return redirect(303, maxPage(expState.pages));
     }
 };

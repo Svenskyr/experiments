@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ parent, cookies }) => {
     if (skipGate) {
         expState.pages.consent ??= { permitted: true, completed: false };
         await setStateCookie(cookies, expState);
-        return redirect(303, `/experiments/ccg-01/${maxPage(expState.pages)}`);
+        return redirect(303, `/exp/ccg-01/${maxPage(expState.pages)}`);
     }
 };
 
@@ -143,10 +143,7 @@ export const actions = {
         expState.session.withinQuota = undefined;
 
         await setStateCookie(cookies, expState);
-        return redirect(
-            303,
-            `/experiments/ccg-01/${maxPage(expState.pages)}`,
-        );
+        return redirect(303, `/exp/ccg-01/${maxPage(expState.pages)}`);
     },
 };
 

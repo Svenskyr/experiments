@@ -134,7 +134,7 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
             <button
             type="button"
             class="exp-default-button"
-            onclick={() => { goto(`/experiments/ccg-01/${maxPage(expState.pages)}`, {
+            onclick={() => { goto(maxPage(expState.pages), {
                 replaceState: true,
             }) }}>
                 {isReturningParticipant ? "Resume" : "Continue"}

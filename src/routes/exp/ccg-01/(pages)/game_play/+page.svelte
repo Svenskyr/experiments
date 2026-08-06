@@ -50,7 +50,7 @@ $effect(() => {
             if (error) {
                 console.error(`error requesting next page cookie: ${JSON.stringify(error)}`);
             }
-            goto(`${maxPage(expState.pages)}`, { replaceState: true });
+            goto(`/exp/ccg-01/${maxPage(expState.pages)}`, { replaceState: true });
         })();
     }
 });

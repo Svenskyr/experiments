@@ -18,8 +18,8 @@ export const load: LayoutServerLoad = async (
         }
         expState = newExpState(url);
         await setStateCookie(cookies, expState);
-        if (url.pathname !== "/experiments/ccg-01") {
-            return redirect(303, `/experiments/ccg-01${url.search}`);
+        if (url.pathname !== "/exp/ccg-01") {
+            return redirect(303, `/exp/ccg-01${url.search}`);
         }
     }
     log.debug({ expState }, "ccg-01/+layout.server.ts: load");
@@ -34,8 +34,8 @@ export const load: LayoutServerLoad = async (
         log.warn({ claims, expState }, "Claim and expState disagree");
         expState = newExpState(url);
         await setStateCookie(cookies, expState);
-        if (url.pathname !== "/experiments/ccg-01") {
-            return redirect(303, `/experiments/ccg-01${url.search}`);
+        if (url.pathname !== "/exp/ccg-01") {
+            return redirect(303, `/exp/ccg-01${url.search}`);
         }
     }
 
@@ -47,7 +47,7 @@ export const load: LayoutServerLoad = async (
         expState.session.withinQuota = undefined;
         expState.session.lastActiveAt = Date.now();
         await setStateCookie(cookies, expState);
-        return redirect(303, `/experiments/ccg-01`);
+        return redirect(303, `/exp/ccg-01`);
     }
 
     return { expState, claims };
