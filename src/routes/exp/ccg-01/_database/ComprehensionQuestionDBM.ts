@@ -6,7 +6,7 @@ import {
     loadFromLocalStorage,
     saveToLocalStorage,
     type SyncHandler,
-} from "$experiments/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 import {
     noPayloadError,
     notReadyError,

@@ -1,16 +1,16 @@
 <script lang="ts">
 /* General */
-import { PUBLIC_ENV } from "$env/static/public";
+import { dev } from "$app/environment";
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+game_description_1").debug;
-import FeedbackWrapper from "$experiments/ccg-01/_components/FeedbackWrapper.svelte";
+import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
 
 /* expState */
-import { getExpState } from "$experiments/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* SyncHandler */
-import { getSyncHandler } from "$experiments/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 let syncHandler = $state(getSyncHandler());
 
 /* Page questions */
@@ -18,7 +18,7 @@ import {
     load as loadMCQData,
     save as saveMCQData,
     sync as syncMCQData,
-} from "$experiments/ccg-01/_database/ComprehensionQuestionDBM.ts";
+} from "$exp/ccg-01/_database/ComprehensionQuestionDBM.ts";
 import {
     isQuestionComplete,
     mergeQuestionData,
@@ -41,9 +41,9 @@ if (browser) {
 }
 
 /* Page navigation */
-import { requestNextPageCookie } from "$experiments/ccg-01/_state/Client.ts";
+import { requestNextPageCookie } from "$exp/ccg-01/_state/Client.ts";
 import { goto } from "$app/navigation";
-import NavigationBarWrapper from "$experiments/ccg-01/_components/NavigationBarWrapper.svelte";
+import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
 let pageCompleted = $derived(questions.every((question) => isQuestionComplete(question)));
 $effect(() => {
@@ -57,7 +57,7 @@ $effect(() => {
     }
 });
 
-import DemoGame from "$experiments/ccg-01/_components/ColorCoordinationGame/DemoGame.svelte";
+import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.svelte";
 </script>
 
 <div class="page-block">
@@ -119,7 +119,7 @@ import DemoGame from "$experiments/ccg-01/_components/ColorCoordinationGame/Demo
     </ul>
 {/if}
 
-{#if PUBLIC_ENV === "DEV"}
+{#if dev}
     <button onclick={async () => {
         await requestNextPageCookie(expState);
         goto("game_description_2");

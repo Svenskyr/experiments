@@ -1,5 +1,5 @@
-import type { ChevronExportSpec } from "$lib/components/Shapes/Chevrons/v2/chevrons.ts";
-import { exportIfMain } from "$lib/components/Shapes/Chevrons/v2/exportChevrons.ts";
+import type { ChevronExportSpec } from "$lib/common/Shapes/Chevrons/v2/chevrons.ts";
+import { exportIfMain } from "$lib/common/Shapes/Chevrons/v2/exportChevrons.ts";
 
 const chevronInnerAngle = 110;
 const chevronLength = 2.5;

@@ -1,11 +1,8 @@
 import debugLib from "debug";
 const debug = debugLib("ccg-01:_database:Feedback");
 import type { FeedbackData } from "$lib/common/Feedback/v4/Feedback";
-import type { SyncHandler } from "$experiments/ccg-01/_syncHandler/v3/SyncHandler";
-import {
-    loadFromLocalStorage,
-    saveToLocalStorage,
-} from "$experiments/ccg-01/_syncHandler/v3/SyncHandler";
+import type { SyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler";
+import { loadFromLocalStorage, saveToLocalStorage } from "$exp/ccg-01/_syncHandler/v3/SyncHandler";
 import {
     noPayloadError,
     notReadyError,

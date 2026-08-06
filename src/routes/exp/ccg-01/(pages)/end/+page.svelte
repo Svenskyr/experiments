@@ -2,10 +2,10 @@
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+end").debug;
 import { goto } from "$app/navigation";
-import NavigationBarWrapper from "$experiments/ccg-01/_components/NavigationBarWrapper.svelte";
+import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
 let { data } = $props();
 
-import { getExpState } from "$experiments/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 const returnToProlificUrl = "/"; // Not implemented yet

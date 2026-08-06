@@ -1,4 +1,4 @@
-import { FisherYatesShuffle } from "$lib/Randomization.ts";
+import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
 import debugLib from "debug";
 const debug = debugLib("ccg-01:MCQ");
 

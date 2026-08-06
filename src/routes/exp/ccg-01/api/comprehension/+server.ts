@@ -2,8 +2,8 @@ import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoic
 import {
     type StoredItems,
     submitComprehensionQuestion,
-} from "$experiments/ccg-01/_database/ComprehensionQuestionServer.ts";
-import { setStateCookie, verifyStateCookie } from "$experiments/ccg-01/_state/Cookie.ts";
+} from "$exp/ccg-01/_database/ComprehensionQuestionServer.ts";
+import { setStateCookie, verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 function parseBody(

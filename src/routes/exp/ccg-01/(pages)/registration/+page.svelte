@@ -2,13 +2,13 @@
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+registration").debug;
 
-import { getExpState } from "$experiments/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 let { data } = $props();
 const { supabase } = $derived(data);
 import { browser } from "$app/environment";
-import FeedbackWrapper from "$experiments/ccg-01/_components/FeedbackWrapper.svelte";
+import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
 import { onMount, tick } from "svelte";
 import { PUBLIC_TURNSTILE_SITE_KEY } from "$env/static/public";
 import Turnstile from "$lib/common/Turnstile/Turnstile.svelte";
@@ -63,7 +63,7 @@ import type {
     MultipleChoiceQuestion as MCQ,
 } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.js";
 import MultipleChoiceQuestion from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
-import { roleQuestion } from "$experiments/ccg-01/(pages)/registration/roleQuestion.ts";
+import { roleQuestion } from "$exp/ccg-01/(pages)/registration/roleQuestion.ts";
 const question: MCQ = $state(roleQuestion);
 const roles: MCQItem[] = $derived([...question.canonicalItems, ...question.userItems ?? []]);
 const selectedRole: string | null = $derived.by(() => {
@@ -76,7 +76,7 @@ const selectedRole: string | null = $derived.by(() => {
 import { enhance } from "$app/forms";
 import type { ActionResult, SubmitFunction } from "@sveltejs/kit";
 import { goto } from "$app/navigation";
-import { maxPage } from "$experiments/ccg-01/_state/Pages.ts";
+import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
 
 let registrationForm = $state<HTMLFormElement | null>(null);
 let inputPID = $state("");

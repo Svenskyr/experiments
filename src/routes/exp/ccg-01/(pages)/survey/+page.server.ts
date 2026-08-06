@@ -8,21 +8,14 @@ import {
     resolveDisplayOrder,
 } from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
 import type { PageServerLoad } from "./$types";
-import {
-    setStateCookie,
-    STATE_COOKIE_NAME,
-    verifyStateCookie,
-} from "$experiments/ccg-01/_state/Cookie.ts";
-import type { PageState } from "$experiments/ccg-01/_state/Pages.ts";
+import { setStateCookie, STATE_COOKIE_NAME, verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
+import type { PageState } from "$exp/ccg-01/_state/Pages.ts";
 import type { Cookies } from "@sveltejs/kit";
 import { fail, redirect } from "@sveltejs/kit";
-import {
-    upsertSurveyResponses,
-    validateAndPrepareSurvey,
-} from "$experiments/ccg-01/_database0/survey.ts";
-import { supabaseServiceRole } from "$experiments/ccg-01/_database0/ServiceRole.svelte.ts";
-import { setNextPageCookie } from "$experiments/ccg-01/_state/Server.ts";
-import type { PageName } from "$experiments/ccg-01/_state/Pages.ts";
+import { upsertSurveyResponses, validateAndPrepareSurvey } from "$exp/ccg-01/_database0/survey.ts";
+import { supabaseServiceRole } from "$exp/ccg-01/_database0/ServiceRole.svelte.ts";
+import { setNextPageCookie } from "$exp/ccg-01/_state/Server.ts";
+import type { PageName } from "$exp/ccg-01/_state/Pages.ts";
 import { getLogger } from "$lib/server/logger.server.ts";
 // const surveyQuestions = Object.values(rangeSetQuestions);
 

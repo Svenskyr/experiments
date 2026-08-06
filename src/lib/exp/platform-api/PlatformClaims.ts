@@ -1,4 +1,4 @@
-import type { ExperimentState as ccg01ExpState } from "$experiments/ccg-01/_state/ExperimentState.ts";
+import type { ExperimentState as ccg01ExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 // import { getLogger } from "$lib/server/logger.server.ts";
 
 export interface PlatformParticipantClaims {

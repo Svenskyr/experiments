@@ -2,7 +2,7 @@ import {
     noPayloadError,
     notReadyError,
     type PostgrestError,
-} from "$experiments/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
+} from "$exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
 import { PageTimeRecord } from "$lib/common/PageTimeTracker/v2/PageTimeTracker.ts";
 import {
     loadFromLocalStorage,

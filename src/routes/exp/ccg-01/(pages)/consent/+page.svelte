@@ -2,11 +2,11 @@
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+consent").debug;
 import { enhance } from "$app/forms";
-import FeedbackWrapper from "$experiments/ccg-01/_components/FeedbackWrapper.svelte";
-import { getExpState } from "$experiments/ccg-01/_state/ExperimentState.ts";
+import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
+import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 const expState = $derived(getExpState());
 
-import { maxPage } from "$experiments/ccg-01/_state/Pages.ts";
+import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
 import { goto } from "$app/navigation";
 import type { SubmitFunction } from "@sveltejs/kit";
 

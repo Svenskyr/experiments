@@ -2,13 +2,13 @@ import {
     loadFromLocalStorage,
     saveToLocalStorage,
     SyncHandler,
-} from "$experiments/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 
 import {
     noPayloadError,
     notReadyError,
     type PostgrestError,
-} from "$experiments/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
+} from "$exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
 
 import {
     newRangeSetQuestion,

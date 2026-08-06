@@ -1,32 +1,32 @@
 <script lang="ts">
 /* General */
-import { PUBLIC_ENV } from "$env/static/public";
+import { dev } from "$app/environment";
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+game_play").debug;
-import FeedbackWrapper from "$experiments/ccg-01/_components/FeedbackWrapper.svelte";
-import RecordedGame from "$experiments/ccg-01/_components/ColorCoordinationGame/RecordedGame.svelte";
+import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
+import RecordedGame from "$exp/ccg-01/_components/ColorCoordinationGame/RecordedGame.svelte";
 import {
     recordedGameConfig,
     recordedMaxRounds,
     recordedShuffleSeed,
-} from "$experiments/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
+} from "$exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
 
 /* expState */
-import { getExpState } from "$experiments/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* syncHandler */
-import { getSyncHandler } from "$experiments/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 const syncHandler = getSyncHandler();
 
 /* Page navigation */
-import { requestNextPageCookie } from "$experiments/ccg-01/_state/Client.ts";
+import { requestNextPageCookie } from "$exp/ccg-01/_state/Client.ts";
 import { goto } from "$app/navigation";
-import { maxPage } from "$experiments/ccg-01/_state/Pages.ts";
-import NavigationBarWrapper from "$experiments/ccg-01/_components/NavigationBarWrapper.svelte";
+import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
+import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
 /* Page game */
-import { load, save, sync as syncGameRounds } from "$experiments/ccg-01/_database/CCGGameDBM.ts";
+import { load, save, sync as syncGameRounds } from "$exp/ccg-01/_database/CCGGameDBM.ts";
 import { type GameSession, newGameSession } from "$lib/exp/games/ccg/v3/game/gameState.ts";
 import { fillRemainingRoundsWithRandomChoices } from "./devFillRemainingRounds.ts";
 
@@ -79,7 +79,7 @@ function handleDevFillRemainingRounds() {
     <p>Saving...</p>
 {/if}
 
-{#if PUBLIC_ENV === "DEV"}
+{#if dev}
     <div class="dev-controls">
         {#if session.selectedAvatar && !pageCompleted}
             <button type="button" onclick={handleDevFillRemainingRounds}>

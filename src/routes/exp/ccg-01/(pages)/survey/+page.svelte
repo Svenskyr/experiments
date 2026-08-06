@@ -2,15 +2,15 @@
 /* General */
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+survey").debug;
-import { PUBLIC_ENV } from "$env/static/public";
-import FeedbackWrapper from "$experiments/ccg-01/_components/FeedbackWrapper.svelte";
+import { dev } from "$app/environment";
+import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
 
 /* expState */
-import { getExpState } from "$experiments/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* syncHandler */
-import { getSyncHandler } from "$experiments/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 const syncHandler = getSyncHandler();
 
 /* Page questions */
@@ -18,12 +18,12 @@ import {
     load as loadRangeSetData,
     save as saveRangeSetData,
     sync as syncRangeSetData,
-} from "$experiments/ccg-01/_database/RangeSetQuestionDBM.ts";
+} from "$exp/ccg-01/_database/RangeSetQuestionDBM.ts";
 import {
     load as loadMcqData,
     save as saveMcqData,
     sync as syncMcqData,
-} from "$experiments/ccg-01/_database/SurveyMultipleChoiceQuestionDBM.ts";
+} from "$exp/ccg-01/_database/SurveyMultipleChoiceQuestionDBM.ts";
 import {
     isQuestionComplete as isRangeSetComplete,
     newRangeSetQuestion,
@@ -65,9 +65,9 @@ const mcqQuestionState: MCQ[] = $state(
 );
 
 /* Page navigation */
-import { requestNextPageCookie } from "$experiments/ccg-01/_state/Client.ts";
+import { requestNextPageCookie } from "$exp/ccg-01/_state/Client.ts";
 import { goto } from "$app/navigation";
-import NavigationBarWrapper from "$experiments/ccg-01/_components/NavigationBarWrapper.svelte";
+import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
 let pageCompleted = $derived(
     rangeSetQuestionState.every((question) => isRangeSetComplete(question))
@@ -129,7 +129,7 @@ $effect(() => {
     </ul>
 {/if}
 
-{#if PUBLIC_ENV === "DEV"}
+{#if dev}
     <button onclick={async () => {
         await requestNextPageCookie(expState);
         goto("end");

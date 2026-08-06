@@ -1,8 +1,8 @@
 import { SvelteSet } from "svelte/reactivity";
-import { PUBLIC_ENV } from "$env/static/public";
+import { dev } from "$app/environment";
 import debugLib from "debug";
 
-if (PUBLIC_ENV === "dev") {
+if (dev) {
     debugLib.enable("exp:*");
 }
 export const registry = new SvelteSet<string>();

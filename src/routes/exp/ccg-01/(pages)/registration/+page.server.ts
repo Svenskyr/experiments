@@ -1,13 +1,10 @@
 import { type Cookies, error, fail } from "@sveltejs/kit";
-import {
-    setStateCookie,
-    validateStateCookieOrRedirect,
-} from "$experiments/ccg-01/_state/Cookie.ts";
+import { setStateCookie, validateStateCookieOrRedirect } from "$exp/ccg-01/_state/Cookie.ts";
 import {
     EXPERIMENT_ID,
     registerForExperiment,
     type RegistrationRequest,
-} from "$experiments/ccg-01/_database/Registration.ts";
+} from "$exp/ccg-01/_database/Registration.ts";
 
 export const actions = {
     registerForExperiment: async (

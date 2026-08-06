@@ -1,5 +1,5 @@
 <script lang="ts">
-import { PUBLIC_ENV } from "$env/static/public";
+import { dev } from "$app/environment";
 import { onMount } from "svelte";
 import { type MultipleChoiceItem, type MultipleChoiceQuestion } from "./MultipleChoiceQuestion.ts";
 import DOMPurify from "dompurify";

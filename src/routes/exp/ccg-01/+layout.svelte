@@ -1,9 +1,8 @@
 <script lang="ts">
-// import { PUBLIC_ENV } from "$env/static/public";
 import { dev } from "$app/environment";
 import ColorScheme from "$lib/common/ColorScheme/ColorScheme.svelte";
 import DebuggerTree from "$lib/common/Debugger/v2/DebuggerTree.svelte";
-import "$experiments/ccg-01/experiment.css";
+import "$exp/ccg-01/experiment.css";
 
 import { Debugger, setDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const expDebugger = new Debugger("exp_ccg_01");

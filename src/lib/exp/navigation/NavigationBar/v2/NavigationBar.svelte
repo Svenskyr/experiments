@@ -1,7 +1,7 @@
 <script lang="ts">
 import debugLib from "debug";
 const debug = debugLib("ccg-01:NavigationBar");
-import { PUBLIC_ENV } from "$env/static/public";
+import { dev } from "$app/environment";
 import { goto, preloadCode, preloadData } from "$app/navigation";
 import { page } from "$app/state";
 import { findAdjacentPermittedPages, pageNameFromRoute } from "../../../_state/Pages.ts";
