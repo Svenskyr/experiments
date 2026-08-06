@@ -20,7 +20,7 @@ const codePreloadPath = $derived.by(() => {
     if (maxPage === currentPage) {
         const nextIndex = PAGE_ORDER.indexOf(maxPage) + 1;
         const pageToPreload = nextIndex < PAGE_ORDER.length ? PAGE_ORDER[nextIndex] : null;
-        return pageToPreload ? `$exp/ccg-01/${pageToPreload}` : null;
+        return pageToPreload ? `/exp/ccg-01/${pageToPreload}` : null;
     }
     return null;
 });
