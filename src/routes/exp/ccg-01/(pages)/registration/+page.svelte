@@ -157,7 +157,7 @@ async function handleRegistrationResult(result: ActionResult) {
 }
 
 const submitRegistration: SubmitFunction = ({ cancel }) => {
-    if (!beginRegistrationSubmit()) {
+    if (!canSubmitRegistration || !beginRegistrationSubmit()) {
         cancel();
         return;
     }
@@ -215,6 +215,7 @@ $effect(() => {
             type="submit"
             class="exp-default-button"
             class:disabled={!canSubmitRegistration || awaitingRegistration}
+            disabled={!canSubmitRegistration || awaitingRegistration}
         >{status}</button>
         {#if registrationError}
             <p class="error">{registrationError}</p>
