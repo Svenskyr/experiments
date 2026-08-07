@@ -77,15 +77,23 @@ async function verifyCookieSignature(expState: ExperimentState): Promise<boolean
     return constantTimeEqualityCheck(providedBytes, expectedBytes);
 }
 
+const STATE_COOKIE_SET_OPTIONS = {
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: true,
+};
+
 export async function setStateCookie(cookies: Cookies, expState: ExperimentState) {
     expState = await signStateCookie(expState);
     cookies.set(STATE_COOKIE_NAME, JSON.stringify(expState), {
-        path: "/",
+        ...STATE_COOKIE_SET_OPTIONS,
         maxAge: STATE_COOKIE_MAX_AGE,
-        httpOnly: true,
-        sameSite: "lax",
-        secure: true,
     });
+}
+
+export function clearStateCookie(cookies: Cookies) {
+    cookies.delete(STATE_COOKIE_NAME, STATE_COOKIE_SET_OPTIONS);
 }
 
 async function generateSignatureBytes(message: string, secret: string): Promise<Uint8Array> {

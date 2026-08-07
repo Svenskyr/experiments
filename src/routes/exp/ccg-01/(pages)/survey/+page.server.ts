@@ -51,21 +51,19 @@ export const actions = {
         const revoke: PageName[] = [];
         const { expState } = await setNextPageCookie(cookies, complete, grant, revoke);
         const log = getLogger({ mod: "exp/ccg-01/survey/" });
-        void supabase
+        const { error: rpcError } = await supabase
             .schema("exp_ccg_01")
             .rpc("complete_experiment_session", {
                 p_session_id: expState.session.sessionId,
-            })
-            .then(({ error: rpcError }) => {
-                if (rpcError) {
-                    log.error({ rpcError }, "Failed to complete experiment session");
-                } else {
-                    log.info(
-                        { sessionId: expState.session.sessionId },
-                        "Experiment session completed",
-                    );
-                }
             });
+        if (rpcError) {
+            log.error({ rpcError }, "Failed to complete experiment session");
+        } else {
+            log.info(
+                { sessionId: expState.session.sessionId },
+                "Experiment session completed",
+            );
+        }
 
         return { expState };
     },

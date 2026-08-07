@@ -65,6 +65,14 @@ export class SyncHandler {
         this.startQueue();
     }
 
+    resetSession(): void {
+        this.#syncQueue = {};
+        this.db = undefined;
+        this.authUserId = undefined;
+        this.sessionId = undefined;
+        this.#queueIsRunning = false;
+    }
+
     startQueue(): void {
         if (!this.ready || this.#queueIsRunning) return;
         this.#queueIsRunning = true;
