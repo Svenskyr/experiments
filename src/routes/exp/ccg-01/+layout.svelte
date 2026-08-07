@@ -54,6 +54,7 @@ import PageTimeTrackerWrapper from "$exp/ccg-01/_components/PageTimeTrackerWrapp
 
 <style>
 .debug-info {
+    margin-inline: auto;
     width: min(50rem, 100%);
 }
 </style>

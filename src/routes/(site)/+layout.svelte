@@ -32,10 +32,8 @@ let { data, children } = $props();
 .content {
     display: flex;
     flex-direction: column;
-    /* gap: 1rem; */
-    /* padding: 1rem; */
+    margin-inline: auto;
     align-items: center;
-    justify-self: center;
     max-width: 1200px;
 }
 </style>
