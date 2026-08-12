@@ -90,30 +90,30 @@ export const rangeSetQuestions: RangeSetQuestion[] = [
                 displayOrder: 1,
             },
             {
+                itemId: "attention-check",
+                itemText: "Please set this value to <em>two point five</em>.",
+                displayOrder: 2,
+                tooltipText: "Just making sure you're paying attention.",
+            },
+            {
                 itemId: "gender-norms-functional",
                 itemText: "On average, my culture's gender norms are <em>functional</em>.",
-                displayOrder: 2,
+                displayOrder: 3,
                 tooltipText: "Functionality <em>regardless of fairness</em>.",
             },
             {
                 itemId: "gender-norms-fairness",
                 itemText: "On average, my culture's gender norms are <em>fair</em>.",
-                displayOrder: 2,
+                displayOrder: 3,
                 tooltipText: "Fairness <em>regardless of functionality</em>.",
             },
-            {
-                itemId: "attention-check",
-                itemText: "Please set this value to <em>two point five</em>.",
-                displayOrder: -2,
-                tooltipText: "Just making sure you're paying attention.",
-            },
-            {
-                itemId: "homicide-morality",
-                itemText: "I think homicide is sometimes morally justified.",
-                displayOrder: -1,
-                tooltipText:
-                    "Homicide is sometimes morally justified, though it's never legally justified by definition.",
-            },
+            // {
+            //     itemId: "homicide-morality",
+            //     itemText: "I think homicide is sometimes morally justified.",
+            //     displayOrder: -1,
+            //     tooltipText:
+            //         "Homicide is sometimes morally justified, though it's never legally justified by definition.",
+            // },
         ],
     },
     {
