@@ -1,0 +1,6 @@
+export const PUBLIC_SUPABASE_URL = Deno.env.get("PUBLIC_SUPABASE_URL") ?? "http://127.0.0.1:64321";
+export const PUBLIC_SUPABASE_PUB_KEY = Deno.env.get("PUBLIC_SUPABASE_PUB_KEY")
+    ?? Deno.env.get("PUBLIC_SUPABASE_PUBLIC_KEY")
+    ?? "";
+export const PUBLIC_SUPABASE_PUBLIC_KEY = PUBLIC_SUPABASE_PUB_KEY;
+export const PUBLIC_TURNSTILE_SITE_KEY = Deno.env.get("PUBLIC_TURNSTILE_SITE_KEY") ?? "";

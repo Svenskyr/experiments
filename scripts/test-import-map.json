@@ -1,0 +1,14 @@
+{
+    "imports": {
+        "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.112.1",
+        "debug": "npm:debug@^4.4.3",
+        "svelte": "npm:svelte@^5.56.8",
+        "$lib/": "../src/lib/",
+        "$lib/exp/games/ccg/v2/avatars/avatars.ts": "./lib/deno-shims/avatars.ts",
+        "$exp/ccg-01/_database/ServiceRole.ts": "./lib/deno-shims/service-role.ts",
+        "$exp/": "../src/routes/exp/",
+        "$app/environment": "./lib/deno-shims/app-environment.ts",
+        "$env/static/public": "./lib/deno-shims/env-public.ts",
+        "$env/static/private": "./lib/deno-shims/env-private.ts"
+    }
+}

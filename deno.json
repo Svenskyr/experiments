@@ -1,4 +1,7 @@
 {
+    "tasks": {
+        "mock-participant": "deno run -A --env --import-map=scripts/test-import-map.json scripts/mock-complete-participant.ts"
+    },
     "imports": {
         "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.112.1",
         "debug": "npm:debug@^4.4.3"

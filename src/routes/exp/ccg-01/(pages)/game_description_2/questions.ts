@@ -10,7 +10,8 @@ export const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
         canonicalItems: [
             {
                 itemId: "expected-proportion",
-                itemText: "The proportion of players that I <u>expect</u> to choose each option.",
+                itemText:
+                    "The percentage of other players that I <u>expect</u> to choose each option.",
                 isTrue: true,
             },
             {
