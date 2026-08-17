@@ -1,4 +1,5 @@
 import type { PageStates } from "./Pages.ts";
+import { getSearchParam } from "$lib/exp/urlParams.ts";
 import { createContext } from "svelte";
 
 export const [getExpState, setExpState] = createContext<ExperimentState>();
@@ -38,11 +39,11 @@ export const newExpState = (url?: URL): ExperimentState => {
     }
     return {
         user: {
-            pid: url.searchParams.get("pid") ?? undefined,
-            source: url.searchParams.get("source") ?? url.searchParams.get("platform") ?? undefined,
+            pid: getSearchParam(url, "pid") ?? undefined,
+            source: getSearchParam(url, "source") ?? getSearchParam(url, "platform") ?? undefined,
         },
         session: {
-            role: url.searchParams.get("role") ?? undefined,
+            role: getSearchParam(url, "role") ?? undefined,
         },
         pages: {},
         signature: null,

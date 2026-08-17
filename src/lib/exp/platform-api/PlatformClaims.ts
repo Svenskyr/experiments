@@ -1,4 +1,5 @@
 import type { ExperimentState as ccg01ExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { getSearchParam } from "$lib/exp/urlParams.ts";
 // import { getLogger } from "$lib/server/logger.server.ts";
 
 export interface PlatformParticipantClaims {
@@ -31,11 +32,11 @@ export function resolvePlatformParticipantClaims(
 
 export function readPlatformParticipantClaims(url: URL): PlatformParticipantClaims {
     const claim: PlatformParticipantClaims = {
-        studyId: url.searchParams.get("study_id") ?? "",
-        role: url.searchParams.get("role") ?? "",
-        platform: url.searchParams.get("platform") ?? "",
-        pid: url.searchParams.get("pid") ?? "",
-        platformSessionId: url.searchParams.get("p_session_id") ?? "",
+        studyId: getSearchParam(url, "study_id") ?? "",
+        role: getSearchParam(url, "role") ?? "",
+        platform: getSearchParam(url, "platform") ?? "",
+        pid: getSearchParam(url, "pid") ?? "",
+        platformSessionId: getSearchParam(url, "p_session_id") ?? "",
         valid: false,
     };
     claim.valid = Object.values(claim).every((value) => value !== "");

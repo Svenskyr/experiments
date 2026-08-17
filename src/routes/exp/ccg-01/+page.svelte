@@ -170,7 +170,7 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
                     <button type="submit"
                     class="exp-default-button"
                     class:disabled={checkingQuota || checkQuotaCooldown > 0}>
-                        {expState.session.withinQuota === undefined ? "Check quota" : "Recheck quota"}
+                        {expState.session.withinQuota === undefined ? "Check quota" : "Recheck"}
                         {checkQuotaCooldown > 0 ? ` (${checkQuotaCooldown})` : ""}
                     </button>
                 {/if}

@@ -10,10 +10,12 @@ import {
 } from "$exp/ccg-01/_state/clearClientSession.ts";
 import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 
+import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+let expState = $derived(getExpState());
+
 let { data } = $props();
 const { supabase } = $derived(data);
 const syncHandler = getSyncHandler();
-const returnToProlificUrl = "/"; // Not implemented yet
 const FINALIZE_POLL_INTERVAL_MS = 2000;
 const FINALIZE_MAX_ATTEMPTS = 15;
 
@@ -21,6 +23,15 @@ let finishingUp = $state(true);
 let redirectTimeoutSeconds = $state(5);
 
 let pageCompleted = $derived(true);
+
+const returnTo: string = $derived.by(() => {
+    switch (expState.user.platform) {
+        case "prolific":
+            return "https://app.prolific.com/submissions/complete?cc=C1QXQMAD";
+        default:
+            return "/";
+    }
+});
 
 $effect(() => {
     if (!browser) return;
@@ -56,11 +67,7 @@ $effect(() => {
 $effect(() => {
     if (finishingUp) return;
     if (redirectTimeoutSeconds <= 0) {
-        if (returnToProlificUrl) {
-            window.location.href = returnToProlificUrl;
-        } else {
-            goto("/");
-        }
+        window.location.href = returnTo;
         return;
     }
     const redirectTimeout = setTimeout(() => {
@@ -70,16 +77,14 @@ $effect(() => {
 });
 </script>
 
-<div class="page-block">
+<div class="page-block center-content">
     <h1>Thank you for your participation!</h1>
 
     {#if finishingUp}
         <h2>Finishing up…</h2>
     {:else}
         <h2>Automatically redirecting in {redirectTimeoutSeconds} seconds...</h2>
-        {#if !returnToProlificUrl}
-            <a href="/" onclick={() => goto("/")}>Home</a>
-        {/if}
+        <a href={returnTo} onclick={() => window.location.href = returnTo}>Click here if the page does not redirect automatically.</a>
     {/if}
 </div>
 

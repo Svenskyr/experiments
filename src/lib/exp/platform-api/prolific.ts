@@ -33,14 +33,26 @@
 //     ]
 // }
 
+/*
+Study URL:
+https://experiments.sstark.dev/exp/ccg-01
+    ?pid={{%PROLIFIC_PID%}}
+    &study_id={{%STUDY_ID%}}
+    &p_session_id={{%SESSION_ID%}}
+    &platform=prolific
+    &role=participant
+*/
+
 import { PRIVATE_PROLIFIC_API_KEY } from "$env/static/private";
-import type { PlatformParticipantClaims } from "./PlatformVerification.ts";
+import type { PlatformParticipantClaims } from "./PlatformClaims.ts";
+
 export async function verifyProlificSession(
     claim: PlatformParticipantClaims,
 ): Promise<{ success: boolean; error: string | null }> {
     const response = await fetch(
-        `https://api.prolific.com/v1/submissions/${claim.platformSessionId}`,
+        `https://api.prolific.com/api/v1/submissions/${claim.platformSessionId}`,
         {
+            method: "GET",
             headers: {
                 "Authorization": `Token ${PRIVATE_PROLIFIC_API_KEY}`,
             },
