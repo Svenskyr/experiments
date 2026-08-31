@@ -144,11 +144,21 @@ const submitConsent: SubmitFunction = ({ cancel }) => {
             <summary>
                 <h2>Informed consent</h2>
             </summary>
+
+            <h2>A Study in Decision-Making</h2>
+            <br>
+
             <p class="center" style="font-weight: bold">
                 Investigators: Sven Stark, Johanna Mollerstrom
             </p>
 
-            <p class="center" style="font-weight: bold">Funding source: George Mason University</p>
+            <p class="center" style="font-weight: bold">
+                Funding source: George Mason University
+            </p>
+
+            <p class="center" style="font-weight: bold">
+                IRB study reference number: STUDY00001496
+            </p>
 
             <h3>Participation Details</h3>
             <ul>
@@ -175,12 +185,7 @@ const submitConsent: SubmitFunction = ({ cancel }) => {
                 </li>
                 <li>
                     <strong>Benefits of Participation:</strong>
-                    {#if expState.session.role === "participant"}
                     You will be contributing to academic research and our collective domain of knowledge.
-                    Additionally, you will receive material compensation for completing this study.
-                    {:else}
-                    You will be contributing to academic research and our collective domain of knowledge.
-                    {/if}
                 </li>
                 <li>
                     <strong>Voluntary Participation:</strong> Your participation is entirely
