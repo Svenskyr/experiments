@@ -1,4 +1,5 @@
 <script lang="ts">
+import HintBox from "$lib/common/HintBox/v1/HintBox.svelte";
 import { fade } from "svelte/transition";
 import {
     type Action,
@@ -22,16 +23,23 @@ let {
 const currentPermutation = $derived(getCurrentPermutation(session));
 let selectedChoice: string | null = $state(null);
 let predictionChoice1: number = $state(50);
+let hasPredictionBeenMade: boolean = $state(false);
 let formEl: HTMLFormElement | undefined = $state();
 
 let roundStartTime: number = $state(Date.now());
 
+const canSubmit = $derived(
+    selectedChoice !== null
+        && (!session.config.showPredictionControls || hasPredictionBeenMade),
+);
+
 function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
-    if (!selectedChoice) return;
+    const choice = selectedChoice;
+    if (!canSubmit || choice === null) return;
 
     const elapsedSeconds = (Date.now() - roundStartTime) / 1000;
-    submitRound(session, selectedChoice, predictionChoice1, elapsedSeconds);
+    submitRound(session, choice, predictionChoice1, elapsedSeconds);
     save?.(session);
     if (shouldSync(session) || isGameComplete(session)) {
         sync?.(session);
@@ -42,7 +50,12 @@ function handleSubmit(e: SubmitEvent) {
 function nextRound() {
     selectedChoice = null;
     predictionChoice1 = 50;
+    hasPredictionBeenMade = false;
     roundStartTime = Date.now();
+}
+
+function handlePredictionInput() {
+    hasPredictionBeenMade = true;
 }
 
 function handleChoiceKeydown(e: KeyboardEvent) {
@@ -51,7 +64,7 @@ function handleChoiceKeydown(e: KeyboardEvent) {
     const input = e.currentTarget as HTMLInputElement;
     if (e.key === " " && !input.checked) return;
 
-    if (!selectedChoice) return;
+    if (!canSubmit) return;
 
     e.preventDefault();
     formEl?.requestSubmit();
@@ -66,6 +79,14 @@ function handleChoiceKeydown(e: KeyboardEvent) {
         transition:fade={{ duration: 300 }}
         onsubmit={handleSubmit}
     >
+        <HintBox label="How to play">
+            {#snippet body()}
+                <p>Select a choice by clicking on it.</p>
+                {#if session.config.showPredictionControls}
+                    <p>Make a prediction about how other players will choose by dragging the slider.</p>
+                {/if}
+            {/snippet}
+        </HintBox>
         {@render gameFrame()}
         {#if session.config.showPayoffTable}
             {@render payoffTable()}
@@ -162,58 +183,65 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 {#snippet predictionControls()}
     <div class="prediction">
     <div class="prediction-question-text">Your prediction about how other players choose:</div>
-    <div class="prediction-labels">
-        <div class="prediction-label-item" style="width: {predictionChoice1}%; text-align: center;">
-            <div class="label-content">
+    <div class="prediction-input" class:prediction-unmade={!hasPredictionBeenMade}>
+        <div class="prediction-labels">
+            <div class="prediction-label-item"
+                style="width: {predictionChoice1}%; text-align: center;">
+                <div class="label-content">
                     {predictionChoice1}% <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span>
                 </div>
-        </div>
-        <div class="prediction-label-item"
-            style="width: {100 - predictionChoice1}%; text-align: center;">
-            <div class="label-content">
+            </div>
+            <div class="prediction-label-item"
+                style="width: {100 - predictionChoice1}%; text-align: center;">
+                <div class="label-content">
                     {100 - predictionChoice1}% <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span>
                 </div>
+            </div>
         </div>
-    </div>
-    <input
-        type="range"
-        name="prediction"
-        min=0
-        max=100
-        step=1
-        bind:value={predictionChoice1}
-        style={`
+        <input
+            type="range"
+            name="prediction"
+            min=0
+            max=100
+            step=1
+            bind:value={predictionChoice1}
+            oninput={handlePredictionInput}
+            style={`
                 width: 100%;
                 --slider-thumb-color: var(--action-neutral2-color);
                 --track-color-left: ${currentPermutation.actions[0].color};
                 --track-color-right: ${currentPermutation.actions[1].color};
                 --fill-percent: ${predictionChoice1}%;
                 `}
-    />
+        />
+    </div>
+</div>
+{/snippet}
+
+{#snippet predictionWarning(expectedAction: Action, selectedAction: Action)}
+    <div class="prediction-warning-block">
+    <div class="prediction-warning">
+        <span class="prediction-warning-icon">⚠️</span>
+        <p class="prediction-warning-text">Your prediction says you expect more people to choose
+                <span class="action-snippet-in-table">{@render action(expectedAction)}</span>,
+                but you selected <span class="action-snippet-in-table">{@render action(selectedAction)}</span>.</p>
+    </div>
+    <p class="prediction-warning-text-certainty">Are you certain?</p>
 </div>
 {/snippet}
 
 {#snippet predictionWarnings()}
     {#if selectedChoice === currentPermutation.actions[0].key && predictionChoice1 < 45}
-    <div class="prediction-warning">
-    <span class="prediction-warning-icon">⚠️</span>
-    <p class="prediction-warning-text">Your prediction says you expect more people to choose
-            <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span>,
-            but you selected <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span>.</p>
-</div>
+        {@render predictionWarning(currentPermutation.actions[1], currentPermutation.actions[0])}
     {/if}
     {#if selectedChoice === currentPermutation.actions[1].key && predictionChoice1 > 55}
-    <div class="prediction-warning">
-    <span class="prediction-warning-icon">⚠️</span>
-    <p class="prediction-warning-text">Your prediction says you expect more people to choose
-            <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span>,
-            but you selected <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span>.</p>
-</div>
+        {@render predictionWarning(currentPermutation.actions[0], currentPermutation.actions[1])}
     {/if}
 {/snippet}
 
 {#snippet submitButton()}
-    <button type="submit" class="submit-choice exp-default-button" class:disabled={!selectedChoice}
+    <button type="submit" class="submit-choice exp-default-button" class:disabled={!canSubmit}
+    disabled={!canSubmit}
     style="background-color: {selectedChoice ? `${currentPermutation.actions[selectedChoice === currentPermutation.actions[0].key ? 0 : 1].color}` : 'transparent'}">
         Submit
     </button>
@@ -221,14 +249,16 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 <style>
 .ccg-wrapper {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-right: 1.5rem;
 }
 .ccg {
     display: flex;
     flex-direction: column;
-    justify-self: center;
     gap: 1rem;
-    grid-area: 1 / 1;
+    overflow: visible;
 }
 
 .ccg-frame {
@@ -343,6 +373,10 @@ function handleChoiceKeydown(e: KeyboardEvent) {
     font-size: 0.8rem;
 }
 
+.prediction-input.prediction-unmade {
+    opacity: 0.4;
+}
+
 .prediction-question-text {
     font-size: 1.2em;
     margin-bottom: 0.5rem;
@@ -436,9 +470,16 @@ input[type='range'] {
     }
 }
 
+.prediction-warning-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    gap: 0.5rem;
+}
+
 .prediction-warning {
     display: flex;
-    align-self: center;
     align-items: center;
     gap: 1rem;
     max-width: 24rem;
@@ -449,6 +490,12 @@ input[type='range'] {
 }
 
 .prediction-warning-text {
+    font-size: 1rem;
+}
+
+.prediction-warning-text-certainty {
+    align-self: stretch;
+    text-align: center;
     font-size: 1rem;
 }
 </style>
