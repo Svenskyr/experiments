@@ -37,15 +37,7 @@ const submitConsent: SubmitFunction = ({ cancel }) => {
 <div class="page-block">
     <h1>Welcome!</h1>
 
-    <p>
-        The contents of this study will be reviewed and approved by the Institutional Review Board
-        (IRB) of George Mason University.*
-    </p>
-
-    <!-- <span class="footnote"
-    >*This study is not yet collecting data and is currently in the approval process.</span> -->
-
-    <h2>Summary</h2>
+    <h2>Study Summary</h2>
 
     <ol>
         <li>You are being asked to participant in this research study.</li>
@@ -61,6 +53,9 @@ const submitConsent: SubmitFunction = ({ cancel }) => {
             The principle investigator supervising this study is Johanna Mollerstrom (<a
                 href="mailto:jmollers@gmu.edu"
             >jmollers@gmu.edu</a>).
+        </li>
+        <li>
+            The contents of this study have been reviewed and approved by the Institutional Review Board (IRB) of George Mason University.
         </li>
         <li>
             Questions and concerns should be directed to <a href="mailto:sstark@gmu.edu"
