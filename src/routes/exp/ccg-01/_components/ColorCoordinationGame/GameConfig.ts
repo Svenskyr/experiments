@@ -49,7 +49,6 @@ export function recordedGameConfig(expState: ExperimentState): GameSessionConfig
     return {
         ...sharedConfig,
         maxRounds: recordedMaxRounds(expState.session.role),
-        showPayoffTable: false,
         showPredictionControls: true,
     };
 }

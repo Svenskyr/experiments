@@ -1,6 +1,6 @@
 <script lang="ts">
 import HintBox from "$lib/common/HintBox/v1/HintBox.svelte";
-import { fade } from "svelte/transition";
+import { fade, scale } from "svelte/transition";
 import {
     type Action,
     type GameSession,
@@ -27,6 +27,10 @@ let hasPredictionBeenMade: boolean = $state(false);
 let formEl: HTMLFormElement | undefined = $state();
 
 let roundStartTime: number = $state(Date.now());
+
+/** Swap these to try different round-change animations on the game frame. */
+const roundFrameTransitionIn = fade;
+const roundFrameTransition = { duration: 500 };
 
 const canSubmit = $derived(
     selectedChoice !== null
@@ -83,14 +87,18 @@ function handleChoiceKeydown(e: KeyboardEvent) {
             {#snippet body()}
                 <p>Select a choice by clicking on it.</p>
                 {#if session.config.showPredictionControls}
-                    <p>Make a prediction about how other players will choose by dragging the slider.</p>
+                    <p>Make a prediction about how other players will choose by dragging the slider. If the slider gets stuck, click on it directly or refresh the page.</p>
                 {/if}
             {/snippet}
         </HintBox>
-        {@render gameFrame()}
-        {#if session.config.showPayoffTable}
-            {@render payoffTable()}
-        {/if}
+        {#key session.permutationTracker.roundsPlayed}
+            <div
+                class="ccg-frame-keyed"
+                in:roundFrameTransitionIn={roundFrameTransition}
+            >
+                {@render gameFrame()}
+            </div>
+        {/key}
         {#if session.config.showPredictionControls}
             {@render predictionControls()}
             {@render predictionWarnings()}
@@ -99,6 +107,9 @@ function handleChoiceKeydown(e: KeyboardEvent) {
             {@render submitButton()}
         {:else}
             <button type="submit" hidden>Submit</button>
+        {/if}
+        {#if session.config.showPayoffTable}
+            {@render payoffTable()}
         {/if}
     </form>
     {#if session.config.maxRounds !== Infinity}
@@ -176,8 +187,14 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 {/snippet}
 
 {#snippet roundNumber()}
-    <div
-    class="ccg-round-number">Round {session.permutationTracker.roundsPlayed + 1} / {session.config.maxRounds === Infinity ? "∞" : session.config.maxRounds}</div>
+    {#key session.permutationTracker.roundsPlayed}
+        <div
+    class="ccg-round-number"
+    in:scale={{ duration: 250, start: 1.2, opacity: 1 }}
+>
+            Round {session.permutationTracker.roundsPlayed + 1} / {session.config.maxRounds === Infinity ? "∞" : session.config.maxRounds}
+        </div>
+    {/key}
 {/snippet}
 
 {#snippet predictionControls()}

@@ -33,69 +33,21 @@ export const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     //     ],
     // },
     {
-        qid: "cq:gd1:1",
-        questionText: "1. What is the main goal in each round of the game?",
-        inputType: "radio",
-        required: "all",
-        showFeedback: true,
-        allowReset: true,
-        canonicalItems: [
-            {
-                itemId: "same-option",
-                itemText: "To choose the <u>same</u> option as the other player.",
-                isTrue: true,
-            },
-            {
-                itemId: "different-option",
-                itemText: "To choose a <u>different</u> option than the other player.",
-                isTrue: false,
-            },
-            {
-                itemId: "favorite-option",
-                itemText: "To choose my <u>favorite</u> option.",
-                isTrue: false,
-            },
-        ],
-    },
-    {
-        qid: "cq:gd1:2",
-        questionText: "2. Who is the other player in a game round?",
-        inputType: "radio",
-        required: "all",
-        showFeedback: true,
-        canonicalItems: [
-            {
-                itemId: "another-participant",
-                itemText: "<u>Another participant</u> in this experiment.",
-                isTrue: true,
-            },
-            {
-                itemId: "computer-program",
-                itemText: "A <u>computer program</u>.",
-                isTrue: false,
-            },
-            {
-                itemId: "no-other-player",
-                itemText: "There is no other player.",
-                isTrue: false,
-            },
-        ],
-    },
-    {
-        qid: "cq:gd1:3",
-        questionText: "3. What does earning points do?",
+        qid: "cq:gd1:points-effect",
+        questionText: "1. What does <em>earning points</em> do?",
         inputType: "radio",
         required: "all",
         showFeedback: true,
         canonicalItems: [
             {
                 itemId: "increase-final-payoff",
-                itemText: "Earned points <u>increase my final payoff</u>.",
+                itemText: "Earning points <u>increase my final payoff</u>.",
                 isTrue: true,
             },
             {
                 itemId: "have-no-effect",
-                itemText: "Earned points are just for fun and <u>have no effect</u>.",
+                itemText:
+                    "Earning points is just for fun and <u>does not affect my final payoff</u>.",
                 isTrue: false,
             },
             {
@@ -106,9 +58,61 @@ export const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
         ],
     },
     {
-        qid: "cq:gd1:4",
+        qid: "cq:gd1:most-points-choice",
+        questionText: "2. Which of these always earns the <em>most</em> points?",
+        inputType: "radio",
+        required: "all",
+        showFeedback: true,
+        allowReset: true,
+        canonicalItems: [
+            {
+                itemId: "same-option",
+                itemText: "Coordinating on the <u>same</u> option as the other player.",
+                isTrue: true,
+            },
+            {
+                itemId: "different-option",
+                itemText:
+                    "Miscoordinating and choosing a <u>different</u> option than the other player.",
+                isTrue: false,
+            },
+            {
+                itemId: "favorite-option",
+                itemText: "Choosing my <u>favorite</u> option.",
+                isTrue: false,
+            },
+        ],
+    },
+    {
+        qid: "cq:gd1:player-selection-method",
+        questionText: "3. How is the other player selected?",
+        inputType: "radio",
+        required: "all",
+        showFeedback: true,
+        canonicalItems: [
+            {
+                itemId: "selected-randomly",
+                itemText: "The other player is <u>selected randomly each round</u>.",
+                isTrue: true,
+            },
+            {
+                itemId: "selected-once",
+                itemText:
+                    "The other player is <u>selected once</u> and then stays the same for the entire study.",
+                isTrue: false,
+            },
+            {
+                itemId: "selected-by-me",
+                itemText: "The other player is <u>selected by me</u>.",
+                isTrue: false,
+            },
+        ],
+    },
+
+    {
+        qid: "cq:gd1:points-received-left-same",
         questionText:
-            "4. If you chose option 1 and the other player chose option 1, how many points would you receive?",
+            "5. If you chose the <em>left</em> option and the other player chose the <em>same</em> option, how many points would you receive?",
         inputType: "radio",
         required: "all",
         showFeedback: true,
@@ -119,9 +123,9 @@ export const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
         ],
     },
     {
-        qid: "cq:gd1:5",
+        qid: "cq:gd1:points-received-right-same",
         questionText:
-            "5. If you chose option 2 and the other player chose option 2, how many points would you receive?",
+            "6. If you chose the <em>right</em> option and the other player chose the <em>same</em> option, how many points would you receive?",
         inputType: "radio",
         required: "all",
         showFeedback: true,
@@ -132,9 +136,9 @@ export const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
         ],
     },
     {
-        qid: "cq:gd1:6",
+        qid: "cq:gd1:points-received-left-different",
         questionText:
-            "6. If you chose option 1 and the other player chose option 2, how many points would you receive?",
+            "7. If you chose the <em>left</em> option and the other player chose a <em>different</em> option, how many points would you receive?",
         inputType: "radio",
         required: "all",
         showFeedback: true,
