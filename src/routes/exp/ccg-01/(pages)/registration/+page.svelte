@@ -95,8 +95,10 @@ const hasPid = $derived(Boolean(inputPID.trim()));
 const hasRole = $derived(Boolean(selectedRole));
 /** Role from entry (URL/state); MCQ selection does not set session.role. */
 const enteredWithRole = $derived(Boolean(expState.session.role));
-/** Auto-submit only for platform-style entry with a preset role; walk-ins use Submit. */
-const autoSubmitEligible = $derived(enteredWithRole && hasPid);
+/** PID supplied by platform/URL (field is readonly); not typed on this page. */
+const pidFromEntry = $derived(Boolean(expState.user.pid?.trim()));
+/** Auto-submit only when role and PID were both provided at entry; walk-ins use Submit. */
+const autoSubmitEligible = $derived(enteredWithRole && hasPid && pidFromEntry);
 
 const canSubmitRegistration = $derived(
     Boolean(hasPid && hasRole && authUserId),
