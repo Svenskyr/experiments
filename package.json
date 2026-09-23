@@ -4,6 +4,7 @@
     "version": "0.0.1",
     "type": "module",
     "scripts": {
+        "build:cloze": "deno run -A --import-map=scripts/test-import-map.json scripts/build-cloze-questions.ts",
         "dev": "vite dev",
         "build": "vite build",
         "preview": "vite preview",

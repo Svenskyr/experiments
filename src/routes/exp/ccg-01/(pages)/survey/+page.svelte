@@ -124,7 +124,7 @@ $effect(() => {
         {/each}
         {#each mcqQuestionState as question (question.qid)}
             {const complete = $derived(isMcqComplete(question))}
-            <li class:complete={complete} class:incomplete={!complete}>{question.questionText}</li>
+            <li class:complete={complete} class:incomplete={!complete}>{@html question.questionText}</li>
         {/each}
     </ul>
 {/if}

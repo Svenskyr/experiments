@@ -33,6 +33,15 @@ export const nullExpState = (): ExperimentState => {
     };
 };
 
+/** Stable per-participant key for question display randomization (session preferred). */
+export function participantRandomizationKey(expState: ExperimentState): string {
+    return expState.session.sessionId ?? expState.user.authUserId ?? "";
+}
+
+export function questionRandSeed(expState: ExperimentState, qid: string): string {
+    return `${participantRandomizationKey(expState)}-${qid}`;
+}
+
 export const newExpState = (url?: URL): ExperimentState => {
     if (!url) {
         return nullExpState();

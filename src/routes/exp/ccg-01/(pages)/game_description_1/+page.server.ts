@@ -8,9 +8,16 @@ import {
 } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
 import type { PageName } from "../../_state/Pages.ts";
+import { buildClozeQuestion } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { clozeQuestionSources } from "./clozeSource.ts";
+import {
+    participantRandomizationKey,
+    questionRandSeed,
+} from "$exp/ccg-01/_state/ExperimentState.ts";
 
 export const load: PageServerLoad = async ({ parent }) => {
     const { expState } = await parent();
+    const participantKey = participantRandomizationKey(expState);
 
     /* Load data must be serializable, so we can't instantiate the class here.
     Instead, we insert the randSeed, shuffle the items,
@@ -31,14 +38,18 @@ export const load: PageServerLoad = async ({ parent }) => {
         question,
     ) => MultipleChoiceQuestion({
         ...question,
-        randSeed: `${expState.user.authUserId}-${question.qid}`,
+        randSeed: questionRandSeed(expState, question.qid),
         canonicalItems: resolveDisplayOrder(
             question.canonicalItems,
-            `${expState.user.authUserId}-${question.qid}`,
+            questionRandSeed(expState, question.qid),
         ),
     }) as MultipleChoiceQuestion);
 
-    return { canonicalQuestionData };
+    const clozeQuestionData = clozeQuestionSources.map((source) =>
+        buildClozeQuestion(source, participantKey)
+    );
+
+    return { canonicalQuestionData, clozeQuestionData };
 };
 
 export const actions = {

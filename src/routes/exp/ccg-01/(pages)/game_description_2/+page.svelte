@@ -145,7 +145,7 @@ function latex(node: HTMLElement, formula: string) {
     <ul class="question-status-list">
         {#each questions as question (question.qid)}
             {const complete = $derived(isQuestionComplete(question))}
-            <li class:complete={complete} class:incomplete={!complete}>{question.questionText}</li>
+            <li class:complete={complete} class:incomplete={!complete}>{@html question.questionText}</li>
         {/each}
     </ul>
 {/if}

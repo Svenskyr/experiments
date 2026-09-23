@@ -13,6 +13,7 @@ import { supabase } from "$exp/ccg-01/_database/ServiceRole.ts";
 import { setNextPageCookie } from "$exp/ccg-01/_state/Server.ts";
 import type { PageName } from "$exp/ccg-01/_state/Pages.ts";
 import { getLogger } from "$lib/server/logger.server.ts";
+import { questionRandSeed } from "$exp/ccg-01/_state/ExperimentState.ts";
 
 export const load: PageServerLoad = async ({ parent }) => {
     const { expState } = await parent();
@@ -20,10 +21,10 @@ export const load: PageServerLoad = async ({ parent }) => {
     const questions = rangeSetQuestions.map((question) =>
         newRangeSetQuestion({
             ...question,
-            randSeed: `${expState.user.authUserId}-${question.qid}`,
+            randSeed: questionRandSeed(expState, question.qid),
             canonicalItems: resolveDisplayOrder(
                 question.canonicalItems,
-                `${expState.user.authUserId}-${question.qid}`,
+                questionRandSeed(expState, question.qid),
             ),
         })
     );
@@ -31,10 +32,10 @@ export const load: PageServerLoad = async ({ parent }) => {
     const mcqQuestions = multipleChoiceQuestions.map((question) =>
         MultipleChoiceQuestion({
             ...question,
-            randSeed: `${expState.user.authUserId}-${question.qid}`,
+            randSeed: questionRandSeed(expState, question.qid),
             canonicalItems: resolveMcqDisplayOrder(
                 question.canonicalItems,
-                `${expState.user.authUserId}-${question.qid}`,
+                questionRandSeed(expState, question.qid),
             ),
         }) as MultipleChoiceQuestion
     );
