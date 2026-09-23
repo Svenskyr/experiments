@@ -104,6 +104,15 @@ function isFreeTextActive(blank: BlankNode): boolean {
     }
     return response.selectedItemId === free.itemId;
 }
+
+/** Longest plain-text label; sizes the select via the hidden sizer span. */
+function widestSelectLabel(blank: BlankNode): string {
+    const labels = choiceOptions(blank).map((item) => optionLabelText(item.itemLabel!));
+    if (freeTextOption(blank)) {
+        labels.push("Other…");
+    }
+    return labels.reduce((widest, label) => (label.length > widest.length ? label : widest), "");
+}
 </script>
 
 {#snippet renderLine(line: readonly ClozeContentNode[])}
@@ -124,28 +133,31 @@ function isFreeTextActive(blank: BlankNode): boolean {
             {@const disabled = correct}
             <span class="cloze-blank">
                 {#if choices.length > 0}
-                    <select
-                        class="cloze-select"
-                        class:correct
-                        class:incorrect
-                        aria-label={`Response for blank ${blank.blankId}`}
-                        {disabled}
-                        value={response.selectedItemId}
-                        onchange={(e) => {
-                            setSelectedItemId(
-                                blank.blankId,
-                                (e.currentTarget as HTMLSelectElement).value,
-                            );
-                        }}
-                    >
-                        <option value="" disabled hidden></option>
-                        {#each choices as item (item.itemId)}
-                            <option value={item.itemId}>{optionLabelText(item.itemLabel!)}</option>
-                        {/each}
-                        {#if free}
-                            <option value={free.itemId}>Other…</option>
-                        {/if}
-                    </select>
+                    <span class="cloze-select-wrap">
+                        <select
+                            class="cloze-select"
+                            class:correct
+                            class:incorrect
+                            aria-label={`Response for blank ${blank.blankId}`}
+                            {disabled}
+                            value={response.selectedItemId}
+                            onchange={(e) => {
+                                setSelectedItemId(
+                                    blank.blankId,
+                                    (e.currentTarget as HTMLSelectElement).value,
+                                );
+                            }}
+                        >
+                            <option value="" disabled hidden></option>
+                            {#each choices as item (item.itemId)}
+                                <option value={item.itemId}>{optionLabelText(item.itemLabel!)}</option>
+                            {/each}
+                            {#if free}
+                                <option value={free.itemId}>Other…</option>
+                            {/if}
+                        </select>
+                        <span class="cloze-select-sizer" aria-hidden="true">{widestSelectLabel(blank)}</span>
+                    </span>
                 {/if}
                 {#if isFreeTextActive(blank)}
                     <input
@@ -219,16 +231,52 @@ function isFreeTextActive(blank: BlankNode): boolean {
     vertical-align: baseline;
 }
 
+.cloze-select-wrap {
+    display: inline-grid;
+    max-width: 100%;
+    vertical-align: baseline;
+}
+
+.cloze-select-wrap > .cloze-select,
+.cloze-select-wrap > .cloze-select-sizer {
+    grid-area: 1 / 1;
+    font: inherit;
+    line-height: inherit;
+}
+
+.cloze-select-sizer {
+    visibility: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding-inline: 0.35rem 1.5rem;
+    border: 1px solid transparent;
+    pointer-events: none;
+}
+
 .cloze-select,
 .cloze-text-input {
     font: inherit;
-    max-width: min(100%, 16rem);
+    box-sizing: border-box;
     border: 1px solid light-dark(oklch(70% 0 0), oklch(45% 0 0));
     border-radius: 0.35rem;
 }
 
+.cloze-select {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 0.35rem 1.5rem;
+    appearance: none;
+    background-color: light-dark(oklch(100% 0 0), oklch(20% 0 0));
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%236b7280' d='M0 0h10L5 6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.45rem center;
+    background-size: 0.55rem auto;
+}
+
 .cloze-text-input {
+    max-width: min(100%, 16rem);
     min-width: 8rem;
+    padding-inline: 0.35rem;
 }
 
 .cloze-select.correct,
@@ -238,9 +286,17 @@ function isFreeTextActive(blank: BlankNode): boolean {
     opacity: 1;
 }
 
+.cloze-select.correct,
+.cloze-select.incorrect {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%236b7280' d='M0 0h10L5 6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.45rem center;
+    background-size: 0.55rem auto;
+}
+
 .cloze-select.correct:disabled {
     opacity: 1;
-    color: inherit;
+    color: black;
     -webkit-text-fill-color: currentColor;
 }
 

@@ -19,6 +19,7 @@ export const clozeQuestionSources: ClozeQuestionSource[] = [
         content: [
             "I earn points by [coordinating: *[coordinating], [miscoordinating]] on [choice: *[the same option as], [a different option than]] other players.",
             "The points I earn [effect: *[increase], [decrease]] [target: *[my final payoff], [how many rounds I can play]].",
+            "My choices [relation: *[probabilistically], [directly]] affect the outcomes of the players that I [other-players-affected: *[could be], [am actually]] matched with.",
         ],
         randomize: "",
     },
