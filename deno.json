@@ -1,5 +1,6 @@
 {
     "tasks": {
+        "build-cloze": "deno run -A --import-map=scripts/test-import-map.json scripts/build-cloze-questions.ts",
         "mock-participant": "deno run -A --env --import-map=scripts/test-import-map.json scripts/mock-complete-participant.ts"
     },
     "imports": {

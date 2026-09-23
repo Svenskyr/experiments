@@ -25,9 +25,10 @@ import {
     type MultipleChoiceQuestion as MCQ,
 } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.js";
 import MultipleChoiceQuestion from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
+import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v1/ClozeQuestion.svelte";
 
 let { data } = $props();
-const { canonicalQuestionData } = $derived(data);
+const { canonicalQuestionData, clozeQuestionData } = $derived(data);
 const questions: MCQ[] = $state(canonicalQuestionData);
 
 import { browser } from "$app/environment";
@@ -95,6 +96,16 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
     <FeedbackWrapper page="game_description_1" label="game description" />
 </div>
 <div class="page-block">
+    <h2>Comprehension questions</h2>
+
+    <p>Note: I'm currently testing new cloze questions; these may replace the multiple choice questions below.</p>
+
+    {#each clozeQuestionData as clozeQuestion (clozeQuestion.qid)}
+        <ClozeQuestion question={clozeQuestion} />
+    {/each}
+</div>
+
+<div class="page-block">
     {#each questions as question}
         <MultipleChoiceQuestion
             question={question}
@@ -114,7 +125,7 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
     <ul class="question-status-list">
         {#each questions as question (question.qid)}
             {const complete = $derived(isQuestionComplete(question))}
-            <li class:complete={complete} class:incomplete={!complete}>{question.questionText}</li>
+            <li class:complete={complete} class:incomplete={!complete}>{@html question.questionText}</li>
         {/each}
     </ul>
 {/if}

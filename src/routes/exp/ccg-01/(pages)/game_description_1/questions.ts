@@ -38,6 +38,7 @@ export const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
         inputType: "radio",
         required: "all",
         showFeedback: true,
+        allowReset: true,
         canonicalItems: [
             {
                 itemId: "increase-final-payoff",
@@ -63,7 +64,6 @@ export const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
         inputType: "radio",
         required: "all",
         showFeedback: true,
-        allowReset: true,
         canonicalItems: [
             {
                 itemId: "same-option",

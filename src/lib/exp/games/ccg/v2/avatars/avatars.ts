@@ -16,6 +16,7 @@ const avatars: Avatar[] = [
     { name: "masc2", path: masc2 },
 ];
 
+/** Fixed seed so SSR and client hydration see the same display order. */
 export const shuffledAvatars: Avatar[] = FisherYatesShuffle(avatars);
 
 export function getAvatar(): Avatar | null {

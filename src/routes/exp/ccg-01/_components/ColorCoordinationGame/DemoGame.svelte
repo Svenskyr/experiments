@@ -1,8 +1,13 @@
 <script lang="ts">
 import type { ExperimentState } from "$exp/ccg-01/_state/ExperimentState.ts";
 import ColorCoordinationGame from "$lib/exp/games/ccg/v3/game/ColorCoordinationGame.svelte";
-import { newGameSession, shuffledAvatars } from "$lib/exp/games/ccg/v3/game/gameState.ts";
-import { demoGameConfig } from "./GameConfig.ts";
+import {
+    type GameSession,
+    newGameSession,
+    shuffledAvatars,
+} from "$lib/exp/games/ccg/v3/game/gameState.ts";
+import { onMount } from "svelte";
+import { demoGameConfig, recordedShuffleSeed } from "./GameConfig.ts";
 
 let {
     expState,
@@ -12,14 +17,17 @@ let {
     showPredictionControls: boolean;
 } = $props();
 
-const config = demoGameConfig({ showPredictionControls });
-let session = $state(
-    newGameSession(
-        config,
+let session = $state<GameSession | null>(null);
+
+onMount(() => {
+    session = newGameSession(
+        demoGameConfig({ showPredictionControls }),
         { selectedAvatar: shuffledAvatars[0] },
-        expState.user.authUserId,
-    ),
-);
+        recordedShuffleSeed(expState),
+    );
+});
 </script>
 
-<ColorCoordinationGame bind:session />
+{#if session}
+    <ColorCoordinationGame bind:session />
+{/if}

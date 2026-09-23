@@ -7,6 +7,8 @@ import {
     resolveDisplayOrder,
 } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import type { PageName } from "../../_state/Pages.ts";
+import { questionRandSeed } from "$exp/ccg-01/_state/ExperimentState.ts";
+
 export const load: PageServerLoad = async ({ parent }) => {
     const { expState } = await parent();
 
@@ -14,10 +16,10 @@ export const load: PageServerLoad = async ({ parent }) => {
         question,
     ) => MultipleChoiceQuestion({
         ...question,
-        randSeed: `${expState.user.authUserId}-${question.qid}`,
+        randSeed: questionRandSeed(expState, question.qid),
         canonicalItems: resolveDisplayOrder(
             question.canonicalItems,
-            `${expState.user.authUserId}-${question.qid}`,
+            questionRandSeed(expState, question.qid),
         ),
     }) as MultipleChoiceQuestion);
 
