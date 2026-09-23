@@ -72,7 +72,7 @@ function handleMouseDown(event: MouseEvent) {
 
     <fieldset class="text-feedback-fieldset">
             {let activeCategory: string = $state("General")}
-            <legend class="text-feedback-legend">Tell me your thoughts <em>(or else)</em></legend>
+            <legend class="text-feedback-legend">Share your thoughts</legend>
             <div class="text-field-categories">
                 {#each Object.keys(data.comments) as category}
                 <button type="button"
