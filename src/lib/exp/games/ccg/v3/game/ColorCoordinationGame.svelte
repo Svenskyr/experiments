@@ -6,10 +6,10 @@ import {
     type GameSession,
     getCurrentPermutation,
     isGameComplete,
-    type Outcome,
     shouldSync,
     submitRound,
 } from "./gameState.ts";
+import PayoffNormalFormTable from "./PayoffNormalFormTable.svelte";
 
 let {
     session = $bindable<GameSession>(),
@@ -116,7 +116,14 @@ function handleChoiceKeydown(e: KeyboardEvent) {
             <button type="submit" hidden>Submit</button>
         {/if}
         {#if session.config.showPayoffTable}
-            {@render payoffTable()}
+            <PayoffNormalFormTable
+                actions={[
+                    currentPermutation.actions[0],
+                    currentPermutation.actions[1],
+                ]}
+                outcomes={currentPermutation.outcomes}
+                {selectedChoice}
+            />
         {/if}
     </form>
     {#if session.config.maxRounds !== Infinity}
@@ -127,16 +134,6 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 {#snippet action(action: Action)}
     <span class="action-snippet" style="background-color: {action.color}">{action.value}</span>
-{/snippet}
-
-{#snippet payoffCell(yourAction: Action, theirAction: Action, outcome: Outcome)}
-    <td class="payoff-cell">
-        <span class="payoff-cell-actions">
-            <span class="action-snippet-in-table">{@render action(yourAction)}</span>
-            <span class="action-snippet-in-table">{@render action(theirAction)}</span>
-        </span>
-        (<span class="your-payoff">{outcome.payoffs[0]}</span>, <span class="their-payoff">{outcome.payoffs[1]})</span>
-    </td>
 {/snippet}
 
 {#snippet gameFrame()}
@@ -175,38 +172,6 @@ function handleChoiceKeydown(e: KeyboardEvent) {
     <img src={currentPermutation.avatars[1].path} alt="Player 2 Avatar (other player)"
         class="player-avatar" />
 </fieldset>
-{/snippet}
-
-{#snippet payoffTable()}
-    <div class="ccg-normal-form">
-    <table>
-        <thead>
-            <tr>
-                <th class="nf-corner" aria-hidden="true"></th>
-                <th>They choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span></th>
-                <th>They choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr
-                class:you-choose-selected={selectedChoice === currentPermutation.actions[0].key}
-                class:you-choose-faded={selectedChoice === currentPermutation.actions[1].key}
-            >
-                <th>You choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span></th>
-                {@render payoffCell(currentPermutation.actions[0], currentPermutation.actions[0], currentPermutation.outcomes[0])}
-                {@render payoffCell(currentPermutation.actions[0], currentPermutation.actions[1], currentPermutation.outcomes[2])}
-            </tr>
-            <tr
-                class:you-choose-selected={selectedChoice === currentPermutation.actions[1].key}
-                class:you-choose-faded={selectedChoice === currentPermutation.actions[0].key}
-            >
-                <th>You choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span></th>
-                {@render payoffCell(currentPermutation.actions[1], currentPermutation.actions[0], currentPermutation.outcomes[3])}
-                {@render payoffCell(currentPermutation.actions[1], currentPermutation.actions[1], currentPermutation.outcomes[1])}
-            </tr>
-        </tbody>
-    </table>
-</div>
 {/snippet}
 
 {#snippet roundNumber()}
@@ -362,63 +327,6 @@ function handleChoiceKeydown(e: KeyboardEvent) {
         border: 2px solid light-dark(oklch(0% 0 0), oklch(70% 0 0));
         box-shadow: 0 0 5px oklch(0% 0 0 / 0.3);
     }
-}
-
-.ccg-normal-form table {
-    --nf-cell-border: light-dark(oklch(0% 0 0), oklch(50% 0 0));
-    --nf-row-highlight-border: light-dark(oklch(0% 0 0), oklch(70% 0 0));
-    --nf-row-highlight-bg: light-dark(oklch(85% 0 0), oklch(20% 0 0));
-    table-layout: fixed;
-    border-collapse: collapse;
-    width: auto;
-}
-
-.ccg-normal-form th,
-.ccg-normal-form td {
-    border: 1px solid var(--nf-cell-border);
-    padding: 0.5rem;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: normal;
-}
-
-.ccg-normal-form th.nf-corner {
-    border: none;
-}
-
-.ccg-normal-form tr.you-choose-selected th {
-    font-weight: bold;
-}
-
-.ccg-normal-form tr.you-choose-selected > :is(th, td) {
-    background-color: var(--nf-row-highlight-bg);
-    border-top: 2px solid var(--nf-row-highlight-border);
-    border-bottom: 2px solid var(--nf-row-highlight-border);
-}
-
-.ccg-normal-form tr.you-choose-selected > :first-child {
-    border-left: 2px solid var(--nf-row-highlight-border);
-}
-
-.ccg-normal-form tr.you-choose-selected > :last-child {
-    border-right: 2px solid var(--nf-row-highlight-border);
-}
-
-.ccg-normal-form tr.you-choose-faded {
-    opacity: 0.4;
-}
-
-.payoff-cell-actions {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.15rem;
-    margin-inline-end: 0.35rem;
-    vertical-align: middle;
-}
-
-.your-payoff {
-    font-weight: normal;
-    text-decoration-line: underline;
 }
 
 .action-snippet {

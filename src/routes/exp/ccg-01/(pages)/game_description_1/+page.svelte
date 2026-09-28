@@ -9,44 +9,29 @@ import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
 import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
-/* SyncHandler */
-import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
-let syncHandler = $state(getSyncHandler());
-
 /* Page questions */
-import {
-    load as loadMCQData,
-    save as saveMCQData,
-    sync as syncMCQData,
-} from "$exp/ccg-01/_database/ComprehensionQuestionDBM.ts";
-import {
-    isQuestionComplete,
-    mergeQuestionData,
-    type MultipleChoiceQuestion as MCQ,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.js";
-import MultipleChoiceQuestion from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
 import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v1/ClozeQuestion.svelte";
+import OutcomePointsCloze from "./OutcomePointsCloze.svelte";
+import type { ClozePageItem } from "./+page.server.ts";
 
 let { data } = $props();
-const { canonicalQuestionData, clozeQuestionData } = $derived(data);
-const questions: MCQ[] = $state(canonicalQuestionData);
+const { clozeQuestionData } = $derived(data);
 
-import { browser } from "$app/environment";
-if (browser) {
-    for (const question of questions) {
-        const storedData = loadMCQData(question.qid);
-        if (storedData) {
-            mergeQuestionData(question, storedData);
-        }
-    }
+function initialClozeCompletion(items: ClozePageItem[]): Record<string, boolean> {
+    return Object.fromEntries(items.map((item) => [item.question.qid, false]));
 }
+
+let clozeCompleteByQid = $state(initialClozeCompletion(data.clozeQuestionData));
 
 /* Page navigation */
 import { requestNextPageCookie } from "$exp/ccg-01/_state/Client.ts";
 import { goto } from "$app/navigation";
 import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
-let pageCompleted = $derived(questions.every((question) => isQuestionComplete(question)));
+let pageCompleted = $derived(
+    clozeQuestionData.length > 0
+        && clozeQuestionData.every((item) => clozeCompleteByQid[item.question.qid] === true),
+);
 $effect(() => {
     if (pageCompleted) {
         (async () => {
@@ -62,26 +47,28 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
 </script>
 
 <div class="page-block">
-    <h1>Game description</h1>
+    <h1>Coordination Game</h1>
 
-    <h3>You will play a <strong>coordination game</strong> with other participants.</h3>
+    <!-- <h3>You will play a <strong>coordination game</strong> with other participants.</h3> -->
+
+    <h2>Overview</h2>
 
     <ul>
         <li>
-            You will play a series of <em>game rounds</em>. Each game round has the same basic setup, but each have different options or players.
+            You will play a series of <em>game rounds</em>. Each game round has the same basic setup, but each will have different options or different possible players.
         </li>
         <li>
             Each game round has <strong>two players</strong> (you and another participant).
         </li>
         <li>
-            For each game round, a new participant is randomly selected to be the other player.
+            For <strong>each game round</strong>, a new participant is <strong>randomly selected</strong> to be the other player.
         </li>
-        <li>
+        <!-- <li>
             "Other player" selection is individual, so just because you get matched with someone doesn't mean they'll get matched with you
             (they may get matched with someone else, and someone else may get matched with you).
-        </li>
+        </li> -->
         <li>
-            Each game round has <strong>two options</strong> to choose from. You each select
+            Each game round has <strong>two options</strong> to choose from. You'll each select
             <strong>one</strong> of these options.
         </li>
         <li>
@@ -97,7 +84,7 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
     </ul>
 
     <details>
-        <summary>Other player selection details</summary>
+        <summary>Other player selection details (optional)</summary>
 
         <p>Each game round has <b>four (4)</b> elements:</p>
         <ol>
@@ -138,26 +125,22 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
 <div class="page-block">
     <h2>Comprehension questions</h2>
 
-    <p>Note: I'm currently testing new cloze questions; these may replace the multiple choice questions below.</p>
-
-    {#each clozeQuestionData as clozeQuestion (clozeQuestion.qid)}
-        <ClozeQuestion question={clozeQuestion} />
+    {#each clozeQuestionData as item (item.question.qid)}
+        {#if item.kind === "outcome-points"}
+            <OutcomePointsCloze
+                question={item.question}
+                scenario={item.scenario}
+                bind:complete={clozeCompleteByQid[item.question.qid]}
+            />
+        {:else}
+            <ClozeQuestion
+                question={item.question}
+                bind:complete={clozeCompleteByQid[item.question.qid]}
+            />
+        {/if}
     {/each}
 
     <FeedbackWrapper page="game_description_1" label="cloze questions" />
-</div>
-
-<div class="page-block">
-    {#each questions as question}
-        <MultipleChoiceQuestion
-            question={question}
-            save={saveMCQData}
-            sync={(question) => syncMCQData(syncHandler, question.qid)}
-        />
-    {/each}
-
-    <FeedbackWrapper page="game_description_1" label="comprehension questions" />
-
 </div>
 
 <NavigationBarWrapper {pageCompleted} />
@@ -165,9 +148,9 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
 {#if !pageCompleted}
     <p>Please complete all questions before continuing.</p>
     <ul class="question-status-list">
-        {#each questions as question (question.qid)}
-            {const complete = $derived(isQuestionComplete(question))}
-            <li class:complete={complete} class:incomplete={!complete}>{@html question.questionText}</li>
+        {#each clozeQuestionData as item (item.question.qid)}
+            {@const complete = clozeCompleteByQid[item.question.qid] === true}
+            <li class:complete class:incomplete={!complete}>{item.question.label}</li>
         {/each}
     </ul>
 {/if}

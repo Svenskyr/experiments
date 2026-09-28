@@ -100,6 +100,25 @@ export function isBlankCorrect(blank: BlankNode, response: ClozeBlankResponse): 
     return true;
 }
 
+/** All checkable blanks have been checked and answered correctly. */
+export function isClozeQuestionComplete(
+    question: ClozeQuestionIR,
+    gradedResponses: Record<string, ClozeBlankResponse> | null,
+): boolean {
+    if (!questionHasCheckableAnswers(question)) {
+        return true;
+    }
+    if (!gradedResponses) {
+        return false;
+    }
+    return getBlanksFromQuestion(question)
+        .filter(blankHasCorrectMarker)
+        .every((blank) => {
+            const graded = gradedResponses[blank.blankId];
+            return graded !== undefined && isBlankCorrect(blank, graded);
+        });
+}
+
 export function resolveClozeRandomizeSeed(
     source: Pick<ClozeQuestionSource, "qid" | "randomize">,
     participantKey: string,
