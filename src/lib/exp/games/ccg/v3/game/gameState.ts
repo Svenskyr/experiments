@@ -44,6 +44,7 @@ export interface GameSessionConfig {
     maxRounds?: number;
     showPayoffTable?: boolean;
     showPredictionControls?: boolean;
+    showPredictionMismatchWarning?: boolean;
     useSubmitButton?: boolean;
 }
 

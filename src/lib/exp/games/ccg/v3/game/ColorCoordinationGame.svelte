@@ -6,6 +6,7 @@ import {
     type GameSession,
     getCurrentPermutation,
     isGameComplete,
+    type Outcome,
     shouldSync,
     submitRound,
 } from "./gameState.ts";
@@ -58,7 +59,7 @@ function nextRound() {
     roundStartTime = Date.now();
 }
 
-function handlePredictionInput() {
+function handlePredictionActivate() {
     hasPredictionBeenMade = true;
 }
 
@@ -85,9 +86,13 @@ function handleChoiceKeydown(e: KeyboardEvent) {
     >
         <HintBox label="How to play">
             {#snippet body()}
-                <p>Select a choice by clicking on it.</p>
+            <h3>Game instructions</h3>
+                <p><strong>1. Select a color by clicking on it.</strong></p>
+                <p>You earn points by choosing the same color as the other player. The possible payoffs are shown in the table below.</p>
                 {#if session.config.showPredictionControls}
-                    <p>Make a prediction about how other players will choose by dragging the slider. If the slider gets stuck, click on it directly or refresh the page.</p>
+                    <p><strong>2. Make a prediction about the percentage of other players that will choose each color by dragging the slider.</strong></p>
+                    <p>More accurate predictions earn more points (these are added to any points earned for choosing the same color as the other player).</p>
+                    <p>If the slider gets stuck, try double-clicking on it or refreshing the page.</p>
                 {/if}
             {/snippet}
         </HintBox>
@@ -101,7 +106,9 @@ function handleChoiceKeydown(e: KeyboardEvent) {
         {/key}
         {#if session.config.showPredictionControls}
             {@render predictionControls()}
-            {@render predictionWarnings()}
+            {#if session.config.showPredictionMismatchWarning}
+                {@render predictionWarnings()}
+            {/if}
         {/if}
         {#if session.config.useSubmitButton}
             {@render submitButton()}
@@ -120,6 +127,16 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 {#snippet action(action: Action)}
     <span class="action-snippet" style="background-color: {action.color}">{action.value}</span>
+{/snippet}
+
+{#snippet payoffCell(yourAction: Action, theirAction: Action, outcome: Outcome)}
+    <td class="payoff-cell">
+        <span class="payoff-cell-actions">
+            <span class="action-snippet-in-table">{@render action(yourAction)}</span>
+            <span class="action-snippet-in-table">{@render action(theirAction)}</span>
+        </span>
+        (<span class="your-payoff">{outcome.payoffs[0]}</span>, <span class="their-payoff">{outcome.payoffs[1]})</span>
+    </td>
 {/snippet}
 
 {#snippet gameFrame()}
@@ -165,21 +182,27 @@ function handleChoiceKeydown(e: KeyboardEvent) {
     <table>
         <thead>
             <tr>
-                <th></th>
+                <th class="nf-corner" aria-hidden="true"></th>
                 <th>They choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span></th>
                 <th>They choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span></th>
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr
+                class:you-choose-selected={selectedChoice === currentPermutation.actions[0].key}
+                class:you-choose-faded={selectedChoice === currentPermutation.actions[1].key}
+            >
                 <th>You choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span></th>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[0].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[0].payoffs[1]})</span></td>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[2].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[2].payoffs[1]})</span></td>
+                {@render payoffCell(currentPermutation.actions[0], currentPermutation.actions[0], currentPermutation.outcomes[0])}
+                {@render payoffCell(currentPermutation.actions[0], currentPermutation.actions[1], currentPermutation.outcomes[2])}
             </tr>
-            <tr>
+            <tr
+                class:you-choose-selected={selectedChoice === currentPermutation.actions[1].key}
+                class:you-choose-faded={selectedChoice === currentPermutation.actions[0].key}
+            >
                 <th>You choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span></th>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[3].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[3].payoffs[1]})</span></td>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[1].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[1].payoffs[1]})</span></td>
+                {@render payoffCell(currentPermutation.actions[1], currentPermutation.actions[0], currentPermutation.outcomes[3])}
+                {@render payoffCell(currentPermutation.actions[1], currentPermutation.actions[1], currentPermutation.outcomes[1])}
             </tr>
         </tbody>
     </table>
@@ -222,7 +245,7 @@ function handleChoiceKeydown(e: KeyboardEvent) {
             max=100
             step=1
             bind:value={predictionChoice1}
-            oninput={handlePredictionInput}
+            onpointerdown={handlePredictionActivate}
             style={`
                 width: 100%;
                 --slider-thumb-color: var(--action-neutral2-color);
@@ -336,12 +359,15 @@ function handleChoiceKeydown(e: KeyboardEvent) {
         filter: brightness(0.8);
     }
     &.selected {
-        border: 2px solid black;
+        border: 2px solid light-dark(oklch(0% 0 0), oklch(70% 0 0));
         box-shadow: 0 0 5px oklch(0% 0 0 / 0.3);
     }
 }
 
 .ccg-normal-form table {
+    --nf-cell-border: light-dark(oklch(0% 0 0), oklch(50% 0 0));
+    --nf-row-highlight-border: light-dark(oklch(0% 0 0), oklch(70% 0 0));
+    --nf-row-highlight-bg: light-dark(oklch(85% 0 0), oklch(20% 0 0));
     table-layout: fixed;
     border-collapse: collapse;
     width: auto;
@@ -349,11 +375,45 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 .ccg-normal-form th,
 .ccg-normal-form td {
-    border: 1px solid light-dark(oklch(0% 0 0), oklch(50% 0 0));
+    border: 1px solid var(--nf-cell-border);
     padding: 0.5rem;
     text-align: center;
     font-size: 1.1rem;
     font-weight: normal;
+}
+
+.ccg-normal-form th.nf-corner {
+    border: none;
+}
+
+.ccg-normal-form tr.you-choose-selected th {
+    font-weight: bold;
+}
+
+.ccg-normal-form tr.you-choose-selected > :is(th, td) {
+    background-color: var(--nf-row-highlight-bg);
+    border-top: 2px solid var(--nf-row-highlight-border);
+    border-bottom: 2px solid var(--nf-row-highlight-border);
+}
+
+.ccg-normal-form tr.you-choose-selected > :first-child {
+    border-left: 2px solid var(--nf-row-highlight-border);
+}
+
+.ccg-normal-form tr.you-choose-selected > :last-child {
+    border-right: 2px solid var(--nf-row-highlight-border);
+}
+
+.ccg-normal-form tr.you-choose-faded {
+    opacity: 0.4;
+}
+
+.payoff-cell-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    margin-inline-end: 0.35rem;
+    vertical-align: middle;
 }
 
 .your-payoff {
@@ -386,6 +446,7 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 .ccg-round-number {
     text-align: center;
+    /* font-weight: bold; */
     margin-top: 1rem;
     font-size: 0.8rem;
 }
@@ -396,7 +457,9 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 .prediction-question-text {
     font-size: 1.2em;
+    margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .prediction-labels {
