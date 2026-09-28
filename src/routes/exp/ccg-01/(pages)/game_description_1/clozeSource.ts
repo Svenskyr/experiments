@@ -19,19 +19,7 @@ export const clozeQuestionSources: ClozeQuestionSource[] = [
         content: [
             "I earn points by [coordinating: *[coordinating], [miscoordinating]] on [choice: *[the same option as], [a different option than]] other players.",
             "The points I earn [effect: *[increase], [decrease]] [target: *[my final payoff], [how many rounds I can play]].",
-            "My choices [relation: *[probabilistically], [directly]] affect the outcomes of the players that I [other-players-affected: *[could be], [am actually]] matched with.",
-        ],
-        randomize: "",
-    },
-
-    {
-        qid: "cq:gd1:outcome-points",
-        label: "Round outcomes",
-        content: [
-            "If I chose the option on the left and the other player chose same option, I'll earn [points-left: *[2 points], [1 point], [0 points]] for that round.",
-            "If I chose the option on the right and the other player chose same option, I'll earn [points-right: *[1 point], [2 points], [0 points]] for that round.",
-            "If the other player and I chose different options, I'll earn [points-miscoordinate: *[0 points], [1 point], [2 points]] for that round.",
-            // "If I earned 2 points in a round, then the other player earned [other-points: *[an unknown number of], [two (2) points], [one (1) point], [zero (0) points]] points because matching is [method: *[asymmetric], [symmetric]].",
+            // "My choices [relation: *[probabilistically], [directly]] affect the outcomes of the players that I [other-players-affected: *[could be], [am actually]] matched with.",
         ],
         randomize: "",
     },

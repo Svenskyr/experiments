@@ -9,43 +9,28 @@ import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
 import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
-/* SyncHandler */
-import { getSyncHandler } from "../../_syncHandler/v3/SyncHandler.ts";
-let syncHandler = $state(getSyncHandler());
-
 /* Page questions */
-import {
-    load as loadMCQData,
-    save as saveMCQData,
-    sync as syncMCQData,
-} from "$exp/ccg-01/_database/ComprehensionQuestionDBM.ts";
-import {
-    isQuestionComplete,
-    mergeQuestionData,
-    type MultipleChoiceQuestion as MCQ,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
-import MultipleChoiceQuestion from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
+import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v1/ClozeQuestion.svelte";
+import type { ClozePageItem } from "./+page.server.ts";
 
 let { data } = $props();
-const { canonicalQuestionData } = $derived(data);
-const questions: MCQ[] = $state(canonicalQuestionData);
+const { clozeQuestionData } = $derived(data);
 
-import { browser } from "$app/environment";
-if (browser) {
-    for (const question of questions) {
-        const storedData = loadMCQData(question.qid);
-        if (storedData) {
-            mergeQuestionData(question, storedData);
-        }
-    }
+function initialClozeCompletion(items: ClozePageItem[]): Record<string, boolean> {
+    return Object.fromEntries(items.map((item) => [item.question.qid, false]));
 }
+
+let clozeCompleteByQid = $state(initialClozeCompletion(data.clozeQuestionData));
 
 /* Page navigation */
 import { requestNextPageCookie } from "../../_state/Client.ts";
 import { goto } from "$app/navigation";
 import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
-let pageCompleted = $derived(questions.every((question) => isQuestionComplete(question)));
+let pageCompleted = $derived(
+    clozeQuestionData.length > 0
+        && clozeQuestionData.every((item) => clozeCompleteByQid[item.question.qid] === true),
+);
 $effect(() => {
     if (pageCompleted) {
         (async () => {
@@ -127,15 +112,14 @@ function latex(node: HTMLElement, formula: string) {
 <div class="page-block">
     <h2>Comprehension questions</h2>
 
-    {#each questions as question}
-        <MultipleChoiceQuestion
-            question={question}
-            save={saveMCQData}
-            sync={(question) => syncMCQData(syncHandler, question.qid)}
+    {#each clozeQuestionData as item (item.question.qid)}
+        <ClozeQuestion
+            question={item.question}
+            bind:complete={clozeCompleteByQid[item.question.qid]}
         />
     {/each}
 
-    <FeedbackWrapper page="game_description_2" label="comprehension questions" />
+    <FeedbackWrapper page="game_description_2" label="cloze questions" />
 </div>
 
 <NavigationBarWrapper {pageCompleted} />
@@ -143,9 +127,9 @@ function latex(node: HTMLElement, formula: string) {
 {#if !pageCompleted}
     <p>Please complete all questions before continuing.</p>
     <ul class="question-status-list">
-        {#each questions as question (question.qid)}
-            {const complete = $derived(isQuestionComplete(question))}
-            <li class:complete={complete} class:incomplete={!complete}>{@html question.questionText}</li>
+        {#each clozeQuestionData as item (item.question.qid)}
+            {@const complete = clozeCompleteByQid[item.question.qid] === true}
+            <li class:complete class:incomplete={!complete}>{item.question.label}</li>
         {/each}
     </ul>
 {/if}

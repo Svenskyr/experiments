@@ -3,12 +3,14 @@ import HintBox from "$lib/common/HintBox/v1/HintBox.svelte";
 import { fade, scale } from "svelte/transition";
 import {
     type Action,
+    actionColorTitle,
     type GameSession,
     getCurrentPermutation,
     isGameComplete,
     shouldSync,
     submitRound,
 } from "./gameState.ts";
+import PayoffNormalFormTable from "./PayoffNormalFormTable.svelte";
 
 let {
     session = $bindable<GameSession>(),
@@ -58,7 +60,7 @@ function nextRound() {
     roundStartTime = Date.now();
 }
 
-function handlePredictionInput() {
+function handlePredictionActivate() {
     hasPredictionBeenMade = true;
 }
 
@@ -85,9 +87,13 @@ function handleChoiceKeydown(e: KeyboardEvent) {
     >
         <HintBox label="How to play">
             {#snippet body()}
-                <p>Select a choice by clicking on it.</p>
+            <h3>Game instructions</h3>
+                <p><strong>1. Select a color by clicking on it.</strong></p>
+                <p>You earn points by choosing the same color as the other player. The possible payoffs are shown in the table below.</p>
                 {#if session.config.showPredictionControls}
-                    <p>Make a prediction about how other players will choose by dragging the slider. If the slider gets stuck, click on it directly or refresh the page.</p>
+                    <p><strong>2. Make a prediction about the percentage of other players that will choose each color by dragging the slider.</strong></p>
+                    <p>More accurate predictions earn more points (these are added to any points earned for choosing the same color as the other player).</p>
+                    <p>If the slider gets stuck, try double-clicking on it or refreshing the page.</p>
                 {/if}
             {/snippet}
         </HintBox>
@@ -101,7 +107,9 @@ function handleChoiceKeydown(e: KeyboardEvent) {
         {/key}
         {#if session.config.showPredictionControls}
             {@render predictionControls()}
-            {@render predictionWarnings()}
+            {#if session.config.showPredictionMismatchWarning}
+                {@render predictionWarnings()}
+            {/if}
         {/if}
         {#if session.config.useSubmitButton}
             {@render submitButton()}
@@ -109,7 +117,14 @@ function handleChoiceKeydown(e: KeyboardEvent) {
             <button type="submit" hidden>Submit</button>
         {/if}
         {#if session.config.showPayoffTable}
-            {@render payoffTable()}
+            <PayoffNormalFormTable
+                actions={[
+                    currentPermutation.actions[0],
+                    currentPermutation.actions[1],
+                ]}
+                outcomes={currentPermutation.outcomes}
+                {selectedChoice}
+            />
         {/if}
     </form>
     {#if session.config.maxRounds !== Infinity}
@@ -119,7 +134,11 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 {/if}
 
 {#snippet action(action: Action)}
-    <span class="action-snippet" style="background-color: {action.color}">{action.value}</span>
+    <span
+    class="action-snippet"
+    style="background-color: {action.color}"
+    title={actionColorTitle(action)}
+>{action.value}</span>
 {/snippet}
 
 {#snippet gameFrame()}
@@ -160,32 +179,6 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 </fieldset>
 {/snippet}
 
-{#snippet payoffTable()}
-    <div class="ccg-normal-form">
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th>They choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span></th>
-                <th>They choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>You choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[0])}</span></th>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[0].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[0].payoffs[1]})</span></td>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[2].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[2].payoffs[1]})</span></td>
-            </tr>
-            <tr>
-                <th>You choose <span class="action-snippet-in-table">{@render action(currentPermutation.actions[1])}</span></th>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[3].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[3].payoffs[1]})</span></td>
-                <td>(<span class="your-payoff">{currentPermutation.outcomes[1].payoffs[0]}</span>, <span class="their-payoff">{currentPermutation.outcomes[1].payoffs[1]})</span></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-{/snippet}
-
 {#snippet roundNumber()}
     {#key session.permutationTracker.roundsPlayed}
         <div
@@ -222,7 +215,7 @@ function handleChoiceKeydown(e: KeyboardEvent) {
             max=100
             step=1
             bind:value={predictionChoice1}
-            oninput={handlePredictionInput}
+            onpointerdown={handlePredictionActivate}
             style={`
                 width: 100%;
                 --slider-thumb-color: var(--action-neutral2-color);
@@ -336,29 +329,9 @@ function handleChoiceKeydown(e: KeyboardEvent) {
         filter: brightness(0.8);
     }
     &.selected {
-        border: 2px solid black;
+        border: 2px solid light-dark(oklch(0% 0 0), oklch(70% 0 0));
         box-shadow: 0 0 5px oklch(0% 0 0 / 0.3);
     }
-}
-
-.ccg-normal-form table {
-    table-layout: fixed;
-    border-collapse: collapse;
-    width: auto;
-}
-
-.ccg-normal-form th,
-.ccg-normal-form td {
-    border: 1px solid light-dark(oklch(0% 0 0), oklch(50% 0 0));
-    padding: 0.5rem;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: normal;
-}
-
-.your-payoff {
-    font-weight: normal;
-    text-decoration-line: underline;
 }
 
 .action-snippet {
@@ -386,6 +359,7 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 .ccg-round-number {
     text-align: center;
+    /* font-weight: bold; */
     margin-top: 1rem;
     font-size: 0.8rem;
 }
@@ -396,7 +370,9 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 .prediction-question-text {
     font-size: 1.2em;
+    margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .prediction-labels {

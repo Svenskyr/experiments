@@ -1,55 +1,39 @@
 import type { Cookies } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { multipleChoiceQuestions } from "./questions.ts";
 import { setNextPageCookie } from "../../_state/Server.ts";
-import {
-    MultipleChoiceQuestion,
-    resolveDisplayOrder,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
 import type { PageName } from "../../_state/Pages.ts";
-import { buildClozeQuestion } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { clozeQuestionSources } from "./clozeSource.ts";
 import {
-    participantRandomizationKey,
-    questionRandSeed,
-} from "$exp/ccg-01/_state/ExperimentState.ts";
+    buildClozeQuestion,
+    type ClozeQuestionIR,
+} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { clozeQuestionSources } from "./clozeSource.ts";
+import { buildOutcomePointsCloze, type OutcomePointsScenario } from "./outcomePointsCloze.ts";
+import { participantRandomizationKey } from "$exp/ccg-01/_state/ExperimentState.ts";
+
+export type ClozePageItem =
+    | { kind: "standard"; question: ClozeQuestionIR }
+    | { kind: "outcome-points"; question: ClozeQuestionIR; scenario: OutcomePointsScenario };
 
 export const load: PageServerLoad = async ({ parent }) => {
     const { expState } = await parent();
     const participantKey = participantRandomizationKey(expState);
 
-    /* Load data must be serializable, so we can't instantiate the class here.
-    Instead, we insert the randSeed, shuffle the items,
-    and return the questions as props so the page can instantiate the class. */
+    const standardCloze: ClozePageItem[] = clozeQuestionSources.map((source) => ({
+        kind: "standard",
+        question: buildClozeQuestion(source, participantKey),
+    }));
+    const outcomePoints = buildOutcomePointsCloze(participantKey);
+    const clozeQuestionData: ClozePageItem[] = [
+        ...standardCloze,
+        {
+            kind: "outcome-points",
+            question: outcomePoints.question,
+            scenario: outcomePoints.scenario,
+        },
+    ];
 
-    // const mcqProps: MultipleChoiceQuestionInterface[] = multipleChoiceQuestions.map((question) => {
-    //     return {
-    //         ...question,
-    //         randSeed: `${expState.user.authUserId}-${question.qid}`,
-    //         items: resolveDisplayOrder(
-    //             question.items,
-    //             `${expState.user.authUserId}-${question.qid}`,
-    //         ),
-    //     };
-    // });
-
-    const canonicalQuestionData: MultipleChoiceQuestion[] = multipleChoiceQuestions.map((
-        question,
-    ) => MultipleChoiceQuestion({
-        ...question,
-        randSeed: questionRandSeed(expState, question.qid),
-        canonicalItems: resolveDisplayOrder(
-            question.canonicalItems,
-            questionRandSeed(expState, question.qid),
-        ),
-    }) as MultipleChoiceQuestion);
-
-    const clozeQuestionData = clozeQuestionSources.map((source) =>
-        buildClozeQuestion(source, participantKey)
-    );
-
-    return { canonicalQuestionData, clozeQuestionData };
+    return { clozeQuestionData };
 };
 
 export const actions = {

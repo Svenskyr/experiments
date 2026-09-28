@@ -1,29 +1,27 @@
 import type { Cookies } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { multipleChoiceQuestions } from "./questions.ts";
 import { setNextPageCookie } from "../../_state/Server.ts";
-import {
-    MultipleChoiceQuestion,
-    resolveDisplayOrder,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+
 import type { PageName } from "../../_state/Pages.ts";
-import { questionRandSeed } from "$exp/ccg-01/_state/ExperimentState.ts";
+import {
+    buildClozeQuestion,
+    type ClozeQuestionIR,
+} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { clozeQuestionSources } from "./clozeSource.ts";
+import { participantRandomizationKey } from "$exp/ccg-01/_state/ExperimentState.ts";
+
+export type ClozePageItem = { kind: "standard"; question: ClozeQuestionIR };
 
 export const load: PageServerLoad = async ({ parent }) => {
     const { expState } = await parent();
+    const participantKey = participantRandomizationKey(expState);
 
-    const canonicalQuestionData: MultipleChoiceQuestion[] = multipleChoiceQuestions.map((
-        question,
-    ) => MultipleChoiceQuestion({
-        ...question,
-        randSeed: questionRandSeed(expState, question.qid),
-        canonicalItems: resolveDisplayOrder(
-            question.canonicalItems,
-            questionRandSeed(expState, question.qid),
-        ),
-    }) as MultipleChoiceQuestion);
+    const clozeQuestionData: ClozePageItem[] = clozeQuestionSources.map((source) => ({
+        kind: "standard",
+        question: buildClozeQuestion(source, participantKey),
+    }));
 
-    return { canonicalQuestionData };
+    return { clozeQuestionData };
 };
 
 export const actions = {

@@ -8,12 +8,19 @@ import {
     getBlanksFromQuestion,
     isBlankAnswered,
     isBlankCorrect,
+    isClozeQuestionComplete,
     questionHasCheckableAnswers,
     type ResponseItem,
 } from "./clozeQuestion.ts";
 import { clientsideSanitize } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
-let { question }: { question: ClozeQuestionIR } = $props();
+let {
+    question,
+    complete = $bindable(false),
+}: {
+    question: ClozeQuestionIR;
+    complete?: boolean;
+} = $props();
 
 let responses = $state<Record<string, ClozeBlankResponse>>({});
 /** Per-blank responses as of the last "Check answers" click (correct blanks stay until recheck). */
@@ -28,6 +35,12 @@ const canCheckAnswers = $derived(
             isBlankAnswered(blank, responses[blank.blankId] ?? { selectedItemId: "", freeText: "" })
         ),
 );
+
+const questionComplete = $derived(isClozeQuestionComplete(question, gradedResponses));
+
+$effect(() => {
+    complete = questionComplete;
+});
 
 function clearIncorrectGradingForBlank(blankId: string): void {
     if (!gradedResponses || gradedResponses[blankId] === undefined) {

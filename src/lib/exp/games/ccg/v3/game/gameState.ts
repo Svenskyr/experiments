@@ -14,6 +14,18 @@ export interface Action {
     color?: string;
 }
 
+const ACTION_COLOR_TITLES: Record<string, string> = {
+    blue: "Blue",
+    pink: "Pink",
+    green: "Green",
+    orange: "Orange",
+};
+
+/** Display name for CCG color actions (e.g. native `title` tooltips). */
+export function actionColorTitle(action: Action): string {
+    return ACTION_COLOR_TITLES[action.key] ?? action.key;
+}
+
 export interface Outcome {
     key: string;
     payoffs: [number, number];
@@ -44,6 +56,7 @@ export interface GameSessionConfig {
     maxRounds?: number;
     showPayoffTable?: boolean;
     showPredictionControls?: boolean;
+    showPredictionMismatchWarning?: boolean;
     useSubmitButton?: boolean;
 }
 
