@@ -7,7 +7,11 @@ import {
     possibleGameActions,
     possibleGameOutcomes,
 } from "$exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
-import type { Action, Outcome } from "$lib/exp/games/ccg/v3/game/gameState.ts";
+import {
+    type Action,
+    actionColorTitle,
+    type Outcome,
+} from "$lib/exp/games/ccg/v3/game/gameState.ts";
 
 export const OUTCOME_POINTS_CLOZE_QID = "cq:gd1:outcome-points";
 
@@ -26,13 +30,13 @@ export function pickScenarioActions(participantKey: string): [Action, Action] {
 }
 
 export function formatColorLabel(action: Action): string {
-    return action.key;
+    return actionColorTitle(action);
 }
 
 /** Inline swatch for cloze HTML; colors come from OutcomePointsCloze CSS variables. */
 export function colorSwatchMarkup(slot: "first" | "second", action: Action): string {
     const label = formatColorLabel(action);
-    return `<span class="cloze-color-swatch" data-slot="${slot}" role="img" aria-label="${label}"></span>`;
+    return `<span class="cloze-color-swatch" data-slot="${slot}" role="img" aria-label="${label}" title="${label}"></span>`;
 }
 
 function pointsOptions(correctPayoff: number): string {

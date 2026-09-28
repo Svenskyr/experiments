@@ -3,6 +3,7 @@ import HintBox from "$lib/common/HintBox/v1/HintBox.svelte";
 import { fade, scale } from "svelte/transition";
 import {
     type Action,
+    actionColorTitle,
     type GameSession,
     getCurrentPermutation,
     isGameComplete,
@@ -133,7 +134,11 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 {/if}
 
 {#snippet action(action: Action)}
-    <span class="action-snippet" style="background-color: {action.color}">{action.value}</span>
+    <span
+    class="action-snippet"
+    style="background-color: {action.color}"
+    title={actionColorTitle(action)}
+>{action.value}</span>
 {/snippet}
 
 {#snippet gameFrame()}

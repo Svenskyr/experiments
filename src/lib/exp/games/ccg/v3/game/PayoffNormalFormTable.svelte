@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Action, Outcome } from "./gameState.ts";
+import { type Action, actionColorTitle, type Outcome } from "./gameState.ts";
 
 let {
     actions,
@@ -13,7 +13,11 @@ let {
 </script>
 
 {#snippet actionSnippet(action: Action)}
-    <span class="action-snippet" style="background-color: {action.color}">{action.value}</span>
+    <span
+    class="action-snippet"
+    style="background-color: {action.color}"
+    title={actionColorTitle(action)}
+>{action.value}</span>
 {/snippet}
 
 {#snippet payoffCell(yourAction: Action, theirAction: Action, outcome: Outcome)}
