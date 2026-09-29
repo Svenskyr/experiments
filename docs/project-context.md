@@ -95,11 +95,15 @@ src/
 
 - **Query params:** `study_id`, `platform`, `pid`, `p_session_id`, `role`
   (`src/lib/exp/platform-api/PlatformClaims.ts`).
-- **Verification:** `PlatformVerification.ts` — `test-pass`, `test-fail`, `prolific`.
+- **Verification:** `PlatformVerification.ts` — `test-pass`, `test-fail`, `prolific`. Prolific API
+  checks run at the gate but do not block participants; each attempt is logged to
+  `experiments.platform_verification_log` via `log_platform_verification`. Cookie `user.platform` is
+  `prolific` when verification succeeds, `prolific-verification-failed` when it does not (URL params
+  stay `platform=prolific`; `reconcileClaimWithExpState` treats those as compatible).
 - **Quota:** RPC `experiments.get_fresh_quota_data` with `p_experiment_id: "exp_ccg_01"`
   (`_database/Quota.ts`).
 - **Roles (non-exhaustive):** `participant`, `over-quota`, `over-quota-buffer`, `downgraded`,
-  `failed-platform-verification`, `failed-quota-fetch`.
+  `failed-quota-fetch`.
 - **Claim vs cookie:** `reconcileClaimWithExpState` in `+layout.server.ts` — mismatch → reset state,
   redirect gate with query string.
 

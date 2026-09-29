@@ -27,6 +27,7 @@ let pageCompleted = $derived(true);
 const returnTo: string = $derived.by(() => {
     switch (expState.user.platform) {
         case "prolific":
+        case "prolific-verification-failed":
             return "https://app.prolific.com/submissions/complete?cc=C1QXQMAD";
         default:
             return "/";

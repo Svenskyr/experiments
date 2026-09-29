@@ -6,8 +6,13 @@ import { setStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
 import type { Cookies } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
-import { verifyPlatformClaims } from "$lib/exp/platform-api/PlatformVerification.ts";
+import {
+    resolvePlatformAfterVerification,
+    verifyPlatformClaims,
+} from "$lib/exp/platform-api/PlatformVerification.ts";
 import { resolvePlatformParticipantClaims } from "$lib/exp/platform-api/PlatformClaims.ts";
+import { EXPERIMENT_ID } from "$exp/ccg-01/_database/Registration.ts";
+import { logPlatformVerification } from "$exp/ccg-01/_database/PlatformVerificationLog.ts";
 import { getLogger } from "$lib/server/logger.server.ts";
 const quotaRoles = ["participant", "over-quota", "over-quota-buffer"];
 
@@ -62,65 +67,70 @@ export const actions = {
         }
 
         log.debug({ claims }, "checkQuotaAndVerifyPlatformClaim");
-        const { success: verificationSuccess, error: verificationError } =
-            await verifyPlatformClaims(
-                claims,
-            );
+        const { success: verificationSuccess, error: verificationError, httpStatus } =
+            await verifyPlatformClaims(claims);
+
+        const resolvedPlatform = resolvePlatformAfterVerification(
+            claims.platform,
+            verificationSuccess && !verificationError,
+        );
+
+        await logPlatformVerification({
+            experiment_id: EXPERIMENT_ID,
+            claim_platform: claims.platform,
+            resolved_platform: resolvedPlatform,
+            study_id: claims.studyId,
+            pid: claims.pid,
+            platform_session_id: claims.platformSessionId,
+            role: claims.role,
+            success: verificationSuccess && !verificationError,
+            error: verificationError,
+            http_status: httpStatus,
+            experiments_session_id: expState.session.sessionId ?? null,
+        });
 
         let withinQuota: boolean;
         let role: string;
         let quotaError: string | null;
 
-        if (verificationSuccess && !verificationError) {
-            const isReturning = Boolean(expState.session.sessionId);
-            if (isReturning) {
-                const reactivation = await requestSessionReactivation(expState.session.sessionId!);
-                if (reactivation.success) {
-                    withinQuota = true;
-                    role = "participant";
-                    quotaError = null;
-                } else {
-                    const quotaResult = await checkQuota();
-                    withinQuota = false;
-                    role = quotaResult.role;
-                    quotaError = reactivation.error ?? quotaResult.error;
-                }
+        const isReturning = Boolean(expState.session.sessionId);
+        if (isReturning) {
+            const reactivation = await requestSessionReactivation(expState.session.sessionId!);
+            if (reactivation.success) {
+                withinQuota = true;
+                role = "participant";
+                quotaError = null;
             } else {
-                ({ withinQuota, role, error: quotaError } = await checkQuota());
+                const quotaResult = await checkQuota();
+                withinQuota = false;
+                role = quotaResult.role;
+                quotaError = reactivation.error ?? quotaResult.error;
             }
         } else {
-            withinQuota = false;
-            role = "failed-platform-verification";
-            quotaError = null;
+            ({ withinQuota, role, error: quotaError } = await checkQuota());
         }
 
         log.debug(
-            { withinQuota, role, verificationSuccess, verificationError },
+            { withinQuota, role, verificationSuccess, verificationError, resolvedPlatform },
             "checkQuotaAndVerifyPlatformClaim",
         );
 
-        if (verificationSuccess && !verificationError) {
-            expState.user.studyId = claims.studyId;
-            expState.user.platform = claims.platform;
-            expState.user.pid = claims.pid;
-            expState.session.platformSessionId = claims.platformSessionId;
-            expState.session.role = role;
-            expState.session.withinQuota = withinQuota;
-            expState.session.lastActiveAt = Date.now();
-            if (expState.session.sessionId) {
-                if (!withinQuota) expState.pages = {};
-            } else {
-                expState.pages.consent = { permitted: withinQuota, completed: false };
-                if (!withinQuota) expState.pages = {};
-            }
+        expState.user.studyId = claims.studyId;
+        expState.user.platform = resolvedPlatform;
+        expState.user.pid = claims.pid;
+        expState.session.platformSessionId = claims.platformSessionId;
+        expState.session.role = role;
+        expState.session.withinQuota = withinQuota;
+        expState.session.lastActiveAt = Date.now();
+        if (expState.session.sessionId) {
+            if (!withinQuota) expState.pages = {};
         } else {
-            expState.session.role = "failed-platform-verification";
-            expState.session.withinQuota = false;
-            expState.pages = {};
+            expState.pages.consent = { permitted: withinQuota, completed: false };
+            if (!withinQuota) expState.pages = {};
         }
 
         await setStateCookie(cookies, expState);
-        return { expState, quotaError, verificationError };
+        return { expState, quotaError };
     },
 
     downgradeParticipant: async ({ cookies }: { cookies: Cookies }) => {

@@ -43,12 +43,26 @@ export function readPlatformParticipantClaims(url: URL): PlatformParticipantClai
     return claim;
 }
 
+function platformClaimMatchesState(
+    claimPlatform: string,
+    statePlatform: string | undefined,
+): boolean {
+    if (claimPlatform === statePlatform) return true;
+    if (claimPlatform === "prolific" && statePlatform === "prolific-verification-failed") {
+        return true;
+    }
+    if (claimPlatform === "prolific-verification-failed" && statePlatform === "prolific") {
+        return true;
+    }
+    return false;
+}
+
 export async function reconcileClaimWithExpState(
     claim: PlatformParticipantClaims,
     expState: ccg01ExpState,
 ): Promise<boolean> {
     return claim.role === expState.session.role
-        && claim.platform === expState.user.platform
+        && platformClaimMatchesState(claim.platform, expState.user.platform)
         && claim.pid === expState.user.pid
         && claim.platformSessionId === expState.session.platformSessionId;
 }

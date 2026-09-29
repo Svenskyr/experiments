@@ -17,7 +17,6 @@ import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
 let checkingQuota = $state(false);
 let checkQuotaCooldown = $state(0);
 let quotaError = $state<string | null>(null);
-let verificationError = $state<string | null>(null);
 let cooldownIntervalId: number | null = null;
 let autoQuotaCheckStarted = $state(false);
 
@@ -25,6 +24,10 @@ import { page } from "$app/state";
 
 const isReturningParticipant = $derived(Boolean(expState.session.sessionId));
 const gateClaims = $derived(resolvePlatformParticipantClaims(page.url, expState));
+const needsQuotaCheck = $derived(
+    expState.session.withinQuota === undefined
+        || expState.session.role === "failed-platform-verification",
+);
 
 function tryAutoSubmitQuotaCheck() {
     if (
@@ -32,7 +35,7 @@ function tryAutoSubmitQuotaCheck() {
         || checkingQuota
         || checkQuotaCooldown > 0
         || !checkQuotaForm
-        || expState.session.withinQuota !== undefined
+        || !needsQuotaCheck
     ) {
         return;
     }
@@ -69,7 +72,6 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
     debug("starting quota and platform verification check");
     checkingQuota = true;
     quotaError = null;
-    verificationError = null;
     startCooldown();
 
     return async ({ result }) => {
@@ -82,7 +84,6 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
                     Object.assign(expState, result.data.expState);
                 }
                 quotaError = result.data.quotaError ?? null;
-                verificationError = result.data.verificationError ?? null;
             }
         }
         if (result.type === "failure" && result.data?.error) {
@@ -110,17 +111,8 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
                 <p>{quotaError}</p>
             {/if}
 
-        {:else if checkingQuota}
+        {:else if checkingQuota || needsQuotaCheck}
             <h2>Checking study quota and verifying your session...</h2>
-
-        {:else if expState.session.role === "failed-platform-verification"}
-            <h2>We could not verify your session</h2>
-
-            {#if verificationError}
-                <p>{verificationError}</p>
-            {:else}
-                <p>Please try again. If the problem persists, contact the study administrator.</p>
-            {/if}
 
         {:else if expState.session.withinQuota === true}
             {#if isReturningParticipant}
@@ -156,9 +148,8 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
             </form>
         {/if}
 
-        {#if expState.session.withinQuota === undefined
-            || expState.session.role === "over-quota-buffer"
-            || expState.session.role === "failed-platform-verification"}
+        {#if needsQuotaCheck
+            || expState.session.role === "over-quota-buffer"}
             <form
             method="POST"
             action="?/checkQuotaAndVerifyPlatformClaim"
@@ -170,7 +161,7 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
                     <button type="submit"
                     class="exp-default-button"
                     class:disabled={checkingQuota || checkQuotaCooldown > 0}>
-                        {expState.session.withinQuota === undefined ? "Check quota" : "Recheck"}
+                        {needsQuotaCheck ? "Check quota" : "Recheck"}
                         {checkQuotaCooldown > 0 ? ` (${checkQuotaCooldown})` : ""}
                     </button>
                 {/if}

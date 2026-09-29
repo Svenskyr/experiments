@@ -48,7 +48,7 @@ import type { PlatformParticipantClaims } from "./PlatformClaims.ts";
 
 export async function verifyProlificSession(
     claim: PlatformParticipantClaims,
-): Promise<{ success: boolean; error: string | null }> {
+): Promise<{ success: boolean; error: string | null; httpStatus: number }> {
     const response = await fetch(
         `https://api.prolific.com/api/v1/submissions/${claim.platformSessionId}`,
         {
@@ -62,6 +62,7 @@ export async function verifyProlificSession(
         return {
             success: false,
             error: `Failed to verify Prolific session: ${response.statusText}`,
+            httpStatus: response.status,
         };
     }
     const data = await response.json();
@@ -83,5 +84,5 @@ export async function verifyProlificSession(
                 : "Unknown error"
         }`;
 
-    return { success, error };
+    return { success, error, httpStatus: response.status };
 }
