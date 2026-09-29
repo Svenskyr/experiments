@@ -4,7 +4,7 @@ import type { RangeSetQuestion } from "$lib/common/QuestionTypes/RangeSetQuestio
 export const rangeSetQuestions: RangeSetQuestion[] = [
     {
         qid: "survey-gender-identity",
-        questionText: "1. What do you identify as?",
+        questionText: "1. How would you describe your own gender?",
         min: 0,
         max: 10,
         step: 0.5,
@@ -26,7 +26,8 @@ export const rangeSetQuestions: RangeSetQuestion[] = [
     },
     {
         qid: "survey-gender-factors",
-        questionText: "2. How important are these factors to gender?",
+        questionText:
+            "2. How much do you think these factors contribute to gender identity in general?",
         min: 0,
         max: 10,
         step: 0.5,
@@ -43,7 +44,7 @@ export const rangeSetQuestions: RangeSetQuestion[] = [
             },
             {
                 itemId: "gender-hormones",
-                itemText: "Hormones",
+                itemText: "Hormone levels",
                 tooltipText: "(e.g., testosterone or estrogen)",
             },
             {
@@ -81,12 +82,12 @@ export const rangeSetQuestions: RangeSetQuestion[] = [
         canonicalItems: [
             {
                 itemId: "gender-norms-their-culture",
-                itemText: "People ought to follow <em>their</em> culture's gender norms.",
+                itemText: "People should follow <em>their own</em> culture's gender norms.",
                 displayOrder: 1,
             },
             {
                 itemId: "gender-norms-my-culture",
-                itemText: "People ought to follow <em>my</em> culture's gender norms.",
+                itemText: "Everyone should follow <em>my</em> culture's gender norms.",
                 displayOrder: 1,
             },
             {
@@ -96,16 +97,16 @@ export const rangeSetQuestions: RangeSetQuestion[] = [
                 tooltipText: "Just making sure you're paying attention.",
             },
             {
-                itemId: "gender-norms-functional",
-                itemText: "On average, my culture's gender norms are <em>functional</em>.",
+                itemId: "gender-norms-useful",
+                itemText: "My culture's gender norms are <em>useful</em>.",
                 displayOrder: 3,
-                tooltipText: "Functionality <em>regardless of fairness</em>.",
+                tooltipText: "Useful <em>regardless of fairness</em>.",
             },
             {
-                itemId: "gender-norms-fairness",
-                itemText: "On average, my culture's gender norms are <em>fair</em>.",
+                itemId: "gender-norms-fair",
+                itemText: "My culture's gender norms are <em>fair</em>.",
                 displayOrder: 3,
-                tooltipText: "Fairness <em>regardless of functionality</em>.",
+                tooltipText: "Fair <em>regardless of usefulness</em>.",
             },
             // {
             //     itemId: "homicide-morality",
@@ -131,8 +132,8 @@ export const rangeSetQuestions: RangeSetQuestion[] = [
             {
                 itemId: "political-orientation-liberal",
                 itemText: "Liberal",
-                tooltipText:
-                    "If you differentiate between liberal and leftist, please specify below.",
+                // tooltipText:
+                //     "If you differentiate between liberal and leftist, please specify below.",
             },
             {
                 itemId: "political-orientation-conservative",

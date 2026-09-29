@@ -163,6 +163,12 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
 {/if}
 
 <style>
+details {
+    &[open]::details-content {
+        background-color: light-dark(oklch(90% 0 0), oklch(30% 0 0));
+        border-radius: 1rem;
+    }
+}
 .question-status-list li.incomplete::marker {
     content: "❌ ";
 }
