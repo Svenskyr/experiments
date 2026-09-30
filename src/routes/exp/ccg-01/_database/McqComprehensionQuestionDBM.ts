@@ -1,5 +1,5 @@
+import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
-    type MultipleChoiceItem,
     type MultipleChoiceQuestion,
 } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
@@ -13,7 +13,7 @@ import {
     type PostgrestError,
 } from "../_syncHandler/v3/SyncHandlerActions.ts";
 
-interface storedItems {
+interface McqStoredItems {
     canonicalItems: MultipleChoiceItem[];
     userItems?: MultipleChoiceItem[];
 }
@@ -21,39 +21,39 @@ interface storedItems {
 const storageKey = (qid: string) => `exp_ccg_01:mcq:${qid}`;
 const unstorageKey = (storageKey: string) => storageKey.replace("exp_ccg_01:mcq:", "");
 
-export function load(qid: string): storedItems | null {
-    return loadFromLocalStorage<storedItems>(storageKey(qid)) ?? null;
+export function load(qid: string): McqStoredItems | null {
+    return loadFromLocalStorage<McqStoredItems>(storageKey(qid)) ?? null;
 }
 
 export function save(question: MultipleChoiceQuestion) {
-    saveToLocalStorage<storedItems>(storageKey(question.qid), {
+    saveToLocalStorage<McqStoredItems>(storageKey(question.qid), {
         canonicalItems: cleanItemsForLocalStorage(question.canonicalItems),
         userItems: question.userItems ? cleanItemsForLocalStorage(question.userItems) : undefined,
     });
 }
 
 export function sync(syncHandler: SyncHandler, qid: string): void {
-    syncHandler.enqueue(storageKey(qid), "submitComprehensionQuestion");
+    syncHandler.enqueue(storageKey(qid), "submitMcqComprehensionQuestion");
 }
 
 export async function submit(
     syncHandler: SyncHandler,
-    storageKey: string,
+    storageKeyArg: string,
 ): Promise<{ data: unknown; error: PostgrestError | null }> {
     if (!syncHandler.ready || !syncHandler.db) {
         return { data: null, error: notReadyError() };
     }
 
-    const storedItems = loadFromLocalStorage<storedItems>(storageKey);
+    const storedItems = loadFromLocalStorage<McqStoredItems>(storageKeyArg);
     if (!storedItems) {
-        return { data: null, error: noPayloadError(storageKey) };
+        return { data: null, error: noPayloadError(storageKeyArg) };
     }
 
-    const qid = unstorageKey(storageKey);
+    const qid = unstorageKey(storageKeyArg);
 
     let response: Response;
     try {
-        response = await fetch("/exp/ccg-01/api/comprehension", {
+        response = await fetch("/exp/ccg-01/api/comprehension/mcq", {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

@@ -50,6 +50,11 @@ function pointsOptions(correctPayoff: number): string {
         .join(", ");
 }
 
+export function getOutcomePointsContentLines(participantKey: string): string[] {
+    const actions = pickScenarioActions(participantKey);
+    return buildContent(actions, possibleGameOutcomes);
+}
+
 function buildContent(actions: [Action, Action], outcomes: Outcome[]): string[] {
     const [first, second] = actions;
     const firstSwatch = colorSwatchMarkup("first", first);

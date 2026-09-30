@@ -37,6 +37,16 @@ installLocalStorageMock();
 import type { MultipleChoiceQuestion } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import { newMultipleChoiceQuestion } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import { newRangeSetQuestion } from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
+import type { ClozeBlankResponse } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { getBlanksFromLine } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { processMcqResponses } from "$exp/ccg-01/_database/McqComprehensionQuestionServer.ts";
+import {
+    allSubQids,
+    buildClozeFieldsets,
+    clozeSubQid,
+    contentLinesForFieldset,
+    scoreLine,
+} from "$exp/ccg-01/_database/ClozeComprehensionRegistry.ts";
 import type { ExperimentState } from "$exp/ccg-01/_state/ExperimentState.ts";
 import { multipleChoiceQuestions as gd1Questions } from "$exp/ccg-01/(pages)/game_description_1/questions.ts";
 import { multipleChoiceQuestions as gd2Questions } from "$exp/ccg-01/(pages)/game_description_2/questions.ts";
@@ -80,10 +90,14 @@ const MOCK_AVATARS: MockAvatar[] = [
     { name: "masc2", path: "" },
 ];
 
-const COMPREHENSION_QIDS = [
+const MCQ_COMPREHENSION_QIDS = [
     ...gd1Questions.map((q) => q.qid),
     ...gd2Questions.map((q) => q.qid),
 ];
+
+function expectedClozeSubQids(participantKey: string): string[] {
+    return allSubQids(participantKey);
+}
 
 const EXPECTED_SURVEY = surveyRangeSetTemplates.length + surveyMcqTemplates.length;
 const ATTENTION_CHECK_VALUE = 2.5;
@@ -171,7 +185,7 @@ export function buildCorrectComprehensionItems(question: MultipleChoiceQuestion)
     };
 }
 
-async function submitAllComprehension(sessionId: string): Promise<void> {
+async function submitAllMcqComprehension(sessionId: string): Promise<void> {
     const supabase = createServiceClient();
     const allQuestions = [...gd1Questions, ...gd2Questions];
     for (const question of allQuestions) {
@@ -184,9 +198,7 @@ async function submitAllComprehension(sessionId: string): Promise<void> {
             isTrue: item.isSelected,
             displayOrder: item.displayOrder,
         }));
-        const selected = items.filter((item) => item.wasSelected);
-        const trueCount = selected.filter((item) => item.isTrue === true).length;
-        const score = Math.round((trueCount / selected.length) * 100) / 100;
+        const { responses, score, maxPossibleScore } = processMcqResponses(items);
 
         const { error } = await supabase
             .schema("exp_ccg_01")
@@ -195,10 +207,56 @@ async function submitAllComprehension(sessionId: string): Promise<void> {
                 session_id: sessionId,
                 qid: question.qid,
                 question_text: question.questionText,
-                responses: items,
+                responses,
                 score,
+                max_possible_score: maxPossibleScore,
             });
         if (error) throw new Error(`comprehension ${question.qid}: ${error.message}`);
+    }
+}
+
+function correctBlankResponses(
+    lineNodes:
+        readonly import("$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts").ClozeContentNode[],
+): Record<string, ClozeBlankResponse> {
+    const blankResponses: Record<string, ClozeBlankResponse> = {};
+    for (const blank of getBlanksFromLine(lineNodes)) {
+        const correctOption = blank.blankOptions.find((option) => option.isTrue === true);
+        blankResponses[blank.blankId] = {
+            selectedItemId: correctOption?.itemId ?? "",
+            freeText: correctOption?.itemLabel === undefined ? "mock" : "",
+            wasSelectedItemIds: correctOption ? [correctOption.itemId] : [],
+        };
+    }
+    return blankResponses;
+}
+
+async function submitAllComprehension(
+    sessionId: string,
+    participantKey: string,
+): Promise<void> {
+    const supabase = createServiceClient();
+    for (const fieldset of buildClozeFieldsets(participantKey)) {
+        for (let lineIndex = 0; lineIndex < fieldset.lines.length; lineIndex++) {
+            const lineNodes = fieldset.lines[lineIndex]!;
+            const blankResponses = correctBlankResponses(lineNodes);
+            const { responses, score, maxPossibleScore } = scoreLine(lineNodes, blankResponses);
+            const subQid = clozeSubQid(fieldset.qid, lineIndex);
+            const questionText = contentLinesForFieldset(fieldset.qid, participantKey)[lineIndex]!;
+
+            const { error } = await supabase
+                .schema("exp_ccg_01")
+                .from("comprehension")
+                .insert({
+                    session_id: sessionId,
+                    qid: subQid,
+                    question_text: questionText,
+                    responses,
+                    score,
+                    max_possible_score: maxPossibleScore,
+                });
+            if (error) throw new Error(`comprehension ${subQid}: ${error.message}`);
+        }
     }
 }
 
@@ -393,8 +451,10 @@ export async function assertCompletedSession(
         .from("comprehension")
         .select("*", { count: "exact", head: true })
         .eq("session_id", sessionId);
-    if (compCount !== COMPREHENSION_QIDS.length) {
-        throw new Error(`comprehension rows ${compCount}, expected ${COMPREHENSION_QIDS.length}`);
+    if (compCount !== expectedClozeSubQids(sessionId).length) {
+        throw new Error(
+            `comprehension rows ${compCount}, expected ${expectedClozeSubQids(sessionId).length}`,
+        );
     }
 
     const { count: roundCount } = await supabase
@@ -699,8 +759,9 @@ async function runOneParticipant(
     console.log(`  session_id=${registered.sessionId}`);
 
     const expState = buildExpState(registered, cliOptions.platform);
-    console.log(`  Comprehension (${COMPREHENSION_QIDS.length} questions)…`);
-    await submitAllComprehension(registered.sessionId);
+    const expectedComprehension = expectedClozeSubQids(registered.sessionId).length;
+    console.log(`  Comprehension (${expectedComprehension} cloze lines)…`);
+    await submitAllComprehension(registered.sessionId, registered.sessionId);
 
     const { client } = await signInParticipant(registered.email);
     const syncHandler = new SyncHandler("exp_ccg_01");

@@ -10,9 +10,10 @@ import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* Page questions */
-import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v1/ClozeQuestion.svelte";
+import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
 import OutcomePointsCloze from "./OutcomePointsCloze.svelte";
 import type { ClozePageItem } from "./+page.server.ts";
+import { clozeFieldsetHandlers } from "$exp/ccg-01/_database/clozeFieldsetHandlers.ts";
 
 let { data } = $props();
 const { clozeQuestionData } = $derived(data);
@@ -126,15 +127,24 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
     <h2>Comprehension questions</h2>
 
     {#each clozeQuestionData as item (item.question.qid)}
+        {@const handlers = clozeFieldsetHandlers(item.question)}
         {#if item.kind === "outcome-points"}
             <OutcomePointsCloze
                 question={item.question}
                 scenario={item.scenario}
+                initialResponses={handlers.initialResponses}
+                initialGradedResponses={handlers.initialGradedResponses}
+                onSaveBlank={handlers.onSaveBlank}
+                onCheckAnswers={handlers.onCheckAnswers}
                 bind:complete={clozeCompleteByQid[item.question.qid]}
             />
         {:else}
             <ClozeQuestion
                 question={item.question}
+                initialResponses={handlers.initialResponses}
+                initialGradedResponses={handlers.initialGradedResponses}
+                onSaveBlank={handlers.onSaveBlank}
+                onCheckAnswers={handlers.onCheckAnswers}
                 bind:complete={clozeCompleteByQid[item.question.qid]}
             />
         {/if}

@@ -1,17 +1,31 @@
 <script lang="ts">
-import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v1/ClozeQuestion.svelte";
+import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
 import PayoffNormalFormTable from "$lib/exp/games/ccg/v3/game/PayoffNormalFormTable.svelte";
-import type { ClozeQuestionIR } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import type {
+    ClozeBlankResponse,
+    ClozeLineCheckPayload,
+    ClozeQuestionIR,
+} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import type { OutcomePointsScenario } from "./outcomePointsCloze.ts";
 
 let {
     question,
     scenario,
     complete = $bindable(false),
+    initialResponses = {},
+    initialGradedResponses = null,
+    onSaveBlank,
+    onCheckAnswers,
 }: {
     question: ClozeQuestionIR;
     scenario: OutcomePointsScenario;
     complete?: boolean;
+    initialResponses?: Record<string, ClozeBlankResponse>;
+    initialGradedResponses?: Record<string, ClozeBlankResponse> | null;
+    onSaveBlank?: (blankId: string, response: ClozeBlankResponse) => void;
+    onCheckAnswers?: (
+        linesPayload: ClozeLineCheckPayload[],
+    ) => Promise<{ error: string | null; blankCorrect: Record<string, boolean> }>;
 } = $props();
 </script>
 
@@ -27,7 +41,14 @@ let {
     <div class="payoff-table-container">
         <PayoffNormalFormTable actions={scenario.actions} outcomes={scenario.outcomes} />
     </div>
-    <ClozeQuestion {question} bind:complete={complete} />
+    <ClozeQuestion
+        {question}
+        {initialResponses}
+        {initialGradedResponses}
+        {onSaveBlank}
+        {onCheckAnswers}
+        bind:complete={complete}
+    />
 </div>
 
 <style>
