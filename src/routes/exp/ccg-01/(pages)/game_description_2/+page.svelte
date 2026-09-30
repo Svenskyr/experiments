@@ -60,48 +60,55 @@ function latex(node: HTMLElement, formula: string) {
     <h1>Your predictions</h1>
 
     <p>
-        For each game round, you'll be asked to predict the proportion of players that choose each
-        option.
+        For each game round, you'll be asked to <strong>predict how participants that are <em>Player B</em> will choose.</strong>
     </p>
 
     <ul>
-        <li>Each prediction gives you a chance to earn a <em>prediction bonus</em>.</li>
+        <!-- <li>This prediction is about participants that are <em>Player B</em> in your game (<em>not</em> others in <em>your</em> place).</li> -->
+        <li>Each prediction that you make has a chance to earn <em>bonus points</em>.</li>
+        <li>Bonus points are added to your final payoff at the end of the study.</li>
         <li>
-            The more accurate your predictions, the higher your chances of earning these bonuses.
+            More accurate predictions earn more bonus points.
         </li>
-        <li>You will maximize your expected bonus payments by reporting your true predictions.</li>
-        <li>You should <em>not</em> try to hedge your predictions in either direction.</li>
+        <li>Your expected bonus points are maximized when your prediction matches your true belief.</li>
+        <!-- <li>You should <em>not</em> try to hedge your predictions in either direction.</li> -->
+        <li>You can think of this question as "How likely is it that <em>Player B</em> will choose either option?" (These questions are both answered by the same prediction.)</li>
     </ul>
 
     <details>
-        <summary>How are prediction bonuses rewarded?</summary>
+        <summary>How are prediction bonuses awarded?</summary>
 
-        Prediction bonuses are rewarded using a <em>binarized scoring rule</em>. For each
-        prediction, your chance of earning the bonus depends on the <em>difference between your
-            prediction and the true value</em>. The closer your prediction, the greater your chance
-        of earning the bonus.
+        Prediction bonuses are awarded using a <em>binarized scoring rule</em>. For each
+        prediction, your chance of earning a bonus depends on <em>the difference between your
+            prediction and the true value</em>. The closer your prediction is to the true value, the greater your chance
+        of earning a bonus.
 
         <h3>Scoring rule</h3>
 
-        Let <span use:latex={"θ"}></span> be the true proportion of players that choose option 1,
-        and
-        <span use:latex={"x_i"}></span> be your prediction for that round.
+        In each game round, some proportion of participants that are <em>Player B</em> will choose option 1.
+        <ul>
+            <li><span use:latex={"θ"}></span> is the <em>true</em> proportion of players that choose option 1.</li>
+            <li><span use:latex={"x_i"}></span> is your <em>prediction</em> about the proportion of players that choose option 1.</li>
+        </ul>
+
+    
+
+        <p>Your chance of earning the bonus is given by the following formula:</p>
 
         <!-- This line works as intended -->
-        <div use:latex={"\\text{Probability of earning bonus: } p = 10\\% - (θ - x_i)^2"}></div>
+        <div use:latex={" p = 10\\% - (θ - x_i)^2"}></div>
 
         <!-- This line works as intended -->
         <!-- Probability of earning bonus <span use:latex={"= 10\\\% - (θ - x_i)^2"}></span> -->
 
-        <div use:latex={"\\text{Expected payoff: } E[π_i] = p \\cdot b = 10\\% - (θ - x_i)^2"}>
-        </div>
+        <!-- <div use:latex={"\\text{Expected payoff: } E[π_i] = p \\cdot b = 10\\% - (θ - x_i)^2"}></div> -->
 
-        <div
+        <!-- <div
             use:latex={"\\text{First order condition: } \\frac{∂E[π_i]}{∂x_i} = 2 \\cdot (θ - x_i) = 0"}
         >
         </div>
 
-        <div use:latex={"\\text{Best response: } x_i = θ"}></div>
+        <div use:latex={"\\text{Best response: } x_i = θ"}></div> -->
     </details>
 
     <br>

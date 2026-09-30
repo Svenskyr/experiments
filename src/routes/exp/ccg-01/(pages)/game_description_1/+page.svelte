@@ -84,7 +84,7 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
         </li> -->
     </ul>
 
-    <details>
+    <!-- <details>
         <summary>Other player selection details (optional)</summary>
 
         <p>Each game round has <b>four (4)</b> elements:</p>
@@ -116,11 +116,23 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
         </p>
 
         <p>This means that your choice directly affects <em>your</em> outcome and <em>probabilistically</em> affects the outcome of other players.</p>
-    </details>
+    </details> -->
 
     <h2>Example game</h2>
 
     <DemoGame {expState} showPredictionControls={false} />
+
+    <div class="caption">
+        <p>The payoff table above (the game's <em>normal form</em>) shows the possible points earned from the game round.</p>
+        <ul>
+            <li>Your possible choices are shown on the left side of the table.</li>
+            <li>The other player's possible choices are shown on the top of the table.</li>
+            <li>Possible outcomes are shown as the intersection of possible choices.</li>
+            <li>The points that <strong>you</strong> would earn are the <u>first</u> number in the pair.</li>
+            <li>The points that the other player would earn are the second number.</li>
+        </ul>
+    </div>
+
     <FeedbackWrapper page="game_description_1" label="game description" />
 </div>
 <div class="page-block">
@@ -185,5 +197,9 @@ details {
 
 .question-status-list li.complete::marker {
     content: "✅ ";
+}
+.caption {
+    align-self: center;
+    max-width: 75%;
 }
 </style>

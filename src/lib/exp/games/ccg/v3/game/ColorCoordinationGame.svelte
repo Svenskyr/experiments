@@ -141,11 +141,23 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 >{action.value}</span>
 {/snippet}
 
+{#snippet playerAvatar(avatarPath: string, alt: string, label: string | null)}
+    <div class="player-avatar-block">
+        <img src={avatarPath} alt={alt} class="player-avatar" />
+        {#if label}
+            <span class="player-avatar-label">{label}</span>
+        {/if}
+    </div>
+{/snippet}
+
 {#snippet gameFrame()}
     <fieldset class="ccg-frame">
     <legend class="visually-hidden">Your choice</legend>
-    <img src={currentPermutation.avatars[0].path} alt="Player 1 Avatar (you)"
-        class="player-avatar" />
+    {@render playerAvatar(
+        currentPermutation.avatars[0].path,
+        "Player 1 Avatar (you)",
+        session.config.showPlayerLabels ? "Player A (you)" : null,
+    )}
     <label
         class="choice-button"
         class:selected={selectedChoice === currentPermutation.actions[0].key}
@@ -174,8 +186,11 @@ function handleChoiceKeydown(e: KeyboardEvent) {
             />
             {@render action(currentPermutation.actions[1])}
         </label>
-    <img src={currentPermutation.avatars[1].path} alt="Player 2 Avatar (other player)"
-        class="player-avatar" />
+    {@render playerAvatar(
+        currentPermutation.avatars[1].path,
+        "Player 2 Avatar (other player)",
+        session.config.showPlayerLabels ? "Player B" : null,
+    )}
 </fieldset>
 {/snippet}
 
@@ -192,7 +207,8 @@ function handleChoiceKeydown(e: KeyboardEvent) {
 
 {#snippet predictionControls()}
     <div class="prediction">
-    <div class="prediction-question-text">Your prediction about how other players choose:</div>
+    <div
+        class="prediction-question-text">I predict that <em>Player B</em> is likely to choose:</div>
     <div class="prediction-input" class:prediction-unmade={!hasPredictionBeenMade}>
         <div class="prediction-labels">
             <div class="prediction-label-item"
@@ -304,6 +320,20 @@ function handleChoiceKeydown(e: KeyboardEvent) {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+.player-avatar-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.player-avatar-label {
+    font-size: 0.7rem;
+    text-align: center;
+    line-height: 1.2;
 }
 
 .player-avatar {

@@ -25,6 +25,7 @@ const sharedConfig = {
     possibleOutcomes: possibleGameOutcomes,
     showPayoffTable: true,
     useSubmitButton: true,
+    showPlayerLabels: true,
 } satisfies Partial<GameSessionConfig>;
 
 export function recordedMaxRounds(role?: string): number {
