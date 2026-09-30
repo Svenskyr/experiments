@@ -34,10 +34,10 @@ let {
     style:--cloze-color-first={scenario.actions[0].color}
     style:--cloze-color-second={scenario.actions[1].color}
 >
-    <p class="scenario-intro">
+    <!-- <p class="scenario-intro">
         The table shows payoffs for one example round with two colors. Your payoff is the
         <span class="your-payoff-emphasis">underlined</span> number in each cell.
-    </p>
+    </p> -->
     <div class="payoff-table-container">
         <PayoffNormalFormTable actions={scenario.actions} outcomes={scenario.outcomes} />
     </div>
