@@ -1,4 +1,5 @@
 import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
+import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import { parseClozeQuestion } from "./parser.ts";
 
 export interface ClozeQuestionSource {
@@ -49,7 +50,81 @@ export interface ClozeQuestionIR {
 export type ClozeBlankResponse = {
     selectedItemId: string;
     freeText: string;
+    /** Item ids ever chosen for this blank (includes wrong attempts). */
+    wasSelectedItemIds?: string[];
 };
+
+/** Record a dropdown / option selection, preserving prior attempts. */
+export function recordBlankSelection(
+    response: ClozeBlankResponse,
+    selectedItemId: string,
+): ClozeBlankResponse {
+    if (!selectedItemId) {
+        return response;
+    }
+    const previous = response.wasSelectedItemIds ?? [];
+    const wasSelectedItemIds = previous.includes(selectedItemId)
+        ? previous
+        : [...previous, selectedItemId];
+    return { ...response, selectedItemId, wasSelectedItemIds };
+}
+
+export function wasSelectedIdsFromMcqItems(items: MultipleChoiceItem[]): string[] {
+    return items.filter((item) => item.wasSelected).map((item) => item.itemId);
+}
+
+export function getBlanksFromLine(line: readonly ClozeContentNode[]): BlankNode[] {
+    return line.filter((node): node is BlankNode => node.type === "blank");
+}
+
+const emptyBlankResponse = (): ClozeBlankResponse => ({ selectedItemId: "", freeText: "" });
+
+export function lineIndexForBlank(question: ClozeQuestionIR, blankId: string): number {
+    for (let lineIndex = 0; lineIndex < question.lines.length; lineIndex++) {
+        const line = question.lines[lineIndex]!;
+        if (line.some((node) => node.type === "blank" && node.blankId === blankId)) {
+            return lineIndex;
+        }
+    }
+    return -1;
+}
+
+export interface ClozeLineCheckPayload {
+    lineIndex: number;
+    blanks: Record<string, ClozeBlankResponse>;
+}
+
+export function buildCheckLinesPayload(
+    question: ClozeQuestionIR,
+    responses: Record<string, ClozeBlankResponse>,
+): ClozeLineCheckPayload[] {
+    const linesPayload: ClozeLineCheckPayload[] = [];
+
+    for (let lineIndex = 0; lineIndex < question.lines.length; lineIndex++) {
+        const lineNodes = question.lines[lineIndex]!;
+        const blanks = getBlanksFromLine(lineNodes);
+        const checkable = blanks.filter(blankHasCorrectMarker);
+        if (checkable.length === 0) {
+            continue;
+        }
+        if (
+            !checkable.every((blank) =>
+                isBlankAnswered(blank, responses[blank.blankId] ?? emptyBlankResponse())
+            )
+        ) {
+            continue;
+        }
+
+        const blankMap: Record<string, ClozeBlankResponse> = {};
+        for (const blank of blanks) {
+            const raw = responses[blank.blankId] ?? emptyBlankResponse();
+            blankMap[blank.blankId] = recordBlankSelection(raw, raw.selectedItemId);
+        }
+        linesPayload.push({ lineIndex, blanks: blankMap });
+    }
+
+    return linesPayload;
+}
 
 export function getBlanksFromQuestion(question: ClozeQuestionIR): BlankNode[] {
     const blanks: BlankNode[] = [];

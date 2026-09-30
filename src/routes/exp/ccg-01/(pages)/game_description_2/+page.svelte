@@ -10,8 +10,9 @@ import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* Page questions */
-import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v1/ClozeQuestion.svelte";
+import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
 import type { ClozePageItem } from "./+page.server.ts";
+import { clozeFieldsetHandlers } from "$exp/ccg-01/_database/clozeFieldsetHandlers.ts";
 
 let { data } = $props();
 const { clozeQuestionData } = $derived(data);
@@ -113,8 +114,13 @@ function latex(node: HTMLElement, formula: string) {
     <h2>Comprehension questions</h2>
 
     {#each clozeQuestionData as item (item.question.qid)}
+        {@const handlers = clozeFieldsetHandlers(item.question)}
         <ClozeQuestion
             question={item.question}
+            initialResponses={handlers.initialResponses}
+            initialGradedResponses={handlers.initialGradedResponses}
+            onSaveBlank={handlers.onSaveBlank}
+            onCheckAnswers={handlers.onCheckAnswers}
             bind:complete={clozeCompleteByQid[item.question.qid]}
         />
     {/each}

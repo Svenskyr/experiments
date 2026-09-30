@@ -1,14 +1,14 @@
 import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
-    type StoredItems,
-    submitComprehensionQuestion,
-} from "$exp/ccg-01/_database/ComprehensionQuestionServer.ts";
-import { setStateCookie, verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
+    type McqStoredItems,
+    submitMcqComprehensionQuestion,
+} from "$exp/ccg-01/_database/McqComprehensionQuestionServer.ts";
+import { verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 function parseBody(
     body: unknown,
-): { qid: string; storedItems: StoredItems } | { error: string } {
+): { qid: string; storedItems: McqStoredItems } | { error: string } {
     if (!body || typeof body !== "object") {
         return { error: "Invalid request body" };
     }
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     }
 
     const { qid, storedItems } = parsed;
-    const { data, error } = await submitComprehensionQuestion(sessionId, qid, storedItems);
+    const { data, error } = await submitMcqComprehensionQuestion(sessionId, qid, storedItems);
 
     if (error) {
         const status = error.code === "404" ? 404 : 500;

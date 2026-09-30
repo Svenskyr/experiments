@@ -3,22 +3,23 @@ import {
     type MultipleChoiceItem,
     type MultipleChoiceQuestion,
 } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import { Log2Score } from "$lib/common/Scoring/Scoring.ts";
 import { multipleChoiceQuestions as gd1 } from "../(pages)/game_description_1/questions.ts";
 import { multipleChoiceQuestions as gd2 } from "../(pages)/game_description_2/questions.ts";
 import { supabase } from "../_database/ServiceRole.ts";
 import type { PostgrestError } from "../_syncHandler/v3/SyncHandlerActions.ts";
 
-export interface StoredItems {
+export interface McqStoredItems {
     canonicalItems: MultipleChoiceItem[];
     userItems?: MultipleChoiceItem[];
 }
 
-export const comprehensionQuestionsByQid = new Map(
+export const mcqComprehensionQuestionsByQid = new Map(
     [...gd1, ...gd2].map((q: MultipleChoiceQuestion) => [q.qid, q]),
 );
 
-export function getTemplate(qid: string): MultipleChoiceQuestion | null {
-    const q = comprehensionQuestionsByQid.get(qid);
+export function getMcqTemplate(qid: string): MultipleChoiceQuestion | null {
+    const q = mcqComprehensionQuestionsByQid.get(qid);
     if (!q) return null;
     return {
         ...q,
@@ -27,18 +28,31 @@ export function getTemplate(qid: string): MultipleChoiceQuestion | null {
     };
 }
 
-export function rehydrateQuestion(
+export function rehydrateMcqQuestion(
     qid: string,
-    storedItems: StoredItems,
+    storedItems: McqStoredItems,
 ): MultipleChoiceQuestion | null {
-    const question = getTemplate(qid);
+    const question = getMcqTemplate(qid);
     if (!question) return null;
     return mergeQuestionData(question, storedItems);
 }
 
-export function processResponses(
+function roundLog2Score(k: number, n: number): number {
+    return n === 0 ? 0 : Math.round(Log2Score(k, n) * 100) / 100;
+}
+
+/** Best achievable Log2 score for this option set (minimum attempts = one per true option). */
+export function maxPossibleMcqScore(items: Pick<MultipleChoiceItem, "isTrue">[]): number {
+    const n = items.length;
+    if (n === 0) return 0;
+    const trueCount = items.filter((item) => item.isTrue === true).length;
+    const kMax = trueCount > 0 ? trueCount : 1;
+    return roundLog2Score(kMax, n);
+}
+
+export function processMcqResponses(
     items: MultipleChoiceItem[],
-): { responses: MultipleChoiceItem[]; score: number } {
+): { responses: MultipleChoiceItem[]; score: number; maxPossibleScore: number } {
     const responses = items.map((response) => ({
         itemId: response.itemId,
         itemText: response.itemText,
@@ -49,24 +63,25 @@ export function processResponses(
     }));
 
     const selectedResponses = responses.filter((response) => response.wasSelected);
-    const trueCount = selectedResponses.filter((response) => response.isTrue === true).length;
+    const k = selectedResponses.length;
+    const n = responses.length;
 
-    const score = Math.round(
-        (trueCount / selectedResponses.length) * 100,
-    ) / 100;
+    const score = k === 0 || n === 0 ? 0 : roundLog2Score(k, n);
+    const maxPossibleScore = maxPossibleMcqScore(responses);
 
     return {
         responses,
         score,
+        maxPossibleScore,
     };
 }
 
-export async function submitComprehensionQuestion(
+export async function submitMcqComprehensionQuestion(
     sessionId: string,
     qid: string,
-    storedItems: StoredItems,
+    storedItems: McqStoredItems,
 ): Promise<{ data: unknown; error: PostgrestError | null }> {
-    const question = rehydrateQuestion(qid, storedItems);
+    const question = rehydrateMcqQuestion(qid, storedItems);
     if (!question) {
         return {
             data: null,
@@ -80,7 +95,7 @@ export async function submitComprehensionQuestion(
     }
 
     const items = [...question.canonicalItems, ...question.userItems ?? []];
-    const { responses, score } = processResponses(items);
+    const { responses, score, maxPossibleScore } = processMcqResponses(items);
 
     const row = {
         session_id: sessionId,
@@ -88,6 +103,7 @@ export async function submitComprehensionQuestion(
         question_text: question.questionText,
         responses,
         score,
+        max_possible_score: maxPossibleScore,
     };
 
     const query = supabase
