@@ -58,6 +58,7 @@ export interface GameSessionConfig {
     showPredictionControls?: boolean;
     showPredictionMismatchWarning?: boolean;
     useSubmitButton?: boolean;
+    showPlayerLabels?: boolean;
 }
 
 export interface PermutationTracker {

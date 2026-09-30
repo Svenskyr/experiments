@@ -72,6 +72,7 @@ function latex(node: HTMLElement, formula: string) {
         </li>
         <li>Your expected bonus points are maximized when your prediction matches your true belief.</li>
         <!-- <li>You should <em>not</em> try to hedge your predictions in either direction.</li> -->
+        <li>You can think of this question as "How likely is it that <em>Player B</em> will choose either option?" (These questions are both answered by the same prediction.)</li>
     </ul>
 
     <details>
