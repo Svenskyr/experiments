@@ -41,3 +41,6 @@ vite.config.ts.timestamp-*
 .vscode
 .supabase
 .cursor
+
+# Generated Beamer figures
+export/ccg-figures/
