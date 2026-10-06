@@ -3,12 +3,23 @@ import type {
     ClozeLineCheckPayload,
     ClozeQuestionIR,
 } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { lineIndexForBlank } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import {
+    blankCorrectFromCheckPayload,
+    type ClozeAnswerGrading,
+} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import * as ClozeComprehensionDBM from "./ClozeComprehensionQuestionDBM.ts";
 
-export function clozeFieldsetHandlers(question: ClozeQuestionIR): {
+export type ClozeFieldsetHandlerOptions = {
+    grading?: ClozeAnswerGrading;
+};
+
+export function clozeFieldsetHandlers(
+    question: ClozeQuestionIR,
+    options: ClozeFieldsetHandlerOptions = {},
+): {
     initialResponses: Record<string, ClozeBlankResponse>;
-    onSaveBlank: (blankId: string, response: ClozeBlankResponse) => void;
+    initialCheckedBlankIds: string[];
+    initialGradedResponses: Record<string, ClozeBlankResponse> | null;
     onCheckAnswers: (
         linesPayload: ClozeLineCheckPayload[],
     ) => Promise<{
@@ -17,23 +28,45 @@ export function clozeFieldsetHandlers(question: ClozeQuestionIR): {
         updatedResponses?: Record<string, ClozeBlankResponse>;
     }>;
 } {
+    const grading = options.grading ?? "server";
     const stored = ClozeComprehensionDBM.load(question.qid);
-    const initialResponses = stored ? ClozeComprehensionDBM.flattenResponses(stored) : {};
+    const initialCheckedBlankIds = stored
+        ? grading === "local"
+            ? (stored.lastCheckedBlankIds ?? [])
+            : (stored.lastBlankCorrect ? Object.keys(stored.lastBlankCorrect) : [])
+        : [];
+    const initialResponses = stored
+        ? ClozeComprehensionDBM.draftResponsesFromStorage(stored, initialCheckedBlankIds)
+        : {};
     const initialGradedResponses = stored
-        ? ClozeComprehensionDBM.gradedResponsesFromStorage(question, stored)
+        ? grading === "local"
+            ? ClozeComprehensionDBM.gradedResponsesFromLocalCheckStorage(stored)
+            : ClozeComprehensionDBM.gradedResponsesFromStorage(question, stored)
         : null;
 
     return {
         initialResponses,
+        initialCheckedBlankIds,
         initialGradedResponses,
-        onSaveBlank(blankId, response) {
-            const lineIndex = lineIndexForBlank(question, blankId);
-            if (lineIndex < 0) {
-                return;
-            }
-            ClozeComprehensionDBM.saveBlankResponse(question.qid, lineIndex, blankId, response);
-        },
         async onCheckAnswers(linesPayload) {
+            if (grading === "local") {
+                const blankCorrect = blankCorrectFromCheckPayload(question, linesPayload);
+                ClozeComprehensionDBM.saveLinesPayload(question.qid, linesPayload, {
+                    lastCheckedBlankIds: Object.keys(blankCorrect),
+                });
+                void ClozeComprehensionDBM.submitCheck(question.qid, linesPayload, {
+                    persistGradingInStorage: false,
+                });
+                const updated = ClozeComprehensionDBM.load(question.qid);
+                return {
+                    error: null,
+                    blankCorrect,
+                    updatedResponses: updated
+                        ? ClozeComprehensionDBM.flattenResponses(updated)
+                        : undefined,
+                };
+            }
+
             const { data, error } = await ClozeComprehensionDBM.submitCheck(
                 question.qid,
                 linesPayload,

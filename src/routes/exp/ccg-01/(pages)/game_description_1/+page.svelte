@@ -139,23 +139,25 @@ import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.sve
     <h2>Comprehension questions</h2>
 
     {#each clozeQuestionData as item (item.question.qid)}
-        {@const handlers = clozeFieldsetHandlers(item.question)}
+        {@const handlers = clozeFieldsetHandlers(item.question, { grading: "local" })}
         {#if item.kind === "outcome-points"}
             <OutcomePointsCloze
                 question={item.question}
                 scenario={item.scenario}
+                grading="local"
                 initialResponses={handlers.initialResponses}
+                initialCheckedBlankIds={handlers.initialCheckedBlankIds}
                 initialGradedResponses={handlers.initialGradedResponses}
-                onSaveBlank={handlers.onSaveBlank}
                 onCheckAnswers={handlers.onCheckAnswers}
                 bind:complete={clozeCompleteByQid[item.question.qid]}
             />
         {:else}
             <ClozeQuestion
                 question={item.question}
+                grading="local"
                 initialResponses={handlers.initialResponses}
+                initialCheckedBlankIds={handlers.initialCheckedBlankIds}
                 initialGradedResponses={handlers.initialGradedResponses}
-                onSaveBlank={handlers.onSaveBlank}
                 onCheckAnswers={handlers.onCheckAnswers}
                 bind:complete={clozeCompleteByQid[item.question.qid]}
             />

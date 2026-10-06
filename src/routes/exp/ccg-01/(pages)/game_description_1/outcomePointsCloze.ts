@@ -59,25 +59,41 @@ function buildContent(actions: [Action, Action], outcomes: Outcome[]): string[] 
     const [first, second] = actions;
     const firstSwatch = colorSwatchMarkup("first", first);
     const secondSwatch = colorSwatchMarkup("second", second);
-    const matchFirstPayoff = outcomes[0].payoffs[0];
-    const matchSecondPayoff = outcomes[1].payoffs[0];
-    const mismatchPayoff = outcomes[2].payoffs[0];
+    const matchFirstMy = outcomes[0].payoffs[0];
+    const matchFirstTheir = outcomes[0].payoffs[1];
+    const matchSecondMy = outcomes[1].payoffs[0];
+    const matchSecondTheir = outcomes[1].payoffs[1];
+    const mismatchOnFirstMy = outcomes[2].payoffs[0];
+    const mismatchOnFirstTheir = outcomes[2].payoffs[1];
+    const mismatchOnSecondMy = outcomes[3].payoffs[0];
+    const mismatchOnSecondTheir = outcomes[3].payoffs[1];
 
     return [
-        `If I chose ${firstSwatch} and the other player also chose ${firstSwatch}, I'll earn [points-first-color: ${
-            pointsOptions(matchFirstPayoff)
-        }] for that round.`,
+        // `If I chose ${firstSwatch} and the other player also chose ${firstSwatch}, I'll earn [points-first-color: ${
+        //     pointsOptions(matchFirstPayoff)
+        // }] for that round.`,
 
-        `If I chose ${firstSwatch} and the other player chose ${secondSwatch}, I'll earn [points-miscoordinate: ${
-            pointsOptions(mismatchPayoff)
-        }] for that round.`,
-
-        `If I chose ${secondSwatch} and the other player also chose ${secondSwatch}, I'll earn [points-second-color: ${
-            pointsOptions(matchSecondPayoff)
-        }] for that round.`,
-        // `If I chose ${secondSwatch} and the other player chose ${firstSwatch}, I'll earn [points-miscoordinate: ${
+        // `If I chose ${firstSwatch} and the other player chose ${secondSwatch}, I'll earn [points-miscoordinate: ${
         //     pointsOptions(mismatchPayoff)
-        // }] for that round.`
+        // }] for that round.`,
+
+        // `If I chose ${secondSwatch} and the other player also chose ${secondSwatch}, I'll earn [points-second-color: ${
+        //     pointsOptions(matchSecondPayoff)
+        // }] for that round.`,
+
+        `If I choose ${firstSwatch} and they choose ${firstSwatch}, I'd earn [my-points-first-color: ${
+            pointsOptions(matchFirstMy)
+        }] and they'd earn [their-points-first-color: ${pointsOptions(matchFirstTheir)}].`,
+
+        `If I choose ${firstSwatch} and they choose ${secondSwatch}, I'd earn [my-points-miscoordinate-first: ${
+            pointsOptions(mismatchOnFirstMy)
+        }] and they'd earn [their-points-miscoordinate-first: ${
+            pointsOptions(mismatchOnFirstTheir)
+        }].`,
+
+        `If I choose ${secondSwatch} and they choose ${secondSwatch}, I'd earn [my-points-second-color: ${
+            pointsOptions(matchSecondMy)
+        }] and they'd earn [their-points-second-color: ${pointsOptions(matchSecondTheir)}].`,
     ];
 }
 

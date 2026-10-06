@@ -12,8 +12,8 @@ import {
     isBlankCorrect,
     isClozeQuestionComplete,
     questionHasCheckableAnswers,
-    recordBlankSelection,
     type ResponseItem,
+    updateBlankSelection,
 } from "./clozeQuestion.ts";
 import { clientsideSanitize } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
@@ -133,7 +133,7 @@ function getResponse(blankId: string): ClozeBlankResponse {
 
 function setSelectedItemId(blankId: string, selectedItemId: string): void {
     clearIncorrectGradingForBlank(blankId);
-    const next = recordBlankSelection(getResponse(blankId), selectedItemId);
+    const next = updateBlankSelection(getResponse(blankId), selectedItemId);
     responses = {
         ...responses,
         [blankId]: next,

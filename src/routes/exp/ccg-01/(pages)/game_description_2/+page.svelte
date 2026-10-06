@@ -121,12 +121,13 @@ function latex(node: HTMLElement, formula: string) {
     <h2>Comprehension questions</h2>
 
     {#each clozeQuestionData as item (item.question.qid)}
-        {@const handlers = clozeFieldsetHandlers(item.question)}
+        {@const handlers = clozeFieldsetHandlers(item.question, { grading: "local" })}
         <ClozeQuestion
             question={item.question}
+            grading="local"
             initialResponses={handlers.initialResponses}
+            initialCheckedBlankIds={handlers.initialCheckedBlankIds}
             initialGradedResponses={handlers.initialGradedResponses}
-            onSaveBlank={handlers.onSaveBlank}
             onCheckAnswers={handlers.onCheckAnswers}
             bind:complete={clozeCompleteByQid[item.question.qid]}
         />

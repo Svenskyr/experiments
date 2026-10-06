@@ -47,6 +47,9 @@ export interface ClozeQuestionIR {
     randomize?: string | number | null | undefined;
 }
 
+/** `local`: grade with `isTrue` on the IR; `server`: delegate to `onCheckAnswers`. */
+export type ClozeAnswerGrading = "local" | "server";
+
 export type ClozeBlankResponse = {
     selectedItemId: string;
     freeText: string;
@@ -67,6 +70,23 @@ export function recordBlankSelection(
         ? previous
         : [...previous, selectedItemId];
     return { ...response, selectedItemId, wasSelectedItemIds };
+}
+
+/**
+ * Update the current dropdown choice. Attempt history (`wasSelectedItemIds`) is only
+ * updated after a blank has been graded at least once (history present from storage/check).
+ */
+export function updateBlankSelection(
+    response: ClozeBlankResponse,
+    selectedItemId: string,
+): ClozeBlankResponse {
+    if ((response.wasSelectedItemIds?.length ?? 0) > 0) {
+        return recordBlankSelection(response, selectedItemId);
+    }
+    if (!selectedItemId) {
+        return response;
+    }
+    return { ...response, selectedItemId };
 }
 
 export function wasSelectedIdsFromMcqItems(items: MultipleChoiceItem[]): string[] {
@@ -124,6 +144,26 @@ export function buildCheckLinesPayload(
     }
 
     return linesPayload;
+}
+
+/** Grade check payloads using `isTrue` markers embedded in the question IR (client-side). */
+export function blankCorrectFromCheckPayload(
+    question: ClozeQuestionIR,
+    linesPayload: readonly ClozeLineCheckPayload[],
+): Record<string, boolean> {
+    const blankById = new Map(
+        getBlanksFromQuestion(question).map((blank) => [blank.blankId, blank]),
+    );
+    const blankCorrect: Record<string, boolean> = {};
+    for (const line of linesPayload) {
+        for (const [blankId, response] of Object.entries(line.blanks)) {
+            const blank = blankById.get(blankId);
+            if (blank && blankHasCorrectMarker(blank)) {
+                blankCorrect[blankId] = isBlankCorrect(blank, response);
+            }
+        }
+    }
+    return blankCorrect;
 }
 
 export function getBlanksFromQuestion(question: ClozeQuestionIR): BlankNode[] {
