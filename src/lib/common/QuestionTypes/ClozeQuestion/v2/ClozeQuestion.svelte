@@ -14,7 +14,7 @@ import {
     isBlankCorrect,
     isClozeQuestionComplete,
     questionHasCheckableAnswers,
-    recordBlankSelection,
+    updateBlankSelection,
 } from "../v1/clozeQuestion.ts";
 import { clientsideSanitize } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import ClozeBlankDropdown from "./ClozeBlankDropdown.svelte";
@@ -25,6 +25,7 @@ let {
     /** `local`: grade with `isTrue` on the question IR; `server`: use `onCheckAnswers`. */
     grading = "server",
     initialResponses = {},
+    initialCheckedBlankIds = [],
     initialGradedResponses = null,
     onSaveBlank,
     onCheckAnswers,
@@ -33,6 +34,8 @@ let {
     complete?: boolean;
     grading?: ClozeAnswerGrading;
     initialResponses?: Record<string, ClozeBlankResponse>;
+    /** Blank ids included in the last “Check answers” (restore only; not set on selection). */
+    initialCheckedBlankIds?: readonly string[];
     initialGradedResponses?: Record<string, ClozeBlankResponse> | null;
     onSaveBlank?: (blankId: string, response: ClozeBlankResponse) => void;
     onCheckAnswers?: (
@@ -45,17 +48,26 @@ let {
 } = $props();
 
 let responses = $state<Record<string, ClozeBlankResponse>>({});
+/** Blanks that have been through “Check answers” (controls correct/incorrect styling). */
+let checkedBlankIds = $state<Set<string>>(new Set());
 /** Per-blank responses as of the last "Check answers" click (correct blanks stay until recheck). */
 let gradedResponses = $state<Record<string, ClozeBlankResponse> | null>(null);
 let checkError = $state<string | null>(null);
 let checking = $state(false);
 let openBlankId = $state<string | null>(null);
+/** Hydrate from persisted props once per question (avoid wiping in-memory drafts on parent re-render). */
+let hydratedForQid = $state<string | null>(null);
 
 $effect(() => {
+    const qid = question.qid;
+    if (hydratedForQid === qid) {
+        return;
+    }
+    hydratedForQid = qid;
     responses = { ...initialResponses };
-});
-
-$effect(() => {
+    checkedBlankIds = initialCheckedBlankIds.length > 0
+        ? new Set(initialCheckedBlankIds)
+        : new Set();
     gradedResponses = initialGradedResponses && Object.keys(initialGradedResponses).length > 0
         ? { ...initialGradedResponses }
         : null;
@@ -78,6 +90,9 @@ $effect(() => {
 });
 
 function clearIncorrectGradingForBlank(blankId: string): void {
+    if (!checkedBlankIds.has(blankId)) {
+        return;
+    }
     if (!gradedResponses || gradedResponses[blankId] === undefined) {
         return;
     }
@@ -89,6 +104,9 @@ function clearIncorrectGradingForBlank(blankId: string): void {
     if (isBlankCorrect(blank, graded)) {
         return;
     }
+    const nextChecked = new Set(checkedBlankIds);
+    nextChecked.delete(blankId);
+    checkedBlankIds = nextChecked;
     const next = { ...gradedResponses };
     delete next[blankId];
     gradedResponses = Object.keys(next).length > 0 ? next : null;
@@ -102,6 +120,11 @@ function gradedSnapshotFromBlankCorrect(
         snapshot[blankId] = { ...getResponse(blankId) };
     }
     return Object.keys(snapshot).length > 0 ? snapshot : null;
+}
+
+function applyCheckResult(blankCorrect: Record<string, boolean>): void {
+    checkedBlankIds = new Set(Object.keys(blankCorrect));
+    gradedResponses = gradedSnapshotFromBlankCorrect(blankCorrect);
 }
 
 async function handleCheckAnswers(): Promise<void> {
@@ -127,7 +150,7 @@ async function handleCheckAnswers(): Promise<void> {
                     responses = { ...result.updatedResponses };
                 }
             }
-            gradedResponses = gradedSnapshotFromBlankCorrect(blankCorrect);
+            applyCheckResult(blankCorrect);
         } finally {
             checking = false;
         }
@@ -135,11 +158,11 @@ async function handleCheckAnswers(): Promise<void> {
     }
 
     if (!onCheckAnswers) {
-        const snapshot: Record<string, ClozeBlankResponse> = {};
+        const blankCorrect: Record<string, boolean> = {};
         for (const blank of getBlanksFromQuestion(question).filter(blankHasCorrectMarker)) {
-            snapshot[blank.blankId] = { ...getResponse(blank.blankId) };
+            blankCorrect[blank.blankId] = isBlankCorrect(blank, getResponse(blank.blankId));
         }
-        gradedResponses = snapshot;
+        applyCheckResult(blankCorrect);
         return;
     }
 
@@ -157,7 +180,7 @@ async function handleCheckAnswers(): Promise<void> {
             responses = { ...result.updatedResponses };
         }
 
-        gradedResponses = gradedSnapshotFromBlankCorrect(result.blankCorrect);
+        applyCheckResult(result.blankCorrect);
     } finally {
         checking = false;
     }
@@ -169,7 +192,7 @@ function getResponse(blankId: string): ClozeBlankResponse {
 
 function setSelectedItemId(blankId: string, selectedItemId: string): void {
     clearIncorrectGradingForBlank(blankId);
-    const next = recordBlankSelection(getResponse(blankId), selectedItemId);
+    const next = updateBlankSelection(getResponse(blankId), selectedItemId);
     responses = {
         ...responses,
         [blankId]: next,
@@ -220,7 +243,9 @@ function setBlankOpen(blankId: string, open: boolean): void {
             {@const choices = choiceOptions(blank)}
             {@const free = freeTextOption(blank)}
             {@const response = getResponse(blank.blankId)}
-            {@const gradedResponse = gradedResponses?.[blank.blankId]}
+            {@const gradedResponse = checkedBlankIds.has(blank.blankId)
+                ? gradedResponses?.[blank.blankId]
+                : undefined}
             {@const gradable = blankHasCorrectMarker(blank)}
             {@const correct = gradedResponse !== undefined && gradable &&
                 isBlankCorrect(blank, gradedResponse)}

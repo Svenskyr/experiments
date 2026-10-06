@@ -72,6 +72,23 @@ export function recordBlankSelection(
     return { ...response, selectedItemId, wasSelectedItemIds };
 }
 
+/**
+ * Update the current dropdown choice. Attempt history (`wasSelectedItemIds`) is only
+ * updated after a blank has been graded at least once (history present from storage/check).
+ */
+export function updateBlankSelection(
+    response: ClozeBlankResponse,
+    selectedItemId: string,
+): ClozeBlankResponse {
+    if ((response.wasSelectedItemIds?.length ?? 0) > 0) {
+        return recordBlankSelection(response, selectedItemId);
+    }
+    if (!selectedItemId) {
+        return response;
+    }
+    return { ...response, selectedItemId };
+}
+
 export function wasSelectedIdsFromMcqItems(items: MultipleChoiceItem[]): string[] {
     return items.filter((item) => item.wasSelected).map((item) => item.itemId);
 }

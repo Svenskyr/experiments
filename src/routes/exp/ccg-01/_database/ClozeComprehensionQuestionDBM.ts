@@ -25,6 +25,8 @@ export interface ClozeFieldsetStorage {
     serverGraded?: Record<number, MultipleChoiceItem[][]>;
     /** Blank ids included in the last server check (values = correctness at check time). */
     lastBlankCorrect?: Record<string, boolean>;
+    /** Blank ids from the last local check; correctness is derived from question IR on restore. */
+    lastCheckedBlankIds?: string[];
 }
 
 const storageKeyPrefix = "exp_ccg_01:cloze:";
@@ -49,11 +51,15 @@ export function saveBlankResponse(
     const lineBlanks = { ...(existing.lines[lineIndex] ?? {}), [blankId]: response };
     const lastBlankCorrect = { ...(existing.lastBlankCorrect ?? {}) };
     delete lastBlankCorrect[blankId];
+    const lastCheckedBlankIds = existing.lastCheckedBlankIds?.filter((id) => id !== blankId);
     save({
         ...existing,
         fieldsetQid,
         lines: { ...existing.lines, [lineIndex]: lineBlanks },
         lastBlankCorrect: Object.keys(lastBlankCorrect).length > 0 ? lastBlankCorrect : undefined,
+        lastCheckedBlankIds: lastCheckedBlankIds && lastCheckedBlankIds.length > 0
+            ? lastCheckedBlankIds
+            : undefined,
     });
 }
 
@@ -63,6 +69,25 @@ export function flattenResponses(
     const flat: Record<string, ClozeBlankResponse> = {};
     for (const lineBlanks of Object.values(storage.lines)) {
         Object.assign(flat, lineBlanks);
+    }
+    return flat;
+}
+
+/** In-progress blanks keep only the current choice; attempt history applies after a check. */
+export function draftResponsesFromStorage(
+    storage: ClozeFieldsetStorage,
+    checkedBlankIds: readonly string[],
+): Record<string, ClozeBlankResponse> {
+    const flat = flattenResponses(storage);
+    const checked = new Set(checkedBlankIds);
+    for (const [blankId, response] of Object.entries(flat)) {
+        if (checked.has(blankId)) {
+            continue;
+        }
+        flat[blankId] = {
+            selectedItemId: response.selectedItemId,
+            freeText: response.freeText,
+        };
     }
     return flat;
 }
@@ -106,13 +131,46 @@ export function gradedResponsesFromStorage(
     return Object.keys(snapshot).length > 0 ? snapshot : null;
 }
 
-export function saveLinesPayload(fieldsetQid: string, linesPayload: ClozeLinePayload[]): void {
+/** Graded blank snapshots after local check (no correctness booleans in storage). */
+export function gradedResponsesFromLocalCheckStorage(
+    storage: ClozeFieldsetStorage,
+): Record<string, ClozeBlankResponse> | null {
+    const blankIds = storage.lastCheckedBlankIds;
+    if (!blankIds || blankIds.length === 0) {
+        return null;
+    }
+    const flat = flattenResponses(storage);
+    const snapshot: Record<string, ClozeBlankResponse> = {};
+    for (const blankId of blankIds) {
+        const response = flat[blankId];
+        if (response) {
+            snapshot[blankId] = { ...response };
+        }
+    }
+    return Object.keys(snapshot).length > 0 ? snapshot : null;
+}
+
+export function saveLinesPayload(
+    fieldsetQid: string,
+    linesPayload: ClozeLinePayload[],
+    options?: { lastCheckedBlankIds?: string[] },
+): void {
     const existing = load(fieldsetQid) ?? { fieldsetQid, lines: {} };
     const lines = { ...existing.lines };
     for (const line of linesPayload) {
         lines[line.lineIndex] = { ...(lines[line.lineIndex] ?? {}), ...line.blanks };
     }
-    save({ ...existing, fieldsetQid, lines });
+    const lastCheckedBlankIds = options?.lastCheckedBlankIds
+        ? [...options.lastCheckedBlankIds]
+        : existing.lastCheckedBlankIds;
+    save({
+        ...existing,
+        fieldsetQid,
+        lines,
+        lastCheckedBlankIds: lastCheckedBlankIds && lastCheckedBlankIds.length > 0
+            ? lastCheckedBlankIds
+            : undefined,
+    });
 }
 
 export function mergeServerResult(

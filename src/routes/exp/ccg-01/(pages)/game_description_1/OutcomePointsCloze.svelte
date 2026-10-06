@@ -14,8 +14,8 @@ let {
     scenario,
     complete = $bindable(false),
     initialResponses = {},
+    initialCheckedBlankIds = [],
     initialGradedResponses = null,
-    onSaveBlank,
     onCheckAnswers,
     grading = "local",
 }: {
@@ -24,8 +24,8 @@ let {
     grading?: ClozeAnswerGrading;
     complete?: boolean;
     initialResponses?: Record<string, ClozeBlankResponse>;
+    initialCheckedBlankIds?: readonly string[];
     initialGradedResponses?: Record<string, ClozeBlankResponse> | null;
-    onSaveBlank?: (blankId: string, response: ClozeBlankResponse) => void;
     onCheckAnswers?: (
         linesPayload: ClozeLineCheckPayload[],
     ) => Promise<{ error: string | null; blankCorrect: Record<string, boolean> }>;
@@ -37,10 +37,9 @@ let {
     style:--cloze-color-first={scenario.actions[0].color}
     style:--cloze-color-second={scenario.actions[1].color}
 >
-    <!-- <p class="scenario-intro">
-        The table shows payoffs for one example round with two colors. Your payoff is the
-        <span class="your-payoff-emphasis">underlined</span> number in each cell.
-    </p> -->
+    <p class="scenario-intro">
+        This example payoff table is used for the following questions.
+    </p>
     <div class="payoff-table-container">
         <PayoffNormalFormTable actions={scenario.actions} outcomes={scenario.outcomes} />
     </div>
@@ -48,8 +47,8 @@ let {
         {question}
         {grading}
         {initialResponses}
+        {initialCheckedBlankIds}
         {initialGradedResponses}
-        {onSaveBlank}
         {onCheckAnswers}
         bind:complete={complete}
     />
@@ -68,6 +67,9 @@ let {
 
 .scenario-intro {
     margin: 0;
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
 }
 
 .your-payoff-emphasis {

@@ -126,8 +126,8 @@ function latex(node: HTMLElement, formula: string) {
             question={item.question}
             grading="local"
             initialResponses={handlers.initialResponses}
+            initialCheckedBlankIds={handlers.initialCheckedBlankIds}
             initialGradedResponses={handlers.initialGradedResponses}
-            onSaveBlank={handlers.onSaveBlank}
             onCheckAnswers={handlers.onCheckAnswers}
             bind:complete={clozeCompleteByQid[item.question.qid]}
         />
