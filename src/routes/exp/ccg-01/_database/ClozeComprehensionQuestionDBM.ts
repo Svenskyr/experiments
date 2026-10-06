@@ -106,18 +106,35 @@ export function gradedResponsesFromStorage(
     return Object.keys(snapshot).length > 0 ? snapshot : null;
 }
 
+export function saveLinesPayload(fieldsetQid: string, linesPayload: ClozeLinePayload[]): void {
+    const existing = load(fieldsetQid) ?? { fieldsetQid, lines: {} };
+    const lines = { ...existing.lines };
+    for (const line of linesPayload) {
+        lines[line.lineIndex] = { ...(lines[line.lineIndex] ?? {}), ...line.blanks };
+    }
+    save({ ...existing, fieldsetQid, lines });
+}
+
 export function mergeServerResult(
     fieldsetQid: string,
     serverLines: ClozeLineResult[],
+    options?: { persistGradingInStorage?: boolean },
 ): ClozeFieldsetStorage {
+    const persistGrading = options?.persistGradingInStorage ?? true;
     const existing = load(fieldsetQid) ?? { fieldsetQid, lines: {} };
-    const serverGraded = { ...(existing.serverGraded ?? {}) };
-    const lastBlankCorrect = { ...(existing.lastBlankCorrect ?? {}) };
+    const serverGraded = persistGrading
+        ? { ...(existing.serverGraded ?? {}) }
+        : existing.serverGraded;
+    const lastBlankCorrect = persistGrading
+        ? { ...(existing.lastBlankCorrect ?? {}) }
+        : existing.lastBlankCorrect;
     const lines = { ...existing.lines };
 
     for (const line of serverLines) {
-        Object.assign(lastBlankCorrect, line.blankCorrect);
-        serverGraded[line.lineIndex] = line.responses;
+        if (persistGrading) {
+            Object.assign(lastBlankCorrect!, line.blankCorrect);
+            serverGraded![line.lineIndex] = line.responses;
+        }
         const lineBlanks = { ...(lines[line.lineIndex] ?? {}) };
         for (let i = 0; i < line.blankIds.length; i++) {
             const blankId = line.blankIds[i]!;
@@ -139,7 +156,10 @@ export function mergeServerResult(
         fieldsetQid,
         lines,
         serverGraded,
-        lastBlankCorrect: Object.keys(lastBlankCorrect).length > 0 ? lastBlankCorrect : undefined,
+        lastBlankCorrect:
+            persistGrading && lastBlankCorrect && Object.keys(lastBlankCorrect).length > 0
+                ? lastBlankCorrect
+                : existing.lastBlankCorrect,
     };
     save(merged);
     return merged;
@@ -152,13 +172,9 @@ export function sync(syncHandler: SyncHandler, fieldsetQid: string): void {
 export async function submitCheck(
     fieldsetQid: string,
     linesPayload: ClozeLinePayload[],
+    options?: { persistGradingInStorage?: boolean },
 ): Promise<{ data: { lines: ClozeLineResult[] } | null; error: PostgrestError | null }> {
-    const existing = load(fieldsetQid) ?? { fieldsetQid, lines: {} };
-    const lines = { ...existing.lines };
-    for (const line of linesPayload) {
-        lines[line.lineIndex] = { ...(lines[line.lineIndex] ?? {}), ...line.blanks };
-    }
-    save({ ...existing, fieldsetQid, lines });
+    saveLinesPayload(fieldsetQid, linesPayload);
 
     let response: Response;
     try {
@@ -208,7 +224,7 @@ export async function submitCheck(
     }
 
     const data = body.data as { lines: ClozeLineResult[] };
-    mergeServerResult(fieldsetQid, data.lines);
+    mergeServerResult(fieldsetQid, data.lines, options);
     return { data, error: null };
 }
 

@@ -1,8 +1,10 @@
 <script lang="ts">
 import {
+    blankCorrectFromCheckPayload,
     blankHasCorrectMarker,
     type BlankNode,
     buildCheckLinesPayload,
+    type ClozeAnswerGrading,
     type ClozeBlankResponse,
     type ClozeContentNode,
     type ClozeLineCheckPayload,
@@ -20,6 +22,8 @@ import ClozeBlankDropdown from "./ClozeBlankDropdown.svelte";
 let {
     question,
     complete = $bindable(false),
+    /** `local`: grade with `isTrue` on the question IR; `server`: use `onCheckAnswers`. */
+    grading = "server",
     initialResponses = {},
     initialGradedResponses = null,
     onSaveBlank,
@@ -27,6 +31,7 @@ let {
 }: {
     question: ClozeQuestionIR;
     complete?: boolean;
+    grading?: ClozeAnswerGrading;
     initialResponses?: Record<string, ClozeBlankResponse>;
     initialGradedResponses?: Record<string, ClozeBlankResponse> | null;
     onSaveBlank?: (blankId: string, response: ClozeBlankResponse) => void;
@@ -89,8 +94,45 @@ function clearIncorrectGradingForBlank(blankId: string): void {
     gradedResponses = Object.keys(next).length > 0 ? next : null;
 }
 
+function gradedSnapshotFromBlankCorrect(
+    blankCorrect: Record<string, boolean>,
+): Record<string, ClozeBlankResponse> | null {
+    const snapshot: Record<string, ClozeBlankResponse> = {};
+    for (const blankId of Object.keys(blankCorrect)) {
+        snapshot[blankId] = { ...getResponse(blankId) };
+    }
+    return Object.keys(snapshot).length > 0 ? snapshot : null;
+}
+
 async function handleCheckAnswers(): Promise<void> {
     openBlankId = null;
+
+    const linesPayload = buildCheckLinesPayload(question, responses);
+    if (linesPayload.length === 0) {
+        return;
+    }
+
+    if (grading === "local") {
+        checking = true;
+        checkError = null;
+        try {
+            const blankCorrect = blankCorrectFromCheckPayload(question, linesPayload);
+            if (onCheckAnswers) {
+                const result = await onCheckAnswers(linesPayload);
+                if (result.error) {
+                    checkError = result.error;
+                    return;
+                }
+                if (result.updatedResponses) {
+                    responses = { ...result.updatedResponses };
+                }
+            }
+            gradedResponses = gradedSnapshotFromBlankCorrect(blankCorrect);
+        } finally {
+            checking = false;
+        }
+        return;
+    }
 
     if (!onCheckAnswers) {
         const snapshot: Record<string, ClozeBlankResponse> = {};
@@ -98,11 +140,6 @@ async function handleCheckAnswers(): Promise<void> {
             snapshot[blank.blankId] = { ...getResponse(blank.blankId) };
         }
         gradedResponses = snapshot;
-        return;
-    }
-
-    const linesPayload = buildCheckLinesPayload(question, responses);
-    if (linesPayload.length === 0) {
         return;
     }
 
@@ -120,11 +157,7 @@ async function handleCheckAnswers(): Promise<void> {
             responses = { ...result.updatedResponses };
         }
 
-        const snapshot: Record<string, ClozeBlankResponse> = {};
-        for (const blankId of Object.keys(result.blankCorrect)) {
-            snapshot[blankId] = { ...getResponse(blankId) };
-        }
-        gradedResponses = Object.keys(snapshot).length > 0 ? snapshot : null;
+        gradedResponses = gradedSnapshotFromBlankCorrect(result.blankCorrect);
     } finally {
         checking = false;
     }

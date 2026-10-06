@@ -2,6 +2,7 @@
 import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
 import PayoffNormalFormTable from "$lib/exp/games/ccg/v3/game/PayoffNormalFormTable.svelte";
 import type {
+    ClozeAnswerGrading,
     ClozeBlankResponse,
     ClozeLineCheckPayload,
     ClozeQuestionIR,
@@ -16,9 +17,11 @@ let {
     initialGradedResponses = null,
     onSaveBlank,
     onCheckAnswers,
+    grading = "local",
 }: {
     question: ClozeQuestionIR;
     scenario: OutcomePointsScenario;
+    grading?: ClozeAnswerGrading;
     complete?: boolean;
     initialResponses?: Record<string, ClozeBlankResponse>;
     initialGradedResponses?: Record<string, ClozeBlankResponse> | null;
@@ -43,6 +46,7 @@ let {
     </div>
     <ClozeQuestion
         {question}
+        {grading}
         {initialResponses}
         {initialGradedResponses}
         {onSaveBlank}

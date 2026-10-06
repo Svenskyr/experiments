@@ -7,7 +7,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { chromium, type Browser, type Page } from "playwright";
+import { type Browser, chromium, type Page } from "playwright";
 import { createServer } from "vite";
 
 const repoRoot = path.resolve(import.meta.dirname, "..");
@@ -135,7 +135,8 @@ try {
                 mount.replaceChildren(clone);
                 const width = Math.ceil(clone.scrollWidth);
                 const height = Math.ceil(clone.scrollHeight);
-                const style = document.getElementById("pdf-page") ?? document.createElement("style");
+                const style = document.getElementById("pdf-page")
+                    ?? document.createElement("style");
                 style.id = "pdf-page";
                 style.textContent = `@page { size: ${width}px ${height}px; margin: 0; }
                     html, body { margin: 0 !important; padding: 0 !important; background: white !important; }`;
@@ -161,5 +162,7 @@ try {
 }
 
 console.log(
-    `wrote ${figuresPerVariant * variants.length} PNGs and the same number of PDFs under ${outRoot}`,
+    `wrote ${
+        figuresPerVariant * variants.length
+    } PNGs and the same number of PDFs under ${outRoot}`,
 );

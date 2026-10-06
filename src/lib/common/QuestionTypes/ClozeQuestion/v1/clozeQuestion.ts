@@ -47,6 +47,9 @@ export interface ClozeQuestionIR {
     randomize?: string | number | null | undefined;
 }
 
+/** `local`: grade with `isTrue` on the IR; `server`: delegate to `onCheckAnswers`. */
+export type ClozeAnswerGrading = "local" | "server";
+
 export type ClozeBlankResponse = {
     selectedItemId: string;
     freeText: string;
@@ -124,6 +127,26 @@ export function buildCheckLinesPayload(
     }
 
     return linesPayload;
+}
+
+/** Grade check payloads using `isTrue` markers embedded in the question IR (client-side). */
+export function blankCorrectFromCheckPayload(
+    question: ClozeQuestionIR,
+    linesPayload: readonly ClozeLineCheckPayload[],
+): Record<string, boolean> {
+    const blankById = new Map(
+        getBlanksFromQuestion(question).map((blank) => [blank.blankId, blank]),
+    );
+    const blankCorrect: Record<string, boolean> = {};
+    for (const line of linesPayload) {
+        for (const [blankId, response] of Object.entries(line.blanks)) {
+            const blank = blankById.get(blankId);
+            if (blank && blankHasCorrectMarker(blank)) {
+                blankCorrect[blankId] = isBlankCorrect(blank, response);
+            }
+        }
+    }
+    return blankCorrect;
 }
 
 export function getBlanksFromQuestion(question: ClozeQuestionIR): BlankNode[] {
