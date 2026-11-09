@@ -14,7 +14,7 @@
         "build:cloze": "bun scripts/build-cloze-questions.ts",
         "build:svgs": "bun src/lib/exp/navigation/NavigationBar/v2/NavigationChevrons.ts && bun src/lib/exp/navigation/NavigationBar/v3/NavigationChevrons.ts",
         "build:assets": "bun run build:cloze && bun run build:svgs",
-        "build": "bun run build:assets && vite build",
+        "build": "bun run build:assets && bun scripts/vite-build.ts",
         "preview": "bun run build && wrangler dev",
         "preview:env": "bun run build && wrangler dev --env preview",
         "deploy": "bun run build && wrangler deploy",
