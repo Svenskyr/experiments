@@ -10,8 +10,7 @@
  *   - Output: sibling `clozeQuestions.ts` (generated; do not edit).
  *
  * Run:
- *   npm run build:cloze
- *   deno task build-cloze
+ *   bun run build:cloze
  */
 
 import { readdirSync, statSync, writeFileSync } from "node:fs";

@@ -10,12 +10,14 @@
 
 ## 2. Stack
 
-| Layer         | Choice                                                       | Repo                                          |
-| ------------- | ------------------------------------------------------------ | --------------------------------------------- |
-| App           | SvelteKit 3, Svelte 5, Vite 8                                | `package.json`, `vite.config.ts`              |
-| Deploy target | **Deno Deploy** (stateless serverless)                       | Requirement; `@sveltejs/adapter-auto` in repo |
-| DB / auth     | Supabase (Postgres + Auth)                                   | `src/hooks.server.ts`, migrations             |
-| Tooling       | Deno fmt/lint in places; `deno task dev` / `deno task build` | `deno.json`, `package.json`                   |
+| Layer         | Choice                                                                         | Repo                                        |
+| ------------- | ------------------------------------------------------------------------------ | ------------------------------------------- |
+| App           | SvelteKit 3, Svelte 5, Vite 8                                                  | `package.json`, `vite.config.ts`            |
+| Deploy target | **Cloudflare Workers** (stateless), `@sveltejs/adapter-cloudflare`             | `wrangler.jsonc` (prod + `env.preview`)     |
+| CI / deploy   | Workers Builds: `main` → `experiments`, preview branch → `experiments-preview` | Cloudflare dashboard                        |
+| DB / auth     | Supabase (Postgres + Auth)                                                     | `src/hooks.server.ts`, migrations           |
+| Tooling       | Bun (packages + scripts); `bun run dev` / `build` / `preview` (wrangler dev)   | `package.json`, `scripts/tsconfig.json`     |
+| Logging       | `#lib/server/logger.server.ts`: JSON lines via `console` → Workers Logs        | `src/hooks.server.ts` (`locals.log`)        |
 
 **Supabase migration trees:** `supabase-preview/` and `supabase-prod/` (environments). Do not
 document or copy values from `.env`.
@@ -48,7 +50,8 @@ src/
   `package.json`). Include the file extension (`#lib/foo.ts`).
 - **Config:** SvelteKit options live in `sveltekit({...})` in `vite.config.ts` (no
   `svelte.config.js`). Env vars are declared in `src/env.ts` and imported from `$app/env/public` /
-  `$app/env/private`; private values are read at runtime.
+  `$app/env/private`; private values are read at runtime (Worker secrets), `PUBLIC_*` are
+  inlined at build time (Workers Builds build variables).
 
 ## 4. Stateless server vs client persistence
 
@@ -167,7 +170,8 @@ flowchart LR
 
 - Full migration list, every survey `qid`, avatar inventory.
 - Complete env var list (only categories above).
-- Local dev how-to beyond: `deno task dev` against appropriate Supabase project.
+- Local dev how-to beyond: `bun run dev` (Vite + HMR) or `bun run preview` (build + `wrangler dev`
+  in workerd) against the appropriate Supabase project.
 
 ## Quick answers
 
