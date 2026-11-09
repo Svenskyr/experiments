@@ -1,8 +1,8 @@
 <script lang="ts">
-import favicon from "$lib/assets/favicon.svg";
+import favicon from "#lib/assets/favicon.svg";
 import { invalidate } from "$app/navigation";
 import "./root.css";
-import { Debugger, setDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.js";
+import { Debugger, setDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.js";
 const rootDebugger = new Debugger("root");
 setDebugger(rootDebugger);
 const thisDebugger = rootDebugger.extend("+layout.svelte");

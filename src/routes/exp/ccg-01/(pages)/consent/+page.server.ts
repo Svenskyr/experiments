@@ -1,5 +1,5 @@
 import type { Cookies } from "@sveltejs/kit";
-import { setStateCookie, validateStateCookieOrRedirect } from "$exp/ccg-01/_state/Cookie.ts";
+import { setStateCookie, validateStateCookieOrRedirect } from "#exp/ccg-01/_state/Cookie.ts";
 
 export const actions = {
     submitConsent: async (

@@ -15,7 +15,7 @@ import {
     type ResponseItem,
     updateBlankSelection,
 } from "./clozeQuestion.ts";
-import { clientsideSanitize } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import { clientsideSanitize } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
 let {
     question,

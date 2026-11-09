@@ -1,33 +1,33 @@
 <script lang="ts">
 /* General */
-import { dev } from "$app/environment";
-import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
+import { dev } from "$app/env";
+import { getDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+game_play").debug;
-import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
-import RecordedGame from "$exp/ccg-01/_components/ColorCoordinationGame/RecordedGame.svelte";
+import FeedbackWrapper from "#exp/ccg-01/_components/FeedbackWrapper.svelte";
+import RecordedGame from "#exp/ccg-01/_components/ColorCoordinationGame/RecordedGame.svelte";
 import {
     recordedGameConfig,
     recordedMaxRounds,
     recordedShuffleSeed,
-} from "$exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
+} from "#exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
 
 /* expState */
-import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* syncHandler */
-import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { getSyncHandler } from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 const syncHandler = getSyncHandler();
 
 /* Page navigation */
-import { requestNextPageCookie } from "$exp/ccg-01/_state/Client.ts";
+import { requestNextPageCookie } from "#exp/ccg-01/_state/Client.ts";
 import { goto } from "$app/navigation";
-import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
-import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
+import { maxPage } from "#exp/ccg-01/_state/Pages.ts";
+import NavigationBarWrapper from "#exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
 /* Page game */
-import { load, save, sync as syncGameRounds } from "$exp/ccg-01/_database/CCGGameDBM.ts";
-import { type GameSession, newGameSession } from "$lib/exp/games/ccg/v3/game/gameState.ts";
+import { load, save, sync as syncGameRounds } from "#exp/ccg-01/_database/CCGGameDBM.ts";
+import { type GameSession, newGameSession } from "#lib/exp/games/ccg/v3/game/gameState.ts";
 import { fillRemainingRoundsWithRandomChoices } from "./devFillRemainingRounds.ts";
 
 const maxRounds = $derived(recordedMaxRounds(expState.session.role));
@@ -50,7 +50,7 @@ $effect(() => {
             if (error) {
                 console.error(`error requesting next page cookie: ${JSON.stringify(error)}`);
             }
-            goto(`/exp/ccg-01/${maxPage(expState.pages)}`, { replaceState: true });
+            goto(`/exp/ccg-01/${maxPage(expState.pages)}`, { replace: true });
         })();
     }
 });

@@ -1,17 +1,17 @@
 <script lang="ts">
-import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
+import { getDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+registration").debug;
 
-import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 let { data } = $props();
 const { supabase } = $derived(data);
-import { browser } from "$app/environment";
-import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
+import { browser } from "$app/env";
+import FeedbackWrapper from "#exp/ccg-01/_components/FeedbackWrapper.svelte";
 import { onMount, tick } from "svelte";
-import { PUBLIC_TURNSTILE_SITE_KEY } from "$env/static/public";
-import Turnstile from "$lib/common/Turnstile/Turnstile.svelte";
+import { PUBLIC_TURNSTILE_SITE_KEY } from "$app/env/public";
+import Turnstile from "#lib/common/Turnstile/Turnstile.svelte";
 let turnstile = $state<ReturnType<typeof Turnstile> | null>(null);
 let authUserId = $state<string | undefined>(undefined);
 
@@ -61,9 +61,9 @@ onMount(async () => {
 import type {
     MultipleChoiceItem as MCQItem,
     MultipleChoiceQuestion as MCQ,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.js";
-import MultipleChoiceQuestion from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
-import { roleQuestion } from "$exp/ccg-01/(pages)/registration/roleQuestion.ts";
+} from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.js";
+import MultipleChoiceQuestion from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
+import { roleQuestion } from "#exp/ccg-01/(pages)/registration/roleQuestion.ts";
 const question: MCQ = $state(roleQuestion);
 const roles: MCQItem[] = $derived([...question.canonicalItems, ...question.userItems ?? []]);
 const selectedRole: string | null = $derived.by(() => {
@@ -74,14 +74,14 @@ const selectedRole: string | null = $derived.by(() => {
 });
 
 import { enhance } from "$app/forms";
-import type { ActionResult, SubmitFunction } from "@sveltejs/kit";
+import type { ActionResult, SubmitFunction } from "$app/forms";
 import { goto } from "$app/navigation";
-import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
-import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { maxPage } from "#exp/ccg-01/_state/Pages.ts";
+import { getSyncHandler } from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 import {
     save as saveUserAgent,
     sync as syncUserAgent,
-} from "$exp/ccg-01/_database/UserAgentDBM.ts";
+} from "#exp/ccg-01/_database/UserAgentDBM.ts";
 const syncHandler = getSyncHandler();
 
 let registrationForm = $state<HTMLFormElement | null>(null);
@@ -149,7 +149,7 @@ async function handleRegistrationResult(result: ActionResult) {
             saveUserAgent();
             syncUserAgent(syncHandler);
         }
-        await goto(`${maxPage(expState.pages)}`, { replaceState: true });
+        await goto(`${maxPage(expState.pages)}`, { replace: true });
     } else {
         registrationError = result.type === "failure"
             ? (result.data?.error as string | undefined) ?? "Registration failed"

@@ -1,6 +1,6 @@
 import debugLib from "debug";
 const debug = debugLib("ccg-01:PageTimeTracker.ts");
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 
 export interface PageTimeRecord {
     timesMs: Record<string, number>;

@@ -1,18 +1,18 @@
 <script lang="ts">
 /* General */
-import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
+import { getDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+quota").debug;
-import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
-import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import FeedbackWrapper from "#exp/ccg-01/_components/FeedbackWrapper.svelte";
+import { getExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 import { enhance } from "$app/forms";
 const expState = $derived(getExpState());
-import type { SubmitFunction } from "@sveltejs/kit";
+import type { SubmitFunction } from "$app/forms";
 const quotaRoles = ["participant", "over-quota", "over-quota-buffer"];
 const gateRoles = [...quotaRoles, "failed-platform-verification"];
-import { resolvePlatformParticipantClaims } from "$lib/exp/platform-api/PlatformClaims.ts";
+import { resolvePlatformParticipantClaims } from "#lib/exp/platform-api/PlatformClaims.ts";
 let checkQuotaForm: HTMLFormElement | null = $state(null);
 import { goto } from "$app/navigation";
-import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
+import { maxPage } from "#exp/ccg-01/_state/Pages.ts";
 
 let checkingQuota = $state(false);
 let checkQuotaCooldown = $state(0);
@@ -127,7 +127,7 @@ const submitCheckQuota: SubmitFunction = ({ cancel }) => {
             type="button"
             class="exp-default-button"
             onclick={() => { goto(`/exp/ccg-01/${maxPage(expState.pages)}`, {
-                replaceState: true,
+                replace: true,
             }) }}>
                 {isReturningParticipant ? "Resume" : "Continue"}
             </button>

@@ -1,4 +1,4 @@
-import type { ActionResult } from "@sveltejs/kit";
+import type { ActionResult } from "$app/forms";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import type { ExperimentState } from "./ExperimentState.ts";

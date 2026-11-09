@@ -1,7 +1,7 @@
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import { createContext } from "svelte";
 import { SvelteMap } from "svelte/reactivity";
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 import debugLib from "debug";
 export const [getDebugger, setDebugger] = createContext<Debugger>();
 

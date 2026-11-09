@@ -1,16 +1,16 @@
 <script lang="ts">
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 import { goto } from "$app/navigation";
-import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
+import { getDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+end").debug;
-import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
+import NavigationBarWrapper from "#exp/ccg-01/_components/NavigationBarWrapper.svelte";
 import {
     clearExperimentLocalStorage,
     finalizeClientSession,
-} from "$exp/ccg-01/_state/clearClientSession.ts";
-import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "#exp/ccg-01/_state/clearClientSession.ts";
+import { getSyncHandler } from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 
-import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 let { data } = $props();

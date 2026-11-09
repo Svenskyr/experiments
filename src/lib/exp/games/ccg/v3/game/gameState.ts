@@ -1,12 +1,12 @@
-import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
 
 export {
     type Avatar,
     getAvatar,
     setAvatar,
     shuffledAvatars,
-} from "$lib/exp/games/ccg/v2/avatars/avatars.ts";
-import type { Avatar } from "$lib/exp/games/ccg/v2/avatars/avatars.ts";
+} from "#lib/exp/games/ccg/v2/avatars/avatars.ts";
+import type { Avatar } from "#lib/exp/games/ccg/v2/avatars/avatars.ts";
 
 export interface Action {
     key: string;

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import { PressedKeys } from "runed";
 import { getDebugger } from "./Debugger.svelte.ts";
 import DebugNode from "./DebuggerBranch.svelte";

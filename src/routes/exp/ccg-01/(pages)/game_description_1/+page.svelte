@@ -1,19 +1,19 @@
 <script lang="ts">
 /* General */
-import { dev } from "$app/environment";
-import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
+import { dev } from "$app/env";
+import { getDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+game_description_1").debug;
-import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
+import FeedbackWrapper from "#exp/ccg-01/_components/FeedbackWrapper.svelte";
 
 /* expState */
-import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* Page questions */
-import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
+import ClozeQuestion from "#lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
 import OutcomePointsCloze from "./OutcomePointsCloze.svelte";
 import type { ClozePageItem } from "./+page.server.ts";
-import { clozeFieldsetHandlers } from "$exp/ccg-01/_database/clozeFieldsetHandlers.ts";
+import { clozeFieldsetHandlers } from "#exp/ccg-01/_database/clozeFieldsetHandlers.ts";
 
 let { data } = $props();
 const { clozeQuestionData } = $derived(data);
@@ -25,9 +25,9 @@ function initialClozeCompletion(items: ClozePageItem[]): Record<string, boolean>
 let clozeCompleteByQid = $state(initialClozeCompletion(data.clozeQuestionData));
 
 /* Page navigation */
-import { requestNextPageCookie } from "$exp/ccg-01/_state/Client.ts";
+import { requestNextPageCookie } from "#exp/ccg-01/_state/Client.ts";
 import { goto } from "$app/navigation";
-import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
+import NavigationBarWrapper from "#exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
 let pageCompleted = $derived(
     clozeQuestionData.length > 0
@@ -44,7 +44,7 @@ $effect(() => {
     }
 });
 
-import DemoGame from "$exp/ccg-01/_components/ColorCoordinationGame/DemoGame.svelte";
+import DemoGame from "#exp/ccg-01/_components/ColorCoordinationGame/DemoGame.svelte";
 </script>
 
 <div class="page-block">

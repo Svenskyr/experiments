@@ -1,12 +1,12 @@
 <script lang="ts">
-import ClozeQuestion from "$lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
-import PayoffNormalFormTable from "$lib/exp/games/ccg/v3/game/PayoffNormalFormTable.svelte";
+import ClozeQuestion from "#lib/common/QuestionTypes/ClozeQuestion/v2/ClozeQuestion.svelte";
+import PayoffNormalFormTable from "#lib/exp/games/ccg/v3/game/PayoffNormalFormTable.svelte";
 import type {
     ClozeAnswerGrading,
     ClozeBlankResponse,
     ClozeLineCheckPayload,
     ClozeQuestionIR,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import type { OutcomePointsScenario } from "./outcomePointsCloze.ts";
 
 let {

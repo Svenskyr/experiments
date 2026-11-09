@@ -1,9 +1,9 @@
-import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import type { MultipleChoiceItem } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
     type McqStoredItems,
     submitMcqComprehensionQuestion,
-} from "$exp/ccg-01/_database/McqComprehensionQuestionServer.ts";
-import { verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
+} from "#exp/ccg-01/_database/McqComprehensionQuestionServer.ts";
+import { verifyStateCookie } from "#exp/ccg-01/_state/Cookie.ts";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 function parseBody(

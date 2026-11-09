@@ -34,40 +34,40 @@ import {
 
 installLocalStorageMock();
 
-import type { MultipleChoiceQuestion } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
-import { newMultipleChoiceQuestion } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
-import { newRangeSetQuestion } from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
-import type { ClozeBlankResponse } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { getBlanksFromLine } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { processMcqResponses } from "$exp/ccg-01/_database/McqComprehensionQuestionServer.ts";
+import type { MultipleChoiceQuestion } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import { newMultipleChoiceQuestion } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import { newRangeSetQuestion } from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
+import type { ClozeBlankResponse } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { getBlanksFromLine } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { processMcqResponses } from "#exp/ccg-01/_database/McqComprehensionQuestionServer.ts";
 import {
     allSubQids,
     buildClozeFieldsets,
     clozeSubQid,
     contentLinesForFieldset,
     scoreLine,
-} from "$exp/ccg-01/_database/ClozeComprehensionRegistry.ts";
-import type { ExperimentState } from "$exp/ccg-01/_state/ExperimentState.ts";
-import { multipleChoiceQuestions as gd1Questions } from "$exp/ccg-01/(pages)/game_description_1/questions.ts";
-import { multipleChoiceQuestions as gd2Questions } from "$exp/ccg-01/(pages)/game_description_2/questions.ts";
+} from "#exp/ccg-01/_database/ClozeComprehensionRegistry.ts";
+import type { ExperimentState } from "#exp/ccg-01/_state/ExperimentState.ts";
+import { multipleChoiceQuestions as gd1Questions } from "#exp/ccg-01/(pages)/game_description_1/questions.ts";
+import { multipleChoiceQuestions as gd2Questions } from "#exp/ccg-01/(pages)/game_description_2/questions.ts";
 import {
     multipleChoiceQuestions as surveyMcqTemplates,
     rangeSetQuestions as surveyRangeSetTemplates,
-} from "$exp/ccg-01/(pages)/survey/questions.ts";
+} from "#exp/ccg-01/(pages)/survey/questions.ts";
 import {
     getUnsynced,
     roundsStorageKey,
     save as saveGameSession,
     submit as submitGameRounds,
-} from "$exp/ccg-01/_database/CCGGameDBM.ts";
-import * as RangeSetDBM from "$exp/ccg-01/_database/RangeSetQuestionDBM.ts";
-import * as SurveyMcqDBM from "$exp/ccg-01/_database/SurveyMultipleChoiceQuestionDBM.ts";
+} from "#exp/ccg-01/_database/CCGGameDBM.ts";
+import * as RangeSetDBM from "#exp/ccg-01/_database/RangeSetQuestionDBM.ts";
+import * as SurveyMcqDBM from "#exp/ccg-01/_database/SurveyMultipleChoiceQuestionDBM.ts";
 import {
     recordedGameConfig,
     recordedMaxRounds,
     recordedShuffleSeed,
-} from "$exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
-import { SyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "#exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
+import { SyncHandler } from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 import {
     type GameSession,
     getCurrentPermutation,
@@ -76,7 +76,7 @@ import {
     newGameSession,
     shouldSync,
     submitRound,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
 
 interface MockAvatar {
     name: string;
@@ -217,7 +217,7 @@ async function submitAllMcqComprehension(sessionId: string): Promise<void> {
 
 function correctBlankResponses(
     lineNodes:
-        readonly import("$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts").ClozeContentNode[],
+        readonly import("#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts").ClozeContentNode[],
 ): Record<string, ClozeBlankResponse> {
     const blankResponses: Record<string, ClozeBlankResponse> = {};
     for (const blank of getBlanksFromLine(lineNodes)) {

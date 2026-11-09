@@ -1,5 +1,5 @@
 import type { PageStates } from "./Pages.ts";
-import { getSearchParam } from "$lib/exp/urlParams.ts";
+import { getSearchParam } from "#lib/exp/urlParams.ts";
 import { createContext } from "svelte";
 
 export const [getExpState, setExpState] = createContext<ExperimentState>();

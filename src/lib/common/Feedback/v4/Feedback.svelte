@@ -6,9 +6,9 @@ import {
     type FeedbackData,
     hasFeedback,
     ratingsRangeSet,
-} from "$lib/common/Feedback/v4/Feedback.ts";
-import type { RangeSetQuestion as RSQ } from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion";
-import RangeSetQuestion from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.svelte";
+} from "#lib/common/Feedback/v4/Feedback.ts";
+import type { RangeSetQuestion as RSQ } from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
+import RangeSetQuestion from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.svelte";
 
 let { data = $bindable<FeedbackData>(), save, sync }: {
     data: FeedbackData;

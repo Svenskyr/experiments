@@ -2,19 +2,19 @@ import {
     loadFromLocalStorage,
     saveToLocalStorage,
     SyncHandler,
-} from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 
 import {
     noPayloadError,
     notReadyError,
     type PostgrestError,
-} from "$exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
+} from "#exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
 
 import {
     newRangeSetQuestion,
     type RangeSetItem,
     type RangeSetQuestion,
-} from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
+} from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
 
 const storageKey = (qid: string) => `exp_ccg_01:rsq:${qid}`;
 const unstorageKey = (storageKey: string) => storageKey.replace("exp_ccg_01:rsq:", "");

@@ -14,7 +14,7 @@ let { props, values = $bindable({}) }: {
     props: RangeSetProps;
     values: Record<string, number | null>;
 } = $props();
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 
 let rangeSetObject: RangeSet = $state(constructRangeSetObject(props));
 

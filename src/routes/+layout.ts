@@ -1,4 +1,4 @@
-import { PUBLIC_SUPABASE_PUBLIC_KEY, PUBLIC_SUPABASE_URL } from "$env/static/public";
+import { PUBLIC_SUPABASE_PUBLIC_KEY, PUBLIC_SUPABASE_URL } from "$app/env/public";
 import type { LayoutLoad } from "./$types";
 import { createBrowserClient, createServerClient, isBrowser } from "@supabase/ssr";
 

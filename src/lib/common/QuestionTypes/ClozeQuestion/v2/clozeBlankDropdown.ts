@@ -1,5 +1,5 @@
 import type { BlankNode, ClozeBlankResponse, ResponseItem } from "../v1/clozeQuestion.ts";
-import { clientsideSanitize } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import { clientsideSanitize } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
 /** Option is ruled out in the open list while this blank is graded. */
 export function isDropdownOptionEliminated(

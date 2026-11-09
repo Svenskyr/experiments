@@ -1,16 +1,16 @@
 <script lang="ts">
 /* General */
-import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
+import { getDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+survey").debug;
-import { dev } from "$app/environment";
-import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
+import { dev } from "$app/env";
+import FeedbackWrapper from "#exp/ccg-01/_components/FeedbackWrapper.svelte";
 
 /* expState */
-import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 let expState = $derived(getExpState());
 
 /* syncHandler */
-import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { getSyncHandler } from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 const syncHandler = getSyncHandler();
 
 /* Page questions */
@@ -18,24 +18,24 @@ import {
     load as loadRangeSetData,
     save as saveRangeSetData,
     sync as syncRangeSetData,
-} from "$exp/ccg-01/_database/RangeSetQuestionDBM.ts";
+} from "#exp/ccg-01/_database/RangeSetQuestionDBM.ts";
 import {
     load as loadMcqData,
     save as saveMcqData,
     sync as syncMcqData,
-} from "$exp/ccg-01/_database/SurveyMultipleChoiceQuestionDBM.ts";
+} from "#exp/ccg-01/_database/SurveyMultipleChoiceQuestionDBM.ts";
 import {
     isQuestionComplete as isRangeSetComplete,
     newRangeSetQuestion,
     type RangeSetQuestion as RSQ,
-} from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.js";
+} from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.js";
 import {
     isQuestionComplete as isMcqComplete,
     type MultipleChoiceQuestion as MCQ,
     newMultipleChoiceQuestion,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.js";
-import RangeSetQuestion from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.svelte";
-import MultipleChoiceQuestion from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
+} from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.js";
+import RangeSetQuestion from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.svelte";
+import MultipleChoiceQuestion from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.svelte";
 
 let { data } = $props();
 const { rangeSetQuestions, multipleChoiceQuestions } = $derived(data);
@@ -65,9 +65,9 @@ const mcqQuestionState: MCQ[] = $state(
 );
 
 /* Page navigation */
-import { requestNextPageCookie } from "$exp/ccg-01/_state/Client.ts";
+import { requestNextPageCookie } from "#exp/ccg-01/_state/Client.ts";
 import { goto } from "$app/navigation";
-import NavigationBarWrapper from "$exp/ccg-01/_components/NavigationBarWrapper.svelte";
+import NavigationBarWrapper from "#exp/ccg-01/_components/NavigationBarWrapper.svelte";
 
 let pageCompleted = $derived(
     rangeSetQuestionState.every((question) => isRangeSetComplete(question))

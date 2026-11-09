@@ -1,13 +1,13 @@
 import debugLib from "debug";
 const debug = debugLib("ccg-01:_database:CCGGame");
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 import type {
     GameSession,
     PermutationTracker,
     RoundRecord,
     StoredCCGGame,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
-import { getAvatar } from "$lib/exp/games/ccg/v2/avatars/avatars.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
+import { getAvatar } from "#lib/exp/games/ccg/v2/avatars/avatars.ts";
 import {
     loadFromLocalStorage,
     saveToLocalStorage,

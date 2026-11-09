@@ -6,10 +6,10 @@ import type { PageName } from "../../_state/Pages.ts";
 import {
     buildClozeQuestion,
     type ClozeQuestionIR,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import { clozeQuestionSources } from "./clozeSource.ts";
 import { buildOutcomePointsCloze, type OutcomePointsScenario } from "./outcomePointsCloze.ts";
-import { participantRandomizationKey } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { participantRandomizationKey } from "#exp/ccg-01/_state/ExperimentState.ts";
 
 export type ClozePageItem =
     | { kind: "standard"; question: ClozeQuestionIR }

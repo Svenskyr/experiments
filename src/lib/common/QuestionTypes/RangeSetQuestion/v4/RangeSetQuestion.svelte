@@ -7,7 +7,7 @@ import {
     isQuestionComplete,
     resetItemValue,
 } from "./RangeSetQuestion.ts";
-import Tooltip from "$lib/common/Tooltip/Tooltip.svelte";
+import Tooltip from "#lib/common/Tooltip/Tooltip.svelte";
 
 let {
     question = $bindable<RangeSetQuestion>(),

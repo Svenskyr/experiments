@@ -1,5 +1,5 @@
-import type { MultipleChoiceQuestion } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion";
-import type { RangeSetQuestion } from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
+import type { MultipleChoiceQuestion } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import type { RangeSetQuestion } from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
 
 export const rangeSetQuestions: RangeSetQuestion[] = [
     {

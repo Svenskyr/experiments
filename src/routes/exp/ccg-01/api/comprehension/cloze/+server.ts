@@ -1,7 +1,7 @@
-import type { ClozeBlankResponse } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { submitClozeFieldset } from "$exp/ccg-01/_database/ClozeComprehensionServer.ts";
-import { participantRandomizationKey } from "$exp/ccg-01/_state/ExperimentState.ts";
-import { verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
+import type { ClozeBlankResponse } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { submitClozeFieldset } from "#exp/ccg-01/_database/ClozeComprehensionServer.ts";
+import { participantRandomizationKey } from "#exp/ccg-01/_state/ExperimentState.ts";
+import { verifyStateCookie } from "#exp/ccg-01/_state/Cookie.ts";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 function parseBlankResponse(value: unknown): ClozeBlankResponse | null {

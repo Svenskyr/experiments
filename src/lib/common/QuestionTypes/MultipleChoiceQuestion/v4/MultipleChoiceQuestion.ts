@@ -154,7 +154,7 @@ export function resetQuestion(question: MultipleChoiceQuestion): void {
     return;
 }
 
-import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
 
 export function resolveDisplayOrder(
     items: MultipleChoiceItem[],
@@ -219,7 +219,7 @@ function normalizeItemId(itemText: string): string {
     return itemText.trim().toLowerCase().replace(/ /g, "-").replace(/[^a-z0-9-]/g, "");
 }
 
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 import DOMPurify from "dompurify";
 
 export function clientsideSanitize(text: string): string {

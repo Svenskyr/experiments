@@ -1,4 +1,4 @@
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 import { deserialize } from "$app/forms";
 
 const LEGACY_LOCAL_STORAGE_KEYS = ["selectedAvatar", "ccg-v2-permutationTracker"] as const;

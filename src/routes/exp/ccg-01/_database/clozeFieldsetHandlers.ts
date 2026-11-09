@@ -2,11 +2,11 @@ import type {
     ClozeBlankResponse,
     ClozeLineCheckPayload,
     ClozeQuestionIR,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import {
     blankCorrectFromCheckPayload,
     type ClozeAnswerGrading,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import * as ClozeComprehensionDBM from "./ClozeComprehensionQuestionDBM.ts";
 
 export type ClozeFieldsetHandlerOptions = {
