@@ -1,19 +1,19 @@
-import type { ExperimentState } from "$exp/ccg-01/_state/ExperimentState.ts";
-import { fetchQuotaData, requestSessionReactivation } from "$exp/ccg-01/_database/Quota.ts";
+import type { ExperimentState } from "#exp/ccg-01/_state/ExperimentState.ts";
+import { fetchQuotaData, requestSessionReactivation } from "#exp/ccg-01/_database/Quota.ts";
 import { redirect } from "@sveltejs/kit";
-import { maxPage } from "$exp/ccg-01/_state/Pages.ts";
-import { setStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
+import { maxPage } from "#exp/ccg-01/_state/Pages.ts";
+import { setStateCookie } from "#exp/ccg-01/_state/Cookie.ts";
 import type { Cookies } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
+import { verifyStateCookie } from "#exp/ccg-01/_state/Cookie.ts";
 import {
     resolvePlatformAfterVerification,
     verifyPlatformClaims,
-} from "$lib/exp/platform-api/PlatformVerification.ts";
-import { resolvePlatformParticipantClaims } from "$lib/exp/platform-api/PlatformClaims.ts";
-import { EXPERIMENT_ID } from "$exp/ccg-01/_database/Registration.ts";
-import { logPlatformVerification } from "$exp/ccg-01/_database/PlatformVerificationLog.ts";
-import { getLogger } from "$lib/server/logger.server.ts";
+} from "#lib/exp/platform-api/PlatformVerification.ts";
+import { resolvePlatformParticipantClaims } from "#lib/exp/platform-api/PlatformClaims.ts";
+import { EXPERIMENT_ID } from "#exp/ccg-01/_database/Registration.ts";
+import { logPlatformVerification } from "#exp/ccg-01/_database/PlatformVerificationLog.ts";
+import { getLogger } from "#lib/server/logger.server.ts";
 const quotaRoles = ["participant", "over-quota", "over-quota-buffer"];
 
 export const load: PageServerLoad = async ({ parent, cookies }) => {

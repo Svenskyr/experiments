@@ -1,6 +1,6 @@
 <script lang="ts">
 /** syncHandler */
-import { getSyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { getSyncHandler } from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 const syncHandler = getSyncHandler();
 
 /** feedback */
@@ -8,9 +8,9 @@ import {
     type FeedbackData,
     mergeFeedbackData,
     newFeedbackData,
-} from "$lib/common/Feedback/v4/Feedback.ts";
-import Feedback from "$lib/common/Feedback/v4/Feedback.svelte";
-import { load, save, sync } from "$exp/ccg-01/_database/FeedbackDBM.ts";
+} from "#lib/common/Feedback/v4/Feedback.ts";
+import Feedback from "#lib/common/Feedback/v4/Feedback.svelte";
+import { load, save, sync } from "#exp/ccg-01/_database/FeedbackDBM.ts";
 
 let { page, label }: { page: string; label: string } = $props();
 // svelte-ignore state_referenced_locally

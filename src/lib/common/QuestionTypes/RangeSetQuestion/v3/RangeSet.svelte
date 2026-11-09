@@ -7,7 +7,7 @@ import {
     type RangeSetProps,
 } from "./RangeSet.ts";
 import { onMount } from "svelte";
-import Tooltip from "$lib/components/Tooltip/Tooltip.svelte";
+import Tooltip from "#lib/components/Tooltip/Tooltip.svelte";
 import DOMPurify from "dompurify";
 let {
     rangeSetProps,

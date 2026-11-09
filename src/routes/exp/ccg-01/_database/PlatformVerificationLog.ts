@@ -1,5 +1,5 @@
 import { supabase } from "./ServiceRole.ts";
-import { getLogger } from "$lib/server/logger.server.ts";
+import { getLogger } from "#lib/server/logger.server.ts";
 
 export interface PlatformVerificationLogRequest {
     experiment_id: string;

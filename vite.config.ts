@@ -9,7 +9,6 @@ export default defineConfig({
             preprocess: [vitePreprocess()],
             compilerOptions: { experimental: { async: true } },
             adapter: adapter(),
-            alias: { $exp: "src/routes/exp" },
         }),
     ],
 });

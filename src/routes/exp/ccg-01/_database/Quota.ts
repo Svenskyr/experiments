@@ -1,4 +1,4 @@
-import { getLogger } from "$lib/server/logger.server.ts";
+import { getLogger } from "#lib/server/logger.server.ts";
 import { supabase } from "./ServiceRole.ts";
 
 interface QuotaData {

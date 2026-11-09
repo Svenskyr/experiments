@@ -2,14 +2,14 @@
 import {
     possibleGameActions,
     possibleGameOutcomes,
-} from "$exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
-import ColorCoordinationGame from "$lib/exp/games/ccg/v3/game/ColorCoordinationGame.svelte";
+} from "#exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
+import ColorCoordinationGame from "#lib/exp/games/ccg/v3/game/ColorCoordinationGame.svelte";
 import {
     type GameSession,
     type GameSessionConfig,
     newGameSession,
     shuffledAvatars,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
 
 type Variant = "full" | "choices";
 

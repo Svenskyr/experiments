@@ -1,17 +1,17 @@
 import {
     buildClozeQuestion,
     type ClozeQuestionIR,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
 import {
     possibleGameActions,
     possibleGameOutcomes,
-} from "$exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
+} from "#exp/ccg-01/_components/ColorCoordinationGame/GameConfig.ts";
 import {
     type Action,
     actionColorTitle,
     type Outcome,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
 
 export const OUTCOME_POINTS_CLOZE_QID = "cq:gd1:outcome-points";
 

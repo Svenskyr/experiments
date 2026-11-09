@@ -6,8 +6,8 @@ import { page } from "$app/state";
 import { findAdjacentPages } from "../../../_state/Pages.ts";
 import type { PageState } from "../../../_state/Pages.ts";
 
-import { type Chevron } from "$lib/components/Shapes/Chevrons/v2/chevrons.ts";
-import Chevrons from "$lib/components/Shapes/Chevrons/v2/Chevrons.svelte";
+import { type Chevron } from "#lib/components/Shapes/Chevrons/v2/chevrons.ts";
+import Chevrons from "#lib/components/Shapes/Chevrons/v2/Chevrons.svelte";
 
 const chevronInnerAngle = 110;
 const chevronLength = 2.5;

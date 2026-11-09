@@ -3,7 +3,7 @@ const debug = debugLib("exp:ccg-01:SyncHandler");
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../../../../../database.types.ts";
-import type { ExperimentState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import type { ExperimentState } from "#exp/ccg-01/_state/ExperimentState.ts";
 import { getContext, setContext } from "svelte";
 import {
     classifySyncError,

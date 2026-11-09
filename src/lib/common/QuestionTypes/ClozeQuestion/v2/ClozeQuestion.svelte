@@ -16,7 +16,7 @@ import {
     questionHasCheckableAnswers,
     updateBlankSelection,
 } from "../v1/clozeQuestion.ts";
-import { clientsideSanitize } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import { clientsideSanitize } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import ClozeBlankDropdown from "./ClozeBlankDropdown.svelte";
 
 let {

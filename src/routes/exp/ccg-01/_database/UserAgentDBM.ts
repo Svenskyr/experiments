@@ -1,9 +1,9 @@
-import { detectUserAgent } from "$lib/common/UserAgent/UserAgentDetection.ts";
+import { detectUserAgent } from "#lib/common/UserAgent/UserAgentDetection.ts";
 import {
     noPayloadError,
     notReadyError,
     type PostgrestError,
-} from "$exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
+} from "#exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
 import {
     loadFromLocalStorage,
     saveToLocalStorage,

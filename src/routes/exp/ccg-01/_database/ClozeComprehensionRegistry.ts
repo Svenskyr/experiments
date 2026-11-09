@@ -1,5 +1,5 @@
-import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
-import { clientsideSanitize } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import type { MultipleChoiceItem } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import { clientsideSanitize } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import { maxPossibleMcqScore, processMcqResponses } from "./McqComprehensionQuestionServer.ts";
 import {
     blankHasCorrectMarker,
@@ -11,7 +11,7 @@ import {
     type ClozeQuestionSource,
     getBlanksFromLine,
     isBlankCorrect,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import { clozeQuestionSources as gd1ClozeSources } from "../(pages)/game_description_1/clozeSource.ts";
 import {
     buildOutcomePointsCloze,
@@ -21,7 +21,7 @@ import {
 import { clozeQuestionSources as gd2ClozeSources } from "../(pages)/game_description_2/clozeSource.ts";
 
 export type ClozeLinePayload =
-    import("$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts").ClozeLineCheckPayload;
+    import("#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts").ClozeLineCheckPayload;
 
 export interface ClozeLineResult {
     subQid: string;
@@ -228,4 +228,4 @@ export function allFieldsetQids(): string[] {
 export {
     buildCheckLinesPayload,
     lineIndexForBlank,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";

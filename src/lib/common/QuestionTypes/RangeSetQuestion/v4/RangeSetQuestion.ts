@@ -1,5 +1,5 @@
 import type { Snippet } from "svelte";
-import { FisherYatesShuffle } from "$lib/common/Randomization/Randomization.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
 import { browser } from "$app/env";
 import DOMPurify from "dompurify";
 

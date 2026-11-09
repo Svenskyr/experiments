@@ -1,5 +1,5 @@
 import { PRIVATE_CCG_01_SECRET_KEY } from "$app/env/private";
-import { getLogger } from "$lib/server/logger.server.ts";
+import { getLogger } from "#lib/server/logger.server.ts";
 import { type ExperimentState, newExpState } from "./ExperimentState.ts";
 import { type Cookies, redirect } from "@sveltejs/kit";
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { goto, preloadCode, preloadData } from "$app/navigation";
+import { match } from "$app/paths";
 
 import previousSvg from "./NavigationChevrons/previous.svg?raw";
 import nextSvg from "./NavigationChevrons/next.svg?raw";
@@ -45,7 +46,10 @@ $effect(() => {
         preloadData(nextPage);
     }
     if (codePreloadPath) {
-        preloadCode(codePreloadPath);
+        // preloadCode takes a route ID (e.g. /exp/ccg-01/(pages)/survey), not a pathname.
+        void match(codePreloadPath).then((matched) => {
+            if (matched) return preloadCode(matched.id);
+        });
     }
 });
 </script>

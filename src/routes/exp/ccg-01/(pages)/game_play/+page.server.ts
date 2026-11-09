@@ -1,6 +1,6 @@
 import type { Cookies } from "@sveltejs/kit";
-import { setNextPageCookie } from "$exp/ccg-01/_state/Server.ts";
-import type { PageName } from "$exp/ccg-01/_state/Pages.ts";
+import { setNextPageCookie } from "#exp/ccg-01/_state/Server.ts";
+import type { PageName } from "#exp/ccg-01/_state/Pages.ts";
 export const actions = {
     requestNextPageCookie: async (
         { cookies }: { cookies: Cookies },

@@ -6,8 +6,8 @@ import type {
     PermutationTracker,
     RoundRecord,
     StoredCCGGame,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
-import { getAvatar } from "$lib/exp/games/ccg/v2/avatars/avatars.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
+import { getAvatar } from "#lib/exp/games/ccg/v2/avatars/avatars.ts";
 import {
     loadFromLocalStorage,
     saveToLocalStorage,

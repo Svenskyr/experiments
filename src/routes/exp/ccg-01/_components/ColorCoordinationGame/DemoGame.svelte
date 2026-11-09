@@ -1,11 +1,11 @@
 <script lang="ts">
-import type { ExperimentState } from "$exp/ccg-01/_state/ExperimentState.ts";
-import ColorCoordinationGame from "$lib/exp/games/ccg/v3/game/ColorCoordinationGame.svelte";
+import type { ExperimentState } from "#exp/ccg-01/_state/ExperimentState.ts";
+import ColorCoordinationGame from "#lib/exp/games/ccg/v3/game/ColorCoordinationGame.svelte";
 import {
     type GameSession,
     newGameSession,
     shuffledAvatars,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
 import { onMount } from "svelte";
 import { demoGameConfig, recordedShuffleSeed } from "./GameConfig.ts";
 

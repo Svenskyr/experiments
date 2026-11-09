@@ -1,17 +1,17 @@
-import type { ClozeBlankResponse } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import type { ClozeBlankResponse } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 import {
     blankHasCorrectMarker,
     type ClozeQuestionIR,
     getBlanksFromLine,
     isBlankCorrect,
     wasSelectedIdsFromMcqItems,
-} from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+} from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import type { MultipleChoiceItem } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
     loadFromLocalStorage,
     saveToLocalStorage,
     type SyncHandler,
-} from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 import {
     noPayloadError,
     notReadyError,

@@ -1,12 +1,12 @@
-import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import type { MultipleChoiceItem } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
     type MultipleChoiceQuestion,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+} from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
     loadFromLocalStorage,
     saveToLocalStorage,
     type SyncHandler,
-} from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 import {
     noPayloadError,
     notReadyError,

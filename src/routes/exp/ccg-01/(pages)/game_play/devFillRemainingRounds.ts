@@ -3,7 +3,7 @@ import {
     getCurrentPermutation,
     isGameComplete,
     submitRound,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
 
 function randomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;

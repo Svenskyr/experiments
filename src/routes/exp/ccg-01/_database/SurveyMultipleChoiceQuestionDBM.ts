@@ -2,19 +2,19 @@ import {
     loadFromLocalStorage,
     saveToLocalStorage,
     type SyncHandler,
-} from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+} from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 
 import {
     noPayloadError,
     notReadyError,
     type PostgrestError,
-} from "$exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
+} from "#exp/ccg-01/_syncHandler/v3/SyncHandlerActions.ts";
 
 import {
     type MultipleChoiceItem,
     type MultipleChoiceQuestion,
     newMultipleChoiceQuestion,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+} from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
 import { multipleChoiceQuestions as surveyMcqs } from "../(pages)/survey/questions.ts";
 

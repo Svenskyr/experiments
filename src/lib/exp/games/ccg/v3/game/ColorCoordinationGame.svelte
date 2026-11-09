@@ -1,5 +1,5 @@
 <script lang="ts">
-import HintBox from "$lib/common/HintBox/v1/HintBox.svelte";
+import HintBox from "#lib/common/HintBox/v1/HintBox.svelte";
 import { fade, scale } from "svelte/transition";
 import {
     type Action,

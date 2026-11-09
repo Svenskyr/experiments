@@ -1,11 +1,11 @@
 import type { LayoutServerLoad } from "./$types";
-import { setStateCookie, verifyStateCookie } from "$exp/ccg-01/_state/Cookie.ts";
-import { newExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { setStateCookie, verifyStateCookie } from "#exp/ccg-01/_state/Cookie.ts";
+import { newExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 import { redirect } from "@sveltejs/kit";
 import {
     readPlatformParticipantClaims,
     reconcileClaimWithExpState,
-} from "$lib/exp/platform-api/PlatformClaims.ts";
+} from "#lib/exp/platform-api/PlatformClaims.ts";
 export const load: LayoutServerLoad = async (
     { cookies, url, locals: { log } },
 ) => {

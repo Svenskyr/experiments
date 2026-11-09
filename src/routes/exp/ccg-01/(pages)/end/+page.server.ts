@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from "./$types";
-import { clearStateCookie, validateStateCookieOrRedirect } from "$exp/ccg-01/_state/Cookie.ts";
-import { supabase } from "$exp/ccg-01/_database/ServiceRole.ts";
-import { getLogger } from "$lib/server/logger.server.ts";
+import { clearStateCookie, validateStateCookieOrRedirect } from "#exp/ccg-01/_state/Cookie.ts";
+import { supabase } from "#exp/ccg-01/_database/ServiceRole.ts";
+import { getLogger } from "#lib/server/logger.server.ts";
 
 async function isSessionCompleted(sessionId: string): Promise<boolean> {
     const { data, error } = await supabase

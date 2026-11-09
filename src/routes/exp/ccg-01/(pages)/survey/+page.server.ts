@@ -2,18 +2,18 @@ import { multipleChoiceQuestions, rangeSetQuestions } from "./questions.ts";
 import {
     MultipleChoiceQuestion,
     resolveDisplayOrder as resolveMcqDisplayOrder,
-} from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+} from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import {
     newRangeSetQuestion,
     resolveDisplayOrder,
-} from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
+} from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
 import type { PageServerLoad } from "./$types";
 import type { Cookies } from "@sveltejs/kit";
-import { supabase } from "$exp/ccg-01/_database/ServiceRole.ts";
-import { setNextPageCookie } from "$exp/ccg-01/_state/Server.ts";
-import type { PageName } from "$exp/ccg-01/_state/Pages.ts";
-import { getLogger } from "$lib/server/logger.server.ts";
-import { questionRandSeed } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { supabase } from "#exp/ccg-01/_database/ServiceRole.ts";
+import { setNextPageCookie } from "#exp/ccg-01/_state/Server.ts";
+import type { PageName } from "#exp/ccg-01/_state/Pages.ts";
+import { getLogger } from "#lib/server/logger.server.ts";
+import { questionRandSeed } from "#exp/ccg-01/_state/ExperimentState.ts";
 
 export const load: PageServerLoad = async ({ parent }) => {
     const { expState } = await parent();

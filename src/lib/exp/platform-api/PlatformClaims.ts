@@ -1,6 +1,6 @@
-import type { ExperimentState as ccg01ExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
-import { getSearchParam } from "$lib/exp/urlParams.ts";
-// import { getLogger } from "$lib/server/logger.server.ts";
+import type { ExperimentState as ccg01ExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
+import { getSearchParam, type UrlWithSearchParams } from "#lib/exp/urlParams.ts";
+// import { getLogger } from "#lib/server/logger.server.ts";
 
 export interface PlatformParticipantClaims {
     studyId: string;
@@ -12,7 +12,7 @@ export interface PlatformParticipantClaims {
 }
 
 export function resolvePlatformParticipantClaims(
-    url: URL,
+    url: UrlWithSearchParams,
     expState: ccg01ExpState,
 ): PlatformParticipantClaims {
     const urlClaims = readPlatformParticipantClaims(url);
@@ -30,7 +30,9 @@ export function resolvePlatformParticipantClaims(
     return claim;
 }
 
-export function readPlatformParticipantClaims(url: URL): PlatformParticipantClaims {
+export function readPlatformParticipantClaims(
+    url: UrlWithSearchParams,
+): PlatformParticipantClaims {
     const claim: PlatformParticipantClaims = {
         studyId: getSearchParam(url, "study_id") ?? "",
         role: getSearchParam(url, "role") ?? "",

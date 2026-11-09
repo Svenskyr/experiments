@@ -1,6 +1,6 @@
-import type { ClozeBlankResponse } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { getBlanksFromLine } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import type { MultipleChoiceItem } from "$lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
+import type { ClozeBlankResponse } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import { getBlanksFromLine } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import type { MultipleChoiceItem } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import { supabase } from "../_database/ServiceRole.ts";
 import type { PostgrestError } from "../_syncHandler/v3/SyncHandlerActions.ts";
 import {

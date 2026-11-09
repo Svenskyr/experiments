@@ -1,9 +1,9 @@
-import type { ExperimentState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import type { ExperimentState } from "#exp/ccg-01/_state/ExperimentState.ts";
 import {
     type GameSessionConfig,
     type Outcome,
     shuffledAvatars,
-} from "$lib/exp/games/ccg/v3/game/gameState.ts";
+} from "#lib/exp/games/ccg/v3/game/gameState.ts";
 
 export const possibleGameActions = [
     { key: "blue", value: "", color: "oklch(0.5 0.12 240)" },

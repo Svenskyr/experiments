@@ -1,4 +1,4 @@
-import type { ClozeQuestionSource } from "$lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
+import type { ClozeQuestionSource } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
 
 export const clozeQuestionSources: ClozeQuestionSource[] = [
     {

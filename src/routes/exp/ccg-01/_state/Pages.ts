@@ -51,7 +51,7 @@ export function findAdjacentPermittedPages(
     };
 }
 
-import { pageNameFromRoute as pageNameFromRouteCommon } from "$lib/common/PageFunctions/PageFunctions.ts";
+import { pageNameFromRoute as pageNameFromRouteCommon } from "#lib/common/PageFunctions/PageFunctions.ts";
 
 export function pageNameFromRoute(pathname: string): PageName {
     const pageName = pageNameFromRouteCommon(pathname) as PageName;

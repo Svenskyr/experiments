@@ -1,10 +1,10 @@
 <script lang="ts">
 import { dev } from "$app/env";
-import ColorScheme from "$lib/common/ColorScheme/ColorScheme.svelte";
-import DebuggerTree from "$lib/common/Debugger/v2/DebuggerTree.svelte";
-import "$exp/ccg-01/experiment.css";
+import ColorScheme from "#lib/common/ColorScheme/ColorScheme.svelte";
+import DebuggerTree from "#lib/common/Debugger/v2/DebuggerTree.svelte";
+import "#exp/ccg-01/experiment.css";
 
-import { Debugger, setDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
+import { Debugger, setDebugger } from "#lib/common/Debugger/v2/Debugger.svelte.ts";
 const expDebugger = new Debugger("exp_ccg_01");
 setDebugger(expDebugger);
 const debug = expDebugger.extend("+layout.svelte").debug;
@@ -13,7 +13,7 @@ let { data, children } = $props();
 const { supabase } = $derived(data);
 
 /** expState */
-import { setExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { setExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 let expState = $state(data.expState);
 setExpState(expState);
 
@@ -23,7 +23,7 @@ $effect(() => {
 });
 
 /** syncHandler */
-import { setSyncHandler, SyncHandler } from "$exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
+import { setSyncHandler, SyncHandler } from "#exp/ccg-01/_syncHandler/v3/SyncHandler.ts";
 const syncHandler = new SyncHandler("exp_ccg_01", expDebugger.extend("SyncHandler").debug);
 setSyncHandler(syncHandler);
 
@@ -34,7 +34,7 @@ $effect(() => {
 });
 
 /** pageTimeTracker */
-import PageTimeTrackerWrapper from "$exp/ccg-01/_components/PageTimeTrackerWrapper.svelte";
+import PageTimeTrackerWrapper from "#exp/ccg-01/_components/PageTimeTrackerWrapper.svelte";
 </script>
 
 <ColorScheme />

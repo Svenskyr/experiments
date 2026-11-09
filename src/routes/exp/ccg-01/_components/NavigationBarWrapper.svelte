@@ -1,13 +1,13 @@
 <script lang="ts">
 import { dev } from "$app/env";
-import NavigationBar from "$lib/exp/navigation/NavigationBar/v3/NavigationBar.svelte";
+import NavigationBar from "#lib/exp/navigation/NavigationBar/v3/NavigationBar.svelte";
 import { page } from "$app/state";
-import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";
+import { getExpState } from "#exp/ccg-01/_state/ExperimentState.ts";
 import {
     findAdjacentPermittedPages,
     PAGE_ORDER,
     pageNameFromRoute,
-} from "$exp/ccg-01/_state/Pages.ts";
+} from "#exp/ccg-01/_state/Pages.ts";
 
 let { pageCompleted = true } = $props();
 

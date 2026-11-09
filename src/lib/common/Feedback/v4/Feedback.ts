@@ -1,4 +1,4 @@
-import type { RangeSetQuestion } from "$lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
+import type { RangeSetQuestion } from "#lib/common/QuestionTypes/RangeSetQuestion/v4/RangeSetQuestion.ts";
 
 export interface FeedbackData {
     page: string;
