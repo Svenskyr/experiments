@@ -101,7 +101,7 @@ src/
 ## 6. Platform participants
 
 - **Query params:** `study_id`, `platform`, `pid`, `p_session_id`, `role`
-  (`src/lib/exp/platform-api/PlatformClaims.ts`).
+  (`src/lib/exp/platform-api/v1/PlatformClaims.ts`).
 - **Verification:** `PlatformVerification.ts` — `test-pass`, `test-fail`, `prolific`. Prolific API
   checks run at the gate but do not block participants; each attempt is logged to
   `experiments.platform_verification_log` via `log_platform_verification`. Cookie `user.platform` is
@@ -158,6 +158,8 @@ flowchart LR
 | Observability         | `src/lib/server/logger.server.ts` (`pino`); client `debug` namespaces; dev `DebuggerTree` on `+layout.svelte` |                                                                                                                                                                                                                         |
 
 ## 9. Patterns for changes
+
+Full conventions: `docs/style-guide/` (architecture, code patterns, language).
 
 - **New gated step:** add to `PAGE_ORDER`; Svelte route under `(pages)/`; server action
   `setNextPageCookie(complete, grant, revoke)`.

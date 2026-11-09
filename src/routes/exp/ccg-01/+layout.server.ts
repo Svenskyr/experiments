@@ -5,7 +5,7 @@ import { redirect } from "@sveltejs/kit";
 import {
     readPlatformParticipantClaims,
     reconcileClaimWithExpState,
-} from "#lib/exp/platform-api/PlatformClaims.ts";
+} from "#lib/exp/platform-api/v1/PlatformClaims.ts";
 export const load: LayoutServerLoad = async (
     { cookies, url, locals: { log } },
 ) => {

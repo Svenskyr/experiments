@@ -2,7 +2,7 @@
 import debugLib from "debug";
 const debug = debugLib("(site):layout.svelte");
 import "./site.css";
-import ColorScheme from "#lib/common/ColorScheme/ColorScheme.svelte";
+import ColorScheme from "#lib/common/ColorScheme/v1/ColorScheme.svelte";
 
 let { data, children } = $props();
 </script>

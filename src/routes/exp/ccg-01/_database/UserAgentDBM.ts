@@ -1,4 +1,4 @@
-import { detectUserAgent } from "#lib/common/UserAgent/UserAgentDetection.ts";
+import { detectUserAgent } from "#lib/common/UserAgent/v1/UserAgentDetection.ts";
 import {
     noPayloadError,
     notReadyError,

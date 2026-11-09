@@ -1,4 +1,4 @@
-import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/v1/Randomization.ts";
 
 export {
     type Avatar,

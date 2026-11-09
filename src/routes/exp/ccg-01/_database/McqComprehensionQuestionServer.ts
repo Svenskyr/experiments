@@ -3,7 +3,7 @@ import {
     type MultipleChoiceItem,
     type MultipleChoiceQuestion,
 } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
-import { Log2Score } from "#lib/common/Scoring/Scoring.ts";
+import { Log2Score } from "#lib/common/Scoring/v1/Scoring.ts";
 import { multipleChoiceQuestions as gd1 } from "../(pages)/game_description_1/questions.ts";
 import { multipleChoiceQuestions as gd2 } from "../(pages)/game_description_2/questions.ts";
 import { supabase } from "../_database/ServiceRole.ts";
