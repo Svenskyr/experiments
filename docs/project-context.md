@@ -12,7 +12,7 @@
 
 | Layer         | Choice                                                       | Repo                                          |
 | ------------- | ------------------------------------------------------------ | --------------------------------------------- |
-| App           | SvelteKit 2, Svelte 5, Vite                                  | `package.json`, `svelte.config.js`            |
+| App           | SvelteKit 3, Svelte 5, Vite 8                                | `package.json`, `vite.config.ts`              |
 | Deploy target | **Deno Deploy** (stateless serverless)                       | Requirement; `@sveltejs/adapter-auto` in repo |
 | DB / auth     | Supabase (Postgres + Auth)                                   | `src/hooks.server.ts`, migrations             |
 | Tooling       | Deno fmt/lint in places; `deno task dev` / `deno task build` | `deno.json`, `package.json`                   |
@@ -27,7 +27,7 @@ document or copy values from `.env`.
 
 ```text
 src/
-  routes/exp/<study-id>/     # $exp → src/routes/exp
+  routes/exp/<study-id>/     # #exp → src/routes/exp
     +page.*                  # Gate (ccg-01)
     (pages)/                 # Gated step routes
     _state/                  # HMAC cookie + ExperimentState + page ACL helpers
@@ -44,7 +44,11 @@ src/
   `src/routes/root.css`.
 - **Data:** POJOs for payloads; **classes** where Svelte 5 reactivity helps (`SyncHandler`,
   `Debugger.svelte.ts`).
-- **Alias:** `$exp` → `src/routes/exp` (`svelte.config.js`).
+- **Imports:** `#lib/*` → `src/lib/*`, `#exp/*` → `src/routes/exp/*` (subpath imports in
+  `package.json`). Include the file extension (`#lib/foo.ts`).
+- **Config:** SvelteKit options live in `sveltekit({...})` in `vite.config.ts` (no
+  `svelte.config.js`). Env vars are declared in `src/env.ts` and imported from `$app/env/public` /
+  `$app/env/private`; private values are read at runtime.
 
 ## 4. Stateless server vs client persistence
 
