@@ -149,7 +149,7 @@ async function handleRegistrationResult(result: ActionResult) {
             saveUserAgent();
             syncUserAgent(syncHandler);
         }
-        await goto(`${maxPage(expState.pages)}`, { replaceState: true });
+        await goto(`${maxPage(expState.pages)}`, { replace: true });
     } else {
         registrationError = result.type === "failure"
             ? (result.data?.error as string | undefined) ?? "Registration failed"
