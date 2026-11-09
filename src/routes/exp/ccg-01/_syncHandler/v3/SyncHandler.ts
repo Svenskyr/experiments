@@ -1,6 +1,6 @@
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import debugLib from "debug";
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createContext } from "svelte";

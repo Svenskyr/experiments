@@ -1,4 +1,4 @@
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import pino, { type Logger } from "pino";
 import { getRequestEvent } from "$app/server";
 

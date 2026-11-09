@@ -1,5 +1,5 @@
 <script lang="ts">
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import NavigationBar from "$lib/exp/navigation/NavigationBar/v3/NavigationBar.svelte";
 import { page } from "$app/state";
 import { getExpState } from "$exp/ccg-01/_state/ExperimentState.ts";

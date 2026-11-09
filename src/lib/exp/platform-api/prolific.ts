@@ -43,7 +43,7 @@ https://experiments.sstark.dev/exp/ccg-01
     &role=participant
 */
 
-import { PRIVATE_PROLIFIC_API_KEY } from "$env/static/private";
+import { PRIVATE_PROLIFIC_API_KEY } from "$app/env/private";
 import type { PlatformParticipantClaims } from "./PlatformClaims.ts";
 
 export async function verifyProlificSession(

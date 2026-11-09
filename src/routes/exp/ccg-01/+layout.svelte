@@ -1,5 +1,5 @@
 <script lang="ts">
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import ColorScheme from "$lib/common/ColorScheme/ColorScheme.svelte";
 import DebuggerTree from "$lib/common/Debugger/v2/DebuggerTree.svelte";
 import "$exp/ccg-01/experiment.css";

@@ -1,7 +1,7 @@
 <!-- Todo: Investigate if fieldset is desirable. -->
 
 <script lang="ts">
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import { onMount } from "svelte";
 import {
     constructQuestionObject,

@@ -1,5 +1,5 @@
 import { SvelteSet } from "svelte/reactivity";
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import debugLib from "debug";
 
 if (dev) {

@@ -1,6 +1,6 @@
 <script lang="ts">
 /* General */
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+game_description_1").debug;
 import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";

@@ -1,4 +1,4 @@
-import { PUBLIC_SUPABASE_PUBLIC_KEY, PUBLIC_SUPABASE_URL } from "$env/static/public";
+import { PUBLIC_SUPABASE_PUBLIC_KEY, PUBLIC_SUPABASE_URL } from "$app/env/public";
 import { createServerClient } from "@supabase/ssr";
 import type { Handle } from "@sveltejs/kit";
 import { logger } from "$lib/server/logger.server.ts";

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import * as base from "$lib/common/Debugger/v1/Debug.svelte.ts";
 import DebugTreeNode from "$lib/common/Debugger/v1/DebugTreeNode.svelte";
 const debug = base.newDebugger("lib:common:Debugger:v1:Debug");

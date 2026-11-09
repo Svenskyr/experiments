@@ -1,6 +1,6 @@
 import debugLib from "debug";
 const debug = debugLib("ccg-01:_database:CCGGame");
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 import type {
     GameSession,
     PermutationTracker,

@@ -2,7 +2,7 @@
 /* General */
 import { getDebugger } from "$lib/common/Debugger/v2/Debugger.svelte.ts";
 const debug = getDebugger().extend("+survey").debug;
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import FeedbackWrapper from "$exp/ccg-01/_components/FeedbackWrapper.svelte";
 
 /* expState */
