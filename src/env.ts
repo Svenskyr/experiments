@@ -5,7 +5,7 @@ import { defineEnvVars } from "@sveltejs/kit/env";
  *
  * - Public values are static: inlined into the bundle at build time.
  * - Private values are dynamic: read at runtime, so they must be set in the
- *   Deno Deploy environment configuration (not only at build time).
+ *   Cloudflare Worker as secrets (`wrangler secret put`), not only at build time.
  */
 export const variables = defineEnvVars({
     PUBLIC_SUPABASE_URL: { public: true, static: true },

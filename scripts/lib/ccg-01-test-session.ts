@@ -1,8 +1,8 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-export const SUPABASE_URL = Deno.env.get("PUBLIC_SUPABASE_URL") ?? "http://127.0.0.1:64321";
-export const SERVICE_KEY = Deno.env.get("PRIVATE_SUPABASE_SERVICE_KEY")
-    ?? Deno.env.get("PRIVATE_SUPABASE_SECRET_KEY");
+export const SUPABASE_URL = process.env["PUBLIC_SUPABASE_URL"] ?? "http://127.0.0.1:64321";
+export const SERVICE_KEY = process.env["PRIVATE_SUPABASE_SERVICE_KEY"]
+    ?? process.env["PRIVATE_SUPABASE_SECRET_KEY"];
 export const TEST_PASSWORD = "test-password-123456";
 
 export interface RegisteredSession {
@@ -140,8 +140,8 @@ export async function setupExperimentSession(
 export async function signInParticipant(
     email: string,
 ): Promise<{ client: SupabaseClient; authUserId: string }> {
-    const pubKey = Deno.env.get("PUBLIC_SUPABASE_PUB_KEY")
-        ?? Deno.env.get("PUBLIC_SUPABASE_PUBLIC_KEY");
+    const pubKey = process.env["PUBLIC_SUPABASE_PUB_KEY"]
+        ?? process.env["PUBLIC_SUPABASE_PUBLIC_KEY"];
     if (!pubKey) {
         throw new Error("PUBLIC_SUPABASE_PUB_KEY is required for authenticated client");
     }

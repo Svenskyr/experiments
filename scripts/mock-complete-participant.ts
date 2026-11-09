@@ -6,10 +6,10 @@
  *   - For --strict / --finalize: migration 20260813016 (bootstrap_mock_mirror_theta)
  *
  * Run (local Supabase + migrations applied):
- *   deno task mock-participant
- *   deno task mock-participant -- --count 3 --strict
- *   deno task mock-participant -- --count 3 --finalize
- *   deno task mock-participant -- --count 1 --cleanup
+ *   bun run mock-participant
+ *   bun run mock-participant -- --count 3 --strict
+ *   bun run mock-participant -- --count 3 --finalize
+ *   bun run mock-participant -- --count 1 --cleanup
  *
  * Options:
  *   --count N          Number of participants (default: 3)
@@ -129,7 +129,7 @@ interface CliOptions {
 }
 
 function parseCli(): CliOptions {
-    const args = Deno.args;
+    const args = process.argv.slice(2);
     const getFlag = (name: string): string | undefined => {
         const i = args.indexOf(name);
         return i >= 0 ? args[i + 1] : undefined;
@@ -841,5 +841,5 @@ async function main(): Promise<void> {
 
 main().catch((err) => {
     console.error(err);
-    Deno.exit(1);
+    process.exit(1);
 });

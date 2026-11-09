@@ -46,6 +46,13 @@ https://experiments.sstark.dev/exp/ccg-01
 import { PRIVATE_PROLIFIC_API_KEY } from "$app/env/private";
 import type { PlatformParticipantClaims } from "./PlatformClaims.ts";
 
+/** Subset of the Prolific submission object used for verification. */
+interface ProlificSubmission {
+    id?: string;
+    study_id?: string;
+    participant?: string;
+}
+
 export async function verifyProlificSession(
     claim: PlatformParticipantClaims,
 ): Promise<{ success: boolean; error: string | null; httpStatus: number }> {
@@ -65,7 +72,7 @@ export async function verifyProlificSession(
             httpStatus: response.status,
         };
     }
-    const data = await response.json();
+    const data = await response.json<ProlificSubmission>();
 
     const okStudyId = data.study_id === claim.studyId;
     const okParticipantId = data.participant === claim.pid;

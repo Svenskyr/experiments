@@ -1,9 +1,9 @@
 /**
  * Export every CCG permutation as a transparent PNG and a white-background PDF.
  *
- * One-time setup: npx playwright install chromium
+ * One-time setup: bunx playwright install chromium
  *
- * Then: npm run export:ccg-figures
+ * Then: bun run export:ccg-figures
  */
 import fs from "node:fs";
 import path from "node:path";

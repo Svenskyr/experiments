@@ -1,9 +1,11 @@
-import { basename, dirname, join } from "node:path";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { type ChevronExportSpec, chevronsToSvg } from "./chevrons.ts";
 
 function isMainModule(moduleUrl: string): boolean {
-    return fileURLToPath(moduleUrl) === fileURLToPath(Deno.mainModule);
+    const entry = process.argv[1];
+    return entry !== undefined && fileURLToPath(moduleUrl) === resolve(entry);
 }
 
 export async function exportChevronSpec(
@@ -17,7 +19,7 @@ export async function exportChevronSpec(
     }
 
     try {
-        await Deno.mkdir(outputDir, { recursive: true });
+        await mkdir(outputDir, { recursive: true });
     } catch (err) {
         console.error(`Failed to create output directory ${outputDir}:`, err);
         throw err;
@@ -39,9 +41,9 @@ export async function exportChevronSpec(
 
         let existing: string | null = null;
         try {
-            existing = await Deno.readTextFile(filePath);
+            existing = await readFile(filePath, "utf8");
         } catch (err) {
-            if (!(err instanceof Deno.errors.NotFound)) {
+            if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
                 console.error(`Failed to read existing file ${filePath}:`, err);
                 throw err;
             }
@@ -54,7 +56,7 @@ export async function exportChevronSpec(
         }
 
         try {
-            await Deno.writeTextFile(filePath, svg);
+            await writeFile(filePath, svg, "utf8");
         } catch (err) {
             console.error(`Failed to write ${filePath}:`, err);
             throw err;

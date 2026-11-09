@@ -1,0 +1,20 @@
+{
+    // Used by Bun when running scripts (`bun --tsconfig-override=scripts/tsconfig.json ...`).
+    // Maps SvelteKit virtual modules and a few Vite-only app modules to Node/Bun shims,
+    // replacing the old Deno import map. Not used by svelte-check or Vite.
+    "compilerOptions": {
+        "strict": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "noEmit": true,
+        "types": ["bun"],
+        "paths": {
+            "$app/env": ["./lib/shims/app-environment.ts"],
+            "$app/env/public": ["./lib/shims/env-public.ts"],
+            "$app/env/private": ["./lib/shims/env-private.ts"],
+            "#lib/exp/games/ccg/v2/avatars/avatars.ts": ["./lib/shims/avatars.ts"],
+            "#exp/ccg-01/_database/ServiceRole.ts": ["./lib/shims/service-role.ts"]
+        }
+    }
+}
