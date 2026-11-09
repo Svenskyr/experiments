@@ -9,7 +9,7 @@ const expState = $derived(getExpState());
 import type { SubmitFunction } from "$app/forms";
 const quotaRoles = ["participant", "over-quota", "over-quota-buffer"];
 const gateRoles = [...quotaRoles, "failed-platform-verification"];
-import { resolvePlatformParticipantClaims } from "#lib/exp/platform-api/PlatformClaims.ts";
+import { resolvePlatformParticipantClaims } from "#lib/exp/platform-api/v1/PlatformClaims.ts";
 let checkQuotaForm: HTMLFormElement | null = $state(null);
 import { goto } from "$app/navigation";
 import { maxPage } from "#exp/ccg-01/_state/Pages.ts";

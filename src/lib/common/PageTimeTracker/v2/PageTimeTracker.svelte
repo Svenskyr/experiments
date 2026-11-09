@@ -1,6 +1,6 @@
 <script lang="ts">
 import { page } from "$app/state";
-import { pageNameFromRoute } from "#lib/common/PageFunctions/PageFunctions.ts";
+import { pageNameFromRoute } from "#lib/common/PageFunctions/v1/PageFunctions.ts";
 import { flushActivePage, PageTimeRecord } from "./PageTimeTracker.ts";
 import { afterNavigate, beforeNavigate } from "$app/navigation";
 

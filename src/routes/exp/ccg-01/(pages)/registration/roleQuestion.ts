@@ -1,4 +1,4 @@
-import type { MultipleChoiceQuestion } from "../../_components/Q-MultipleChoice/v4/MultipleChoiceQuestion.ts";
+import type { MultipleChoiceQuestion } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 
 export const roleQuestion: MultipleChoiceQuestion = {
     qid: "ccg-01:registration-role",

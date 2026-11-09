@@ -2,7 +2,7 @@ import {
     buildClozeQuestion,
     type ClozeQuestionIR,
 } from "#lib/common/QuestionTypes/ClozeQuestion/v1/clozeQuestion.ts";
-import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/v1/Randomization.ts";
 import {
     possibleGameActions,
     possibleGameOutcomes,

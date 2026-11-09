@@ -11,7 +11,7 @@ import { browser } from "$app/env";
 import FeedbackWrapper from "#exp/ccg-01/_components/FeedbackWrapper.svelte";
 import { onMount, tick } from "svelte";
 import { PUBLIC_TURNSTILE_SITE_KEY } from "$app/env/public";
-import Turnstile from "#lib/common/Turnstile/Turnstile.svelte";
+import Turnstile from "#lib/common/Turnstile/v1/Turnstile.svelte";
 let turnstile = $state<ReturnType<typeof Turnstile> | null>(null);
 let authUserId = $state<string | undefined>(undefined);
 

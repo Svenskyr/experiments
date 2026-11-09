@@ -1,4 +1,4 @@
-import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/v1/Randomization.ts";
 import type { MultipleChoiceItem } from "#lib/common/QuestionTypes/MultipleChoiceQuestion/v4/MultipleChoiceQuestion.ts";
 import { parseClozeQuestion } from "./parser.ts";
 

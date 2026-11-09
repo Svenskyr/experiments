@@ -61,7 +61,7 @@ import debugLib from "debug";
 const debug = debugLib("CCG:v2:gameState");
 import { browser } from "$app/env";
 import { type Avatar, getAvatar, setAvatar } from "../avatars/avatars.ts";
-import { FisherYatesShuffle } from "#lib/common/Randomization/Randomization.ts";
+import { FisherYatesShuffle } from "#lib/common/Randomization/v1/Randomization.ts";
 import * as GameRoundsDBM from "../../../../_database/GameRoundsDBM.ts";
 
 function newPermutationTracker(props: GameSessionProps): PermutationTracker {
