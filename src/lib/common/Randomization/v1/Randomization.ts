@@ -44,6 +44,48 @@ export function FisherYatesShuffle<T>(array: T[], seed?: string | number): T[] {
 }
 
 /**
+ * Order items by their `displayOrder` hint. Returns a new array; inputs are not modified.
+ * - `displayOrder >= 0`: first, ascending. Items sharing a value are shuffled together.
+ * - `displayOrder` undefined: middle, shuffled.
+ * - `displayOrder < 0`: last, ascending. Items sharing a value are shuffled together.
+ * Same seeds and grouping as MultipleChoiceQuestion v4 and RangeSetQuestion v4.
+ */
+export function resolveDisplayOrder<T extends { displayOrder?: number | undefined }>(
+    items: readonly T[],
+    seed?: string | number,
+): T[] {
+    const first = items.filter((item) => item.displayOrder !== undefined && item.displayOrder >= 0);
+    const middle = items.filter((item) => item.displayOrder === undefined);
+    const last = items.filter((item) => item.displayOrder !== undefined && item.displayOrder < 0);
+    return [
+        ...shuffleSameDisplayOrderGroups(first, seed),
+        ...FisherYatesShuffle(middle, seed),
+        ...shuffleSameDisplayOrderGroups(last, seed),
+    ];
+}
+
+function shuffleSameDisplayOrderGroups<T extends { displayOrder?: number | undefined }>(
+    items: T[],
+    seed?: string | number,
+): T[] {
+    const groups = new Map<number, T[]>();
+    for (const item of items) {
+        const displayOrder = item.displayOrder!;
+        const group = groups.get(displayOrder) ?? [];
+        group.push(item);
+        groups.set(displayOrder, group);
+    }
+    return [...groups.keys()]
+        .sort((a, b) => a - b)
+        .flatMap((displayOrder) =>
+            FisherYatesShuffle(
+                groups.get(displayOrder)!,
+                seed !== undefined ? `${seed}:${displayOrder}` : undefined,
+            )
+        );
+}
+
+/**
  * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
  *
  * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>

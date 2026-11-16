@@ -1,6 +1,6 @@
 # Style guide
 
-Three parts. Read the part that matches the task.
+Five parts. Read the part that matches the task.
 
 | Part                                                       | Use it when                                                                 |
 | ---------------------------------------------------------- | --------------------------------------------------------------------------- |
@@ -8,6 +8,7 @@ Three parts. Read the part that matches the task.
 | [2. Code patterns](02-code-patterns.md)                     | Writing or reviewing any `.ts` or `.svelte` file.                           |
 | [3. Language](03-language.md)                               | Writing any participant-facing text: instructions, questions, labels, copy. |
 | [4. Versioning and freezing](04-versioning.md)              | Changing any shared code, upgrading packages, or taking an experiment live. |
+| [5. Instruments](05-instruments.md)                         | Designing or porting an instrument. Specification; partly implemented.      |
 
 `docs/project-context.md` describes what exists. This guide describes how new work should be done.
 Where current code deviates from the guide, each part lists the deviation under **Known
