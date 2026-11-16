@@ -14,5 +14,6 @@ export const variables = defineEnvVars({
 
     PRIVATE_SUPABASE_SECRET_KEY: { description: "Supabase service role key (server only)" },
     PRIVATE_CCG_01_SECRET_KEY: { description: "HMAC key for the ccg-01 state cookie" },
+    PRIVATE_DG_01_SECRET_KEY: { description: "HMAC key for the dg-01 state cookie" },
     PRIVATE_PROLIFIC_API_KEY: { description: "Prolific API key for platform verification" },
 });

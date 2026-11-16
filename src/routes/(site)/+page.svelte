@@ -12,6 +12,7 @@
 
 <ul>
     <li><a href="/exp/ccg-01">ccg-01</a></li>
+    <li><a href="/exp/dg-01">dg-01</a></li>
 </ul>
 
 <h2>Past experiments</h2>
